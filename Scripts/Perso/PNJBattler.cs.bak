@@ -1,0 +1,15 @@
+﻿using UnityEngine;
+using System.Collections.Generic;
+
+/**
+ * This class design a PNJ which will start a battle.
+ */
+public class PNJBattler : MonoBehaviour {
+    public Texture2D Sprite;
+
+    public List<Monster> monsters;
+
+    public void Start() {
+        Battle.Launch(new List<Monster>(monsters));
+    }
+}

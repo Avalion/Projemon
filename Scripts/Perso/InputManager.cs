@@ -1,0 +1,82 @@
+﻿using UnityEngine;
+
+/**
+ * This class manages inputs
+ */
+public class InputManager : MonoBehaviour {
+    private static InputManager ms_current;
+    public static InputManager Current {
+        get {
+            if (ms_current == null) {
+                ms_current = GameObject.FindObjectOfType<InputManager>();
+                if (ms_current == null)
+                    ms_current = Utility.FindGameObject("InputManager").AddComponent<InputManager>();
+            }
+            return ms_current;
+        }
+    }
+
+    /**
+     * constructor : initialize devise
+     */
+    void Start() {
+    }
+
+
+    /**
+     * Mouse Movement
+     */
+    public float XAxisPixels {
+        get { return Input.GetAxis("Mouse X") * 4; }
+    }
+    public float XAxisScreen01 {
+        get {
+            System.Diagnostics.Debug.Assert(Screen.width > 0);
+            return XAxisPixels / Screen.width;
+        }
+    }
+    public float YAxisPixels {
+        get { return Input.GetAxis("Mouse Y") * 4; }
+    }
+    public float YAxisScreen01 {
+        get {
+            System.Diagnostics.Debug.Assert(Screen.height > 0);
+            return YAxisPixels / Screen.height;
+        }
+    }
+
+    public float ZoomAxis {
+        get { return Input.GetAxis("Mouse ScrollWheel"); }
+    }
+    
+    /**
+     * Mouse Buttons
+     */
+    public bool ButtonPressed() {
+        return (Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButton(2));
+    }
+    public bool ButtonPressed(int _b) {
+        return Input.GetMouseButton(_b);
+    }
+    
+    public bool ButtonPressedUp() {
+        return (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1) || Input.GetMouseButtonUp(2));
+    }
+    public bool ButtonPressedUp(int _b) {
+        return Input.GetMouseButtonUp(_b);
+    }
+    public bool ButtonPressedDown() {
+        return (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2));
+    }
+    public bool ButtonPressedDown(int _b) {
+        return Input.GetMouseButtonDown(_b);
+    }
+
+    /**
+     * get input coords
+     */
+    public Vector2 GetControlPos() {
+        return Input.mousePosition;
+    }
+}
+

@@ -58,6 +58,10 @@ public class Battle : MonoBehaviour {
             DisplayBottomPanel();
         }else if (displayMode==DisplayMode.SwitchMonster){
             DisplaySwitchMonsterMenu();
+        } else if (displayMode == DisplayMode.Attack) {
+            DisplayMessage();
+            DisplayBattleArea();
+            DisplayAttackPanel();
         }
         GUILayout.EndVertical();
         GUILayout.EndArea();
@@ -97,7 +101,7 @@ public class Battle : MonoBehaviour {
         GUILayout.BeginHorizontal();
         int choice = InterfaceUtility.DisplayMenu(new List<GUIContent>() { new GUIContent("Attack"), new GUIContent("Switch Monster"), new GUIContent("Capture Test")}, GUILayout.Width(200), GUILayout.Height(menuHeight));
         if (choice == 0) {
-            allies[currentAlly].Damage(enemies[currentEnemy], allies[currentAlly].attacks[0].Launch(allies[currentAlly],enemies[currentEnemy]));
+            displayMode = DisplayMode.Attack;
         }
         if (choice == 1) {
             displayMode = DisplayMode.SwitchMonster;
@@ -107,6 +111,38 @@ public class Battle : MonoBehaviour {
         if (choice == 2) {
             new CaptureScroll().Effect(new List<Monster>() {allies[currentAlly]},new List<Monster>() {enemies[currentEnemy]});
         }
+
+        InterfaceUtility.BeginBox(GUILayout.Height(menuHeight));
+        GUILayout.BeginHorizontal();
+        GUILayout.Label(Monster.GetTypeIcon(allies[currentAlly].type), InterfaceUtility.EmptyStyle);
+        GUILayout.Label(allies[currentAlly].monsterName, messageStyle);
+        GUILayout.FlexibleSpace();
+
+        InterfaceUtility.ProgressBar(200, 20, allies[currentAlly].life, allies[currentAlly].maxLife, InterfaceUtility.ColorToTexture(Color.green), InterfaceUtility.ColorToTexture(Color.gray));
+        GUILayout.Label(allies[currentAlly].life + "/" + allies[currentAlly].maxLife, lifeStyle, GUILayout.Width(120));
+        GUILayout.EndHorizontal();
+        InterfaceUtility.EndBox();
+
+        GUILayout.EndHorizontal();
+    }
+
+    public void DisplayAttackPanel() {
+        int menuHeight = 150;
+        Attack[] attacks = allies[currentAlly].attacks;
+        List<GUIContent> list = new List<GUIContent>();
+
+        foreach (Attack a in attacks) {
+            if (a.name != "")
+                list.Add(new GUIContent(a.name));
+        }
+        list.Add(new GUIContent("Cancel"));
+
+        GUILayout.BeginHorizontal();
+        int choice = InterfaceUtility.DisplayMenu(list , GUILayout.Width(200), GUILayout.Height(menuHeight));
+        if (choice >= 0 && choice < list.Count - 1) 
+            allies[currentAlly].Damage(enemies[currentEnemy], allies[currentAlly].attacks[choice].Launch(allies[currentAlly], enemies[currentEnemy]));
+        if (choice == list.Count - 1)
+            displayMode = DisplayMode.Choice;
 
         InterfaceUtility.BeginBox(GUILayout.Height(menuHeight));
         GUILayout.BeginHorizontal();

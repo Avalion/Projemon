@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.IO;
+using System.Collections.Generic;
 
 /**
  * This script regroup all Patterns classes usefull for defining
@@ -22,4 +23,11 @@ public class MonsterPattern {
     public override string ToString() {
         return name;
     }
+
+    public class AttackLevelUp {
+        public int lvl;
+        public Attack attack;
+    }
+
+    public List<AttackLevelUp> attackLevelUp = new List<AttackLevelUp>();
 }

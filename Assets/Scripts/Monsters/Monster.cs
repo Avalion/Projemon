@@ -6,6 +6,8 @@
 public class Monster : MonoBehaviour {
     public const string IMAGE_FOLDER = "Battlers";
 
+    public MonsterPattern monsterPattern;
+
     // Type
     public enum Type {
         Water,
@@ -102,7 +104,7 @@ public class Monster : MonoBehaviour {
     // Design
     public Texture2D battleSprite;
 
-    public Attack[] attacks = new Attack[4];
+    public Attack[] attacks = new Attack[4]{null, null, null, null};
 
 
     /* Experience
@@ -128,6 +130,11 @@ public class Monster : MonoBehaviour {
         stat_resistance += Random.Range((int)stat_resistanceUp.x, (int)stat_resistanceUp.y + 1);
         stat_luck += Random.Range((int)stat_luckUp.x, (int)stat_luckUp.y + 1);
         stat_speed += Random.Range((int)stat_speedUp.x, (int)stat_speedUp.y + 1);
+
+        foreach (MonsterPattern.AttackLevelUp a in monsterPattern.attackLevelUp) {
+            if (a.lvl == lvl)
+                attacks[0]=a.attack;
+        }
     }
 
     public void CalcExpRequired() {
@@ -164,9 +171,9 @@ public class Monster : MonoBehaviour {
     public static void GenerateFromPattern(MonsterPattern _pattern, int lvlMin, int lvlMax) {
         int lvl = Random.Range(lvlMin, lvlMax);
         GameObject monster = new GameObject();
-        int k = GameObject.FindObjectsOfType<Monster>().Length+1;
-        monster.name = _pattern.name + " " + k;
+        monster.name = _pattern.name;
         Monster m = monster.AddComponent<Monster>();
+        m.monsterPattern = _pattern;
         m.monsterName = _pattern.name;
         m.stat_might = _pattern.stat_might;
         m.stat_resistance = _pattern.stat_resistance;
@@ -174,6 +181,7 @@ public class Monster : MonoBehaviour {
         m.stat_speed = _pattern.stat_speed;
         m.battleSprite = Resources.LoadAssetAtPath(Config.GetResourcePath(IMAGE_FOLDER) + _pattern.battleSprite, typeof(Texture2D)) as Texture2D;
         m.type = _pattern.type;
+        
         for (int i = 0; i <= lvl; i++) {
             m.LevelUp();
         }

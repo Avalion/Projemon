@@ -32,4 +32,12 @@ public class EditorUtility {
     public static void Clear() {
         Debug.Log("Cleared " + InterfaceUtility.ClearAllCache() + " objects !");
     }
+
+    public static List<string> ToStringList<T>(List<T> list){
+        List<string> stringList = new List<string>();
+        foreach (T t in list) {
+            stringList.Add(t.ToString());
+        }
+        return stringList;
+    }
 }

@@ -14,6 +14,7 @@ public class MonsterKreator : EditorWindow {
     public static List<string> battlersTextures = new List<string>();
     public static Texture2D previewBattleSprite;
 
+    public static List<Attack> attackList = new List<Attack>();
 
     Vector2 _scrollPosList = Vector2.zero;
 
@@ -31,6 +32,8 @@ public class MonsterKreator : EditorWindow {
         InitStyles();
 
         elements = SystemDatas.GetMonsterPatterns();
+
+        attackList = SystemDatas.GetAttacks();
     }
 
     public static void InitStyles() {
@@ -100,11 +103,27 @@ public class MonsterKreator : EditorWindow {
             mp.stat_speed = EditorGUILayout.IntField("Speed", mp.stat_speed);
             mp.stat_luck = EditorGUILayout.IntField("Luck", mp.stat_luck);
             mp.capture_rate = EditorGUILayout.FloatField("Capture Rate", mp.capture_rate);
+
+            GUILayout.Label("- Attacks");
+            List<string> attackListString = EditorUtility.ToStringList<Attack>(attackList);
+
+            foreach(MonsterPattern.AttackLevelUp a in mp.attackLevelUp){
+            GUILayout.BeginHorizontal();
+            a.lvl = EditorGUILayout.IntField(a.lvl);
+            int k = EditorGUILayout.Popup(attackList.IndexOf(a.attack),attackListString.ToArray());
+            a.attack = attackList[k];
+            GUILayout.EndHorizontal();
+                }
+            if (GUILayout.Button("Add")) {
+               mp.attackLevelUp.Add(new MonsterPattern.AttackLevelUp(){attack = attackList[0]});
+            }
+            if (GUILayout.Button("Delete")) {
+                mp.attackLevelUp.RemoveAt(mp.attackLevelUp.Count-1);
+            }
         }
         GUILayout.EndVertical();
 
         GUILayout.EndHorizontal();
-
 
         GUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();

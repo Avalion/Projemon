@@ -34,7 +34,6 @@ public class BattleAnimation {
         }
         public Rect GetPixelRect(Rect parent) {
             Vector2 realSize = new Vector2(parent.width * position.width, parent.height * position.height);
-            Debug.Log(realSize);
             Vector2 parentRealSize = new Vector2(parent.width - realSize.x, parent.height - realSize.y);
 
             return new Rect(parent.x + parentRealSize.x * position.x,

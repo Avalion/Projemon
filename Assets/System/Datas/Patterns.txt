@@ -1,3 +1,6 @@
-Chancerbe#0#0#0#0#0#001-Chancerbe.png
-Grazon#0#0#0#0#0#002-Grazon.png
-Terroi#0#0#0#0#0#003-Terroi.png
+Chancerbe#0#0#0#0#0#0#0#0#001-Chancerbe.png
+Grazon#0#0#0#0#0#0#0#0#002-Grazon.png
+Terroi#0#0#0#0#0#0#0#0#003-Terroi.png
+Daufeu#1#10#10#0#0#0#0#1#004-Daufeu.png
+Princendie#1#10#10#0#0#0#0#1#005-Princendie.png
+Droigon#0#10#10#0#0#0#0#1#006-Droigon.png

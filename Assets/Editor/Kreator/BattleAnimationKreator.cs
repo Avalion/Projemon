@@ -13,9 +13,6 @@ public class BattleAnimationKreator : EditorWindow {
         get { return elements[selectedElement]; }
     }
 
-    // Constantes
-    private const float TIME_BETWEEN_FRAMES = 0.05f;
-
     // Images
     private static List<string> imagesFolders = new List<string>();
     private static string selectedFolder;
@@ -104,8 +101,8 @@ public class BattleAnimationKreator : EditorWindow {
             current.name = "";
             current.nbFrames = 20;
         }
-        if (GUILayout.Button("Delete") && elements.Count > 1) {
-            if (selectedElement == elements.Count - 1) {
+        if (GUILayout.Button("Delete")) {
+            if (selectedElement == elements.Count - 1 && selectedElement > 0) {
                 elements.RemoveAt(selectedElement);
                 selectedElement = elements.Count - 1;
             } else {
@@ -116,6 +113,9 @@ public class BattleAnimationKreator : EditorWindow {
         }
         GUILayout.EndHorizontal();
         GUILayout.EndVertical();
+
+        if (selectedElement < 0 || selectedElement >= elements.Count)
+            return;
 
         // Canvas
         GUILayout.BeginVertical();
@@ -129,7 +129,7 @@ public class BattleAnimationKreator : EditorWindow {
         }
         GUILayout.Label("/", GUILayout.Width(15));
         current.nbFrames = Mathf.Max(2, EditorGUILayout.IntField(current.nbFrames, GUILayout.Width(40)));
-        GUILayout.Label("(" + Mathf.RoundToInt(1 / TIME_BETWEEN_FRAMES) + " fps)", GUILayout.Width(52));
+        GUILayout.Label("(" + Mathf.RoundToInt(1 / BattleAnimation.TIME_BETWEEN_FRAMES) + " fps)", GUILayout.Width(52));
         if (GUILayout.Button(isPlaying? "Stop" : "Play", GUILayout.Width(60)) || (Event.current.type == EventType.keyDown && Event.current.keyCode == KeyCode.Space)) {
             if (currentFrame == current.nbFrames - 1)
                 SetCurrentFrame(0);
@@ -184,7 +184,7 @@ public class BattleAnimationKreator : EditorWindow {
         GUILayout.EndHorizontal();
 
         if (isPlaying) {
-            if (currentFrame != current.nbFrames - 1 && Time.realtimeSinceStartup - time > TIME_BETWEEN_FRAMES) {
+            if (currentFrame != current.nbFrames - 1 && Time.realtimeSinceStartup - time > BattleAnimation.TIME_BETWEEN_FRAMES) {
                 currentFrame++;
                 time = Time.realtimeSinceStartup;
             }
@@ -217,19 +217,19 @@ public class BattleAnimationKreator : EditorWindow {
         foreach (BattleAnimation.ImageInstance i in current.instances.FindAll(I => I.frame == currentFrame)) {
             if (!isPlaying) {
                 if (i == selectedInstance)
-                    EditorUtility.DrawEmptyRect(MathUtility.ExtendRect(i.position, 2), InterfaceUtility.HexaToColor("#0000FFFF"), 2);
+                    EditorUtility.DrawEmptyRect(MathUtility.ExtendRect(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), 2), InterfaceUtility.HexaToColor("#0000FFFF"), 2);
                 else
-                    EditorUtility.DrawEmptyRect(MathUtility.ExtendRect(i.position, 1), InterfaceUtility.HexaToColor("#4444FFCC"), 1);
+                    EditorUtility.DrawEmptyRect(MathUtility.ExtendRect(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), 1), InterfaceUtility.HexaToColor("#4444FFCC"), 1);
             }
-            GUI.Label(i.position, i.image, InterfaceUtility.EmptyStyle);
+            GUI.Label(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), i.image, InterfaceUtility.EmptyStyle);
         }
         if (!isPlaying && displayPrecedent) {
             foreach (BattleAnimation.ImageInstance i in current.instances.FindAll(I => I.frame == currentFrame - 1)) {
-                EditorUtility.DrawEmptyRect(MathUtility.ExtendRect(i.position, 1), InterfaceUtility.HexaToColor("#CCCCFF44"), 1);
+                EditorUtility.DrawEmptyRect(MathUtility.ExtendRect(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), 1), InterfaceUtility.HexaToColor("#CCCCFF44"), 1);
                 
                 Color c = GUI.color;
                 GUI.color = new Color(c.r, c.g, c.b, 0.2f);
-                GUI.Label(i.position, i.image, InterfaceUtility.EmptyStyle);
+                GUI.Label(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), i.image, InterfaceUtility.EmptyStyle);
                 GUI.color = c;
             }
         }
@@ -246,8 +246,9 @@ public class BattleAnimationKreator : EditorWindow {
 		/** Mouse Events
          */
         if (Event.current.type == EventType.MouseDown && Event.current.button == 0) {
+            // SELECT
             foreach (BattleAnimation.ImageInstance i in current.instances) {
-                if (i.frame == currentFrame && MathUtility.AddRect(i.position, _rect.x, _rect.y, 0, 0).Contains(Event.current.mousePosition)) {
+                if (i.frame == currentFrame && MathUtility.AddRect(i.GetPixelRect(new Rect(0,0,_rect.width, _rect.height)), _rect.x, _rect.y, 0, 0).Contains(Event.current.mousePosition)) {
                     selectedInstance = i;
                     dragStartPosition = Event.current.mousePosition;
                     Repaint();
@@ -257,17 +258,20 @@ public class BattleAnimationKreator : EditorWindow {
             
             if (selectedImage == null)
                 return;
+            
+            // CREATE
+            selectedInstance = new BattleAnimation.ImageInstance() { image = selectedImage, frame = currentFrame, imageFolder = selectedFolder };
+            selectedInstance.position = selectedInstance.GetRelativeRect(_rect, Event.current.mousePosition);
 
-            Rect pos = new Rect(Event.current.mousePosition.x - _rect.x - selectedImage.width / 2f, Event.current.mousePosition.y - _rect.y - selectedImage.height / 2f, selectedImage.width, selectedImage.height);
-            selectedInstance = new BattleAnimation.ImageInstance() { image = selectedImage, frame = currentFrame, imageFolder = selectedFolder , position = pos };
             current.instances.Add(selectedInstance);
 			dragStartPosition = Event.current.mousePosition;
             Repaint();
         }
         if (selectedInstance != null && Event.current.type == EventType.MouseDrag && Event.current.button == 0) {
+            // Replace
             int index = current.instances.IndexOf(selectedInstance);
             Vector2 move = Event.current.mousePosition - dragStartPosition;
-            selectedInstance.position = MathUtility.AddRect(selectedInstance.position, move.x, move.y, 0, 0);
+            selectedInstance.position = MathUtility.AddRect(selectedInstance.position, move.x / (_rect.width - selectedInstance.image.width), move.y / (_rect.height - selectedInstance.image.height), 0, 0);
             current.instances[index] = selectedInstance;
             dragStartPosition = Event.current.mousePosition;
 
@@ -303,13 +307,13 @@ public class BattleAnimationKreator : EditorWindow {
                 int index = current.instances.IndexOf(selectedInstance);
                 Vector2 move = Vector2.zero;
                 if (Event.current.keyCode == KeyCode.UpArrow)
-                    move.y -= 1;
+                    move.y -= 0.01f;
                 if (Event.current.keyCode == KeyCode.DownArrow)
-                    move.y += 1;
+                    move.y += 0.01f;
                 if (Event.current.keyCode == KeyCode.LeftArrow)
-                    move.x -= 1;
+                    move.x -= 0.01f;
                 if (Event.current.keyCode == KeyCode.RightArrow)
-                    move.x += 1;
+                    move.x += 0.01f;
                 if (move != Vector2.zero) {
                     selectedInstance.position = MathUtility.AddRect(selectedInstance.position, move.x, move.y, 0, 0);
                     current.instances[index] = selectedInstance;
@@ -342,4 +346,6 @@ public class BattleAnimationKreator : EditorWindow {
         }
         
     }
+
+    
 }

@@ -14,7 +14,7 @@ public class Attack {
 
     public int battleAnimationID;
 
-    public int Launch(Monster caster, Monster target) {
+    public int Launch(Monster caster, Monster target, Rect effectZone) {
         int damage = 0;
         string message = "";
         if (Random.Range(0, 100) <= precision) {
@@ -23,7 +23,7 @@ public class Attack {
                 message = "Critical Hit ! ";
                 damage *= 3;
             }
-            //new BattleAnimation(battleAnimationID).Display();
+            new BattleAnimation(battleAnimationID).Display(effectZone);
             message += target.monsterName + " took " + damage + " damages !";
         } else {
             message = caster.monsterName + " has failed his attack.";

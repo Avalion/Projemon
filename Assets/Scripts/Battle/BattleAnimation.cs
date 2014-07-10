@@ -6,8 +6,10 @@ using System.IO;
  * This class designs animation in battles as list of images linked to frames
  */
 public class BattleAnimation {
+    // Constantes
     public const string IMAGE_FOLDER = "BattleAnimations";
-    
+    public const float TIME_BETWEEN_FRAMES = 0.05f;
+
     public int ID;
 
     public string name;
@@ -18,6 +20,28 @@ public class BattleAnimation {
         public Texture2D image;
         public Rect position;
         public int frame;
+
+        // Utils
+        public Rect GetRelativeRect(Rect parent, Vector2 position) {
+            Vector2 parentRealSize = new Vector2(parent.width - image.width, parent.height - image.height);
+
+            Rect pos = new Rect(position.x - parent.x - image.width / 2f, 
+                                position.y - parent.y - image.height / 2f, 
+                                image.width, 
+                                image.height);
+
+            return new Rect(pos.x / parentRealSize.x, pos.y / parentRealSize.y, pos.width / parent.width, pos.height / parent.height);
+        }
+        public Rect GetPixelRect(Rect parent) {
+            Vector2 realSize = new Vector2(parent.width * position.width, parent.height * position.height);
+            Debug.Log(realSize);
+            Vector2 parentRealSize = new Vector2(parent.width - realSize.x, parent.height - realSize.y);
+
+            return new Rect(parent.x + parentRealSize.x * position.x,
+                            parent.y + parentRealSize.y * position.y,
+                            realSize.x,
+                            realSize.y);
+        }
     }
     public List<ImageInstance> instances = new List<ImageInstance>();
 
@@ -26,8 +50,10 @@ public class BattleAnimation {
         Import();
     }
 
-    public void Display() {
-        new GameObject("BattleAnim").AddComponent<DisplayBattleAnimation>().battleAnimation = this;
+    public void Display(Rect effectZone) {
+        DisplayBattleAnimation anim = new GameObject("BattleAnim").AddComponent<DisplayBattleAnimation>();
+        anim.battleAnimation = this;
+        anim.displayZone = effectZone;
     }
 
     public override string ToString() {
@@ -68,7 +94,7 @@ public class BattleAnimation {
             return;
 
         StreamReader sr = new StreamReader(filePath);
-
+        
         sr.ReadLine();
         sr.ReadLine();
         sr.ReadLine();

@@ -87,9 +87,11 @@ public class Battle : MonoBehaviour {
         GUILayout.BeginVertical();
         GUILayout.FlexibleSpace();
         GUILayout.BeginHorizontal();
+        GUILayout.Space(100);
         DisplayBattleMonster(allies[currentAlly], false, true);
         GUILayout.FlexibleSpace();
         DisplayBattleMonster(enemies[currentEnemy], true, false);
+        GUILayout.Space(100);
         GUILayout.EndHorizontal();
         GUILayout.FlexibleSpace();
         GUILayout.EndVertical();
@@ -140,7 +142,7 @@ public class Battle : MonoBehaviour {
         GUILayout.BeginHorizontal();
         int choice = InterfaceUtility.DisplayMenu(list , GUILayout.Width(200), GUILayout.Height(menuHeight));
         if (choice >= 0 && choice < list.Count - 1) 
-            allies[currentAlly].Damage(enemies[currentEnemy], allies[currentAlly].attacks[choice].Launch(allies[currentAlly], enemies[currentEnemy]));
+            allies[currentAlly].Damage(enemies[currentEnemy], allies[currentAlly].attacks[choice].Launch(allies[currentAlly], enemies[currentEnemy], new Rect(Screen.width - 300, (Screen.height / 2f) - 150, 300, 200)));
         if (choice == list.Count - 1)
             displayMode = DisplayMode.Choice;
 

@@ -134,7 +134,7 @@ public class Battle : MonoBehaviour {
         List<GUIContent> list = new List<GUIContent>();
 
         foreach (Attack a in attacks) {
-            if (a.name != "")
+            if (a.name != "null")
                 list.Add(new GUIContent(a.name));
         }
         list.Add(new GUIContent("Cancel"));

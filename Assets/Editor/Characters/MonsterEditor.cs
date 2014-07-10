@@ -32,6 +32,10 @@ public class MonsterEditor : Editor {
     }
 
     public void DisplayStats() {
+        List<Attack> attackList = new List<Attack>() {new Attack()};
+        attackList.AddRange(SystemDatas.GetAttacks());
+       List<string> attackListString = EditorUtility.ToStringList<Attack>(attackList);
+
         EditorGUILayout.LabelField("Name", InterfaceUtility.TitleStyle);
         monster.monsterName = EditorGUILayout.TextField("Name", monster.monsterName);
 
@@ -39,6 +43,11 @@ public class MonsterEditor : Editor {
         monster.state = (Monster.State)EditorGUILayout.EnumPopup("State", monster.state);
 
         EditorGUILayout.LabelField("Attacks", InterfaceUtility.TitleStyle);
+
+        for (int i = 0; i < monster.attacks.Length; i++) {
+                int k = EditorGUILayout.Popup(attackList.FindIndex(A => A.name == monster.attacks[i].name), attackListString.ToArray());
+                monster.attacks[i] = attackList[k];           
+        }        
 
         EditorGUILayout.LabelField("Experience", InterfaceUtility.TitleStyle);
         GUILayout.BeginHorizontal();
@@ -111,8 +120,10 @@ public class MonsterEditor : Editor {
         EditorGUILayout.LabelField("Max", GUILayout.Width(30));
         monster.stat_speedUp.y = Mathf.Max(EditorGUILayout.IntField((int)monster.stat_speedUp.y), monster.stat_speedUp.x);
         GUILayout.EndHorizontal();
-
-        GUILayout.Space(10);
+        if (GUILayout.Button("Reload")) {
+            Monster.GenerateFromPattern(monster.gameObject, monster.monsterPattern, monster.lvl, monster.lvl);
+        }
+        GUILayout.Space(10);        
 
     }
 }

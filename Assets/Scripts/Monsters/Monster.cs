@@ -100,11 +100,12 @@ public class Monster : MonoBehaviour {
     public Vector2 stat_luckUp = new Vector2(1, 3);
     public Vector2 stat_speedUp = new Vector2(1, 3);
     public bool refillLife = true;
+    public bool refillStamina = true;
 
     // Design
     public Texture2D battleSprite;
 
-    public Attack[] attacks = new Attack[4]{null, null, null, null};
+    public Attack[] attacks = new Attack[4];
 
 
     /* Experience
@@ -123,9 +124,9 @@ public class Monster : MonoBehaviour {
         int tempLife = Random.Range((int)lifeUp.x, (int)lifeUp.y + 1);
         maxLife += tempLife;
         life = refillLife ? maxLife : life + tempLife;
-        int tempStamina =Random.Range((int)staminaUp.x, (int)staminaUp.y + 1);
+        int tempStamina = Random.Range((int)staminaUp.x, (int)staminaUp.y + 1);
         maxStamina += tempStamina;
-        stamina = tempStamina;
+        stamina = refillStamina ? maxStamina : stamina + tempLife;
         stat_might += Random.Range((int)stat_mightUp.x, (int)stat_mightUp.y + 1);
         stat_resistance += Random.Range((int)stat_resistanceUp.x, (int)stat_resistanceUp.y + 1);
         stat_luck += Random.Range((int)stat_luckUp.x, (int)stat_luckUp.y + 1);
@@ -168,22 +169,29 @@ public class Monster : MonoBehaviour {
 
     /* Contstructors
      */
-    public static void GenerateFromPattern(MonsterPattern _pattern, int lvlMin, int lvlMax) {
+    public static void GenerateFromPattern(GameObject gameObject, MonsterPattern _pattern, int lvlMin, int lvlMax) {
         int lvl = Random.Range(lvlMin, lvlMax);
-        GameObject monster = new GameObject();
-        monster.name = _pattern.name;
-        Monster m = monster.AddComponent<Monster>();
+        Monster m = gameObject.GetComponent<Monster>();
+        if (m == null) {
+            m = gameObject.AddComponent<Monster>();
+        }
+
+        gameObject.name = _pattern.name;
         m.monsterPattern = _pattern;
         m.monsterName = _pattern.name;
         m.stat_might = _pattern.stat_might;
         m.stat_resistance = _pattern.stat_resistance;
         m.stat_luck = _pattern.stat_luck;
         m.stat_speed = _pattern.stat_speed;
+        m.maxLife = _pattern.maxLife;
+        m.maxStamina = _pattern.maxStamina;
         m.battleSprite = Resources.LoadAssetAtPath(Config.GetResourcePath(IMAGE_FOLDER) + _pattern.battleSprite, typeof(Texture2D)) as Texture2D;
         m.type = _pattern.type;
-        
-        for (int i = 0; i <= lvl; i++) {
+
+        m.lvl = 1;
+        for (int i = 1; i < lvl; i++) {
             m.LevelUp();
         }
+
     }
 }

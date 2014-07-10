@@ -5,7 +5,7 @@
  */
 [System.Serializable]
 public class Attack {
-    public string name;
+    public string name="null";
 
     public Monster.Type type;
 
@@ -18,8 +18,8 @@ public class Attack {
         int damage = 0;
         string message = "";
         if (Random.Range(0, 100) <= precision) {
-            damage = Mathf.RoundToInt(Random.Range(-caster.stat_might / 2, caster.stat_might) + power);
-            if (Random.Range(0, 100) <= caster.stat_luck) {
+            damage = Mathf.RoundToInt(caster.stat_might + power);
+            if (Random.Range(0, 100) <= caster.stat_luck/10) {
                 message = "Critical Hit ! ";
                 damage *= 3;
             }

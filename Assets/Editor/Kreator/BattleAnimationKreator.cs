@@ -27,6 +27,10 @@ public class BattleAnimationKreator : EditorWindow {
     private static GUIStyle imageStyle = new GUIStyle();
     private static GUIStyle selectedImageStyle = new GUIStyle();
 
+    private static GUIStyle canvasImageStyle;
+
+    private float alpha = 1;
+
     // Canvas
     private int currentFrame = 0;
 
@@ -150,8 +154,22 @@ public class BattleAnimationKreator : EditorWindow {
             selectedFolder = imagesFolders[value];
             UpdateImages();
         }
-
+        
         GUILayout.Space(5);
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Alpha", GUILayout.Width(40));
+        float tmp = GUILayout.HorizontalSlider(alpha, 0, 1);
+        tmp = EditorGUILayout.FloatField(tmp, GUILayout.Width(40));
+        if (tmp != alpha) {
+            alpha = tmp;
+            if (selectedInstance != null)
+                selectedInstance.alpha = alpha;
+        }
+        
+        GUILayout.EndHorizontal();
+
+        GUILayout.FlexibleSpace();
         scrollpos = GUILayout.BeginScrollView(scrollpos);
         foreach (Texture2D t in images) {
             if (selectedImage != t) {
@@ -165,13 +183,6 @@ public class BattleAnimationKreator : EditorWindow {
             selectedImage = null;
         GUILayout.EndScrollView();
         
-        
-        GUILayout.BeginHorizontal();
-        GUILayout.FlexibleSpace();
-        GUILayout.Label(selectedImage, GUILayout.Width(Screen.width * 0.15f));
-        GUILayout.FlexibleSpace();
-        GUILayout.EndHorizontal();
-
         GUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
         if (GUILayout.Button("OK")) {
@@ -221,16 +232,13 @@ public class BattleAnimationKreator : EditorWindow {
                 else
                     EditorUtility.DrawEmptyRect(MathUtility.ExtendRect(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), 1), InterfaceUtility.HexaToColor("#4444FFCC"), 1);
             }
-            GUI.Label(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), i.image, InterfaceUtility.EmptyStyle);
+            i.Display(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)));
         }
         if (!isPlaying && displayPrecedent) {
             foreach (BattleAnimation.ImageInstance i in current.instances.FindAll(I => I.frame == currentFrame - 1)) {
                 EditorUtility.DrawEmptyRect(MathUtility.ExtendRect(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), 1), InterfaceUtility.HexaToColor("#CCCCFF44"), 1);
                 
-                Color c = GUI.color;
-                GUI.color = new Color(c.r, c.g, c.b, 0.2f);
-                GUI.Label(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), i.image, InterfaceUtility.EmptyStyle);
-                GUI.color = c;
+                i.Display(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)));
             }
         }
         GUI.EndGroup();
@@ -241,15 +249,16 @@ public class BattleAnimationKreator : EditorWindow {
             CanvasEvents(canvasRect);
     }
     private void CanvasEvents(Rect _rect) {
-		if (!_rect.Contains(Event.current.mousePosition))
-			return;
-		/** Mouse Events
+        if (!_rect.Contains(Event.current.mousePosition))
+            return;
+        /** Mouse Events
          */
         if (Event.current.type == EventType.MouseDown && Event.current.button == 0) {
             // SELECT
             foreach (BattleAnimation.ImageInstance i in current.instances) {
                 if (i.frame == currentFrame && MathUtility.AddRect(i.GetPixelRect(new Rect(0,0,_rect.width, _rect.height)), _rect.x, _rect.y, 0, 0).Contains(Event.current.mousePosition)) {
                     selectedInstance = i;
+                    alpha = selectedInstance.alpha;
                     dragStartPosition = Event.current.mousePosition;
                     Repaint();
                     return;
@@ -260,11 +269,11 @@ public class BattleAnimationKreator : EditorWindow {
                 return;
             
             // CREATE
-            selectedInstance = new BattleAnimation.ImageInstance() { image = selectedImage, frame = currentFrame, imageFolder = selectedFolder };
+            selectedInstance = new BattleAnimation.ImageInstance() { image = selectedImage, frame = currentFrame, imageFolder = selectedFolder, alpha = this.alpha };
             selectedInstance.position = selectedInstance.GetRelativeRect(_rect, Event.current.mousePosition);
 
             current.instances.Add(selectedInstance);
-			dragStartPosition = Event.current.mousePosition;
+            dragStartPosition = Event.current.mousePosition;
             Repaint();
         }
         if (selectedInstance != null && Event.current.type == EventType.MouseDrag && Event.current.button == 0) {
@@ -296,9 +305,10 @@ public class BattleAnimationKreator : EditorWindow {
             if (Event.current.type == EventType.KeyDown) {
                 if (Event.current.keyCode == KeyCode.Delete) {
                     current.instances.Remove(selectedInstance);
-                    if (current.instances.Count > 0)
+                    if (current.instances.Count > 0) {
                         selectedInstance = current.instances[current.instances.Count - 1];
-                    else
+                        alpha = selectedInstance.alpha;
+                    } else
                         selectedInstance = null;
                 } else if (Event.current.keyCode == KeyCode.Escape) {
                     selectedInstance = null;
@@ -346,6 +356,4 @@ public class BattleAnimationKreator : EditorWindow {
         }
         
     }
-
-    
 }

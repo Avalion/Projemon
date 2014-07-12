@@ -80,12 +80,12 @@ public class AttackKreator : EditorWindow {
                 names.Add(InterfaceUtility.IntString(ba.ID + 1, 3) + ": " + ba.name);
             int index = names.FindIndex(P => P.StartsWith(InterfaceUtility.IntString(current.battleAnimationID + 1, 3)));
             index = EditorGUILayout.Popup("Battle animation", index, names.ToArray());
-            current.battleAnimationID = battleAnimations[index].ID;
+            if (index >= 0 && index < battleAnimations.Count)
+                current.battleAnimationID = battleAnimations[index].ID;
         }
         GUILayout.EndVertical();
 
         GUILayout.EndHorizontal();
-
 
         GUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();

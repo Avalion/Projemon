@@ -22,7 +22,7 @@ public class DisplayBattleAnimation : MonoBehaviour {
         GUI.depth = -1;
         foreach (BattleAnimation.ImageInstance i in battleAnimation.instances.FindAll(I => I.frame == m_currentframe)) {
             //style.normal.background = i.image;
-            GUI.Label(i.GetPixelRect(displayZone), i.image, InterfaceUtility.EmptyStyle);
+            i.Display(i.GetPixelRect(displayZone));
         }
     }
 

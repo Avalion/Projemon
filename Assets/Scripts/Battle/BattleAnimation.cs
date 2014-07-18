@@ -21,6 +21,8 @@ public class BattleAnimation {
         public Rect position;
         public int frame;
 
+        public float alpha;
+
         // Utils
         public Rect GetRelativeRect(Rect parent, Vector2 position) {
             Vector2 parentRealSize = new Vector2(parent.width - image.width, parent.height - image.height);
@@ -40,6 +42,13 @@ public class BattleAnimation {
                             parent.y + parentRealSize.y * position.y,
                             realSize.x,
                             realSize.y);
+        }
+
+        public void Display(Rect rect) {
+            Color c = GUI.color;
+            GUI.color = new Color(c.r, c.g, c.b, alpha);
+            GUI.Label(rect, image, InterfaceUtility.EmptyStyle);
+            GUI.color = c;
         }
     }
     public List<ImageInstance> instances = new List<ImageInstance>();
@@ -80,7 +89,7 @@ public class BattleAnimation {
         List<ImageInstance> toExport = instances.FindAll(II => II.frame < nbFrames);
         sw.WriteLine(toExport.Count);
         foreach (ImageInstance i in toExport) {
-            sw.WriteLine(i.frame + "#" + Config.RectToString(i.position) + "#" + i.imageFolder + "#" + i.image.name);
+            sw.WriteLine(i.frame + "#" + Config.RectToString(i.position) + "#" + i.imageFolder + "#" + i.image.name + "#" + i.alpha);
         }
         sw.WriteLine();
 
@@ -113,6 +122,8 @@ public class BattleAnimation {
             
             string localpath = Config.GetResourcePath(IMAGE_FOLDER) + im.imageFolder + "/" + values[3] + ".png";
             im.image = Resources.LoadAssetAtPath(localpath, typeof(Texture2D)) as Texture2D;
+
+            im.alpha = float.Parse(values[4]);
             instances.Add(im);
         }
 

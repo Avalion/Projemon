@@ -68,8 +68,10 @@ public class MapObject : MonoBehaviour {
     public virtual void OnUpdate() {}
 
     public void DisplayOnMap() {
-        if (sprite != null)
-            GUI.DrawTexture(new Rect(Map.Resolution.x * (mapCoords.x + currentMovement.x * lerp), Map.Resolution.y * (mapCoords.y + currentMovement.y * lerp), Map.Resolution.x, Sprite.height * (Map.Resolution.x / Sprite.width)), Sprite);
+        if (sprite != null) {
+            float height = Sprite.height * (Map.Resolution.x / Sprite.width);
+            GUI.DrawTexture(new Rect(Map.Resolution.x * (mapCoords.x + currentMovement.x * lerp), Map.Resolution.y * (mapCoords.y + currentMovement.y * lerp + 1) - height, Map.Resolution.x, height), Sprite);
+        }
     }
 
     public void Move(Orientation _o) {

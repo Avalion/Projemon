@@ -20,7 +20,7 @@ public class ActionMessage : MapObjectAction {
     }
 }
 
-private class ActionMessageDisplay : MonoBehaviour {
+public class ActionMessageDisplay : MonoBehaviour {
     public ActionMessage message;
 
     public GUIStyle messageStyle = new GUIStyle() { fontSize = 30, fontStyle = FontStyle.Bold, wordWrap = true };

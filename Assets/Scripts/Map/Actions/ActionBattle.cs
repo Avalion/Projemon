@@ -3,7 +3,7 @@
 public class ActionBattle : MapObjectAction {
     public PNJBattler battler;
 
-    public ActionBattler(PNJBattler battler) {
+    public ActionBattle(PNJBattler battler) {
         this.battler = battler;
     }
 

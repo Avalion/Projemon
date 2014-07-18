@@ -11,7 +11,6 @@ public class PNJBattler : MapObject {
 
     public int nbWin;
 
-    
     public override void OnUpdate() {
         if (nbWin == 0 && (
             orientation == Orientation.Down  && Player.Current.mapCoords.x == mapCoords.x && Player.Current.mapCoords.y - mapCoords.y <= distance && Player.Current.mapCoords.y - mapCoords.y > 0 ||
@@ -19,11 +18,13 @@ public class PNJBattler : MapObject {
             orientation == Orientation.Left  && Player.Current.mapCoords.y == mapCoords.y && Player.Current.mapCoords.x - mapCoords.x <= distance && Player.Current.mapCoords.x - mapCoords.x > 0 ||
             orientation == Orientation.Right && Player.Current.mapCoords.y == mapCoords.y && mapCoords.x - Player.Current.mapCoords.x <= distance && mapCoords.x - Player.Current.mapCoords.x > 0)
             ) {
-
-            Battle.Launch(new List<Monster>(monsters));
-            nbWin++;
+                ExecuteActions();
         }
     }
 
-    
+    // TEMPORARY
+    public void Start() {
+        actions.Add(new ActionMessage("Waouh, un autre dresseur de monstre ! Laisse moi tester tes talents !"));
+        actions.Add(new ActionBattle(this));
+    }
 }

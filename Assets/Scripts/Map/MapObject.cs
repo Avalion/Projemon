@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
+using System.Collections;
 
 /**
  * This class defines map objects as Player or PNJBattlers
@@ -34,13 +36,15 @@ public class MapObject : MonoBehaviour {
         }
     }
 
-    
     public Vector2 mapCoords;
 
     [HideInInspector] public bool isMoving;
     [HideInInspector] public Vector2 currentMovement;
     [HideInInspector] public float lerp = 0;
-     
+
+    public List<MapObjectAction> actions;
+
+
     /* Functions
      */
     public void Update() {
@@ -83,5 +87,21 @@ public class MapObject : MonoBehaviour {
 
         if (World.Current.CanMoveOn(mapCoords + move))
             currentMovement = move;
+    }
+
+    public void ExecuteActions() {
+        StartCoroutine(ExecuteActionAsync());
+    }
+
+    private IEnumerator ExecuteActionAsync() {
+        Player.Lock();
+        foreach(MapObjectAction action in actions) {
+            action.Execute();
+            while (!action.Done())
+                yield return new WaitForEndOfFrame();
+        }
+        Player.Unlock();
+        foreach (MapObjectAction action in actions)
+            action.Init();
     }
 }

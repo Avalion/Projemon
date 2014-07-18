@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 /**
  * This class manages inputs
@@ -77,6 +78,36 @@ public class InputManager : MonoBehaviour {
      */
     public Vector2 GetControlPos() {
         return Input.mousePosition;
+    }
+
+    /**
+     * Keyboard
+     */
+    public bool GetKey(KeyCode key) {
+        List<KeyCode> keysToInspect = new List<KeyCode>() { key };
+        
+        switch (key) {
+            case KeyCode.Return :
+                keysToInspect.Add(KeyCode.KeypadEnter); break;
+            case KeyCode.UpArrow:
+                keysToInspect.Add(KeyCode.Z); break;
+            case KeyCode.LeftArrow:
+                keysToInspect.Add(KeyCode.Q); break;
+            case KeyCode.RightArrow:
+                keysToInspect.Add(KeyCode.S); break;
+            case KeyCode.LeftShift:
+                keysToInspect.Add(KeyCode.D); break;
+            case KeyCode.DownArrow:
+                keysToInspect.Add(KeyCode.RightShift); break;
+            case KeyCode.RightShift:
+                keysToInspect.Add(KeyCode.LeftShift); break;
+        }
+
+        bool valid = false;
+        foreach (KeyCode k in keysToInspect)
+            valid = valid || Input.GetKey(k);
+
+        return valid;
     }
 }
 

@@ -10,21 +10,26 @@ public class MapObject : MonoBehaviour {
     public enum Orientation { Down, Left, Right, Up };
     public Orientation orientation = Orientation.Down;
 
-    public const int CHAR_RESOLUTION_X = 32;
-    public const int CHAR_RESOLUTION_Y = 48;
+    public int CHAR_RESOLUTION_X = 32;
+    public int CHAR_RESOLUTION_Y = 48;
 
     public Texture2D sprite;
     public Texture2D Sprite { 
         get {
+            int step = 1;
+            if (lerp > 0.2f && lerp < 0.8f)
+                step = ((orientation == Orientation.Left || orientation == Orientation.Right ? mapCoords.x : mapCoords.y) % 2 == 0) ? 0 : 2;
+            
+
             switch (orientation) {
                 case Orientation.Left:
-                    return InterfaceUtility.SeparateTexture(sprite, 1, 1, CHAR_RESOLUTION_X, CHAR_RESOLUTION_Y);
+                    return InterfaceUtility.SeparateTexture(sprite, step, 1, CHAR_RESOLUTION_X, CHAR_RESOLUTION_Y);
                 case Orientation.Right:
-                    return InterfaceUtility.SeparateTexture(sprite, 1, 2, CHAR_RESOLUTION_X, CHAR_RESOLUTION_Y);
+                    return InterfaceUtility.SeparateTexture(sprite, step, 2, CHAR_RESOLUTION_X, CHAR_RESOLUTION_Y);
                 case Orientation.Up:
-                    return InterfaceUtility.SeparateTexture(sprite, 1, 3, CHAR_RESOLUTION_X, CHAR_RESOLUTION_Y);
+                    return InterfaceUtility.SeparateTexture(sprite, step, 3, CHAR_RESOLUTION_X, CHAR_RESOLUTION_Y);
                 default:
-                    return InterfaceUtility.SeparateTexture(sprite, 1, 0, CHAR_RESOLUTION_X, CHAR_RESOLUTION_Y);
+                    return InterfaceUtility.SeparateTexture(sprite, step, 0, CHAR_RESOLUTION_X, CHAR_RESOLUTION_Y);
             }
         }
     }
@@ -44,7 +49,7 @@ public class MapObject : MonoBehaviour {
                 case MovementSpeed.None: break;
                 case MovementSpeed.Slow: lerp += Time.deltaTime * 2f; break;
                 case MovementSpeed.Normal: lerp += Time.deltaTime * 4f; break;
-                case MovementSpeed.Fast: lerp += Time.deltaTime * 8f; break;
+                case MovementSpeed.Fast: lerp += Time.deltaTime * 6f; break;
                 case MovementSpeed.Instant: lerp = 1f; break;
             }
             
@@ -64,7 +69,7 @@ public class MapObject : MonoBehaviour {
 
     public void DisplayOnMap() {
         if (sprite != null)
-            GUI.DrawTexture(new Rect(Map.Resolution.x * (mapCoords.x + currentMovement.x * lerp), Map.Resolution.y * (mapCoords.y + currentMovement.y * lerp), Map.Resolution.x, Map.Resolution.y), Sprite);
+            GUI.DrawTexture(new Rect(Map.Resolution.x * (mapCoords.x + currentMovement.x * lerp), Map.Resolution.y * (mapCoords.y + currentMovement.y * lerp), Map.Resolution.x, Sprite.height * (Map.Resolution.x / Sprite.width)), Sprite);
     }
 
     public void Move(Orientation _o) {

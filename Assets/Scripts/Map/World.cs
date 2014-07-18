@@ -34,6 +34,8 @@ public class World : MonoBehaviour {
 
         currentMap.Display();
 
+        mapObjects.Sort(delegate(MapObject a, MapObject b) { if (a.mapCoords.y > b.mapCoords.y) return 1; else if (a.mapCoords.y < b.mapCoords.y) return -1; else return 0 ; });
+
         foreach (MapObject mo in mapObjects)
             mo.DisplayOnMap();
     }

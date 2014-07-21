@@ -42,7 +42,8 @@ public class MapObject : MonoBehaviour {
     [HideInInspector] public Vector2 currentMovement;
     [HideInInspector] public float lerp = 0;
 
-    public List<MapObjectAction> actions;
+    public List<MapObjectAction> actions = new List<MapObjectAction>();
+    public bool isRunning = false;
 
 
     /* Functions
@@ -90,11 +91,13 @@ public class MapObject : MonoBehaviour {
     }
 
     public void ExecuteActions() {
+        isRunning = true;
+        Player.Lock();
+        
         StartCoroutine(ExecuteActionAsync());
     }
 
     private IEnumerator ExecuteActionAsync() {
-        Player.Lock();
         foreach(MapObjectAction action in actions) {
             action.Execute();
             while (!action.Done())
@@ -103,5 +106,6 @@ public class MapObject : MonoBehaviour {
         Player.Unlock();
         foreach (MapObjectAction action in actions)
             action.Init();
+        isRunning = false;
     }
 }

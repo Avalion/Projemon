@@ -45,5 +45,11 @@ public class Player : MapObject {
             else if (Input.GetKey(KeyCode.DownArrow))
                 Move(Orientation.Down);
         }
+
+        if (isMoving && Locked) {
+            lerp = 0;
+            currentMovement = Vector2.zero;
+            isMoving = false;
+        }
     }
 }

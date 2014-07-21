@@ -26,7 +26,7 @@ public class ActionMessageDisplay : MonoBehaviour {
     public GUIStyle messageStyle = new GUIStyle() { fontSize = 30, fontStyle = FontStyle.Bold, wordWrap = true };
 
     private float lerp;
-    public float duration;
+    public float duration = 10;
 
     public void Update() {
         lerp += Time.deltaTime / duration;

@@ -21,6 +21,7 @@ public class World : MonoBehaviour {
 
     public static bool Show = true;
 
+    [HideInInspector]
     public List<IDisplayable> haveToDisplay = new List<IDisplayable>();
 
 

@@ -40,7 +40,7 @@ public class MapObject : MonoBehaviour {
 
     [HideInInspector] public bool isMoving;
     [HideInInspector] public Vector2 currentMovement;
-    [HideInInspector] public float lerp = 0;
+    protected float lerp = 0;
 
     public List<MapObjectAction> actions = new List<MapObjectAction>();
     public bool isRunning = false;
@@ -80,6 +80,9 @@ public class MapObject : MonoBehaviour {
     }
 
     public void Move(Orientation _o) {
+        if (isMoving)
+            return;
+        
         isMoving = true;
 
         Vector2 move = new Vector2(_o == Orientation.Left ? -1 : _o == Orientation.Right ? 1 : 0, _o == Orientation.Up ? -1 : _o == Orientation.Down ? 1 : 0);
@@ -88,6 +91,8 @@ public class MapObject : MonoBehaviour {
 
         if (World.Current.CanMoveOn(mapCoords + move))
             currentMovement = move;
+        else
+            isMoving = false;
     }
 
     public void ExecuteActions() {

@@ -238,7 +238,7 @@ public class BattleAnimationKreator : EditorWindow {
             foreach (BattleAnimation.ImageInstance i in current.instances.FindAll(I => I.frame == currentFrame - 1)) {
                 EditorUtility.DrawEmptyRect(MathUtility.ExtendRect(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), 1), InterfaceUtility.HexaToColor("#CCCCFF44"), 1);
                 
-                i.Display(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)));
+                i.Display(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), i.alpha * 0.3f);
             }
         }
         GUI.EndGroup();

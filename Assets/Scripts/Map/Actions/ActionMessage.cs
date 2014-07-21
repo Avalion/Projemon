@@ -23,15 +23,26 @@ public class ActionMessage : MapObjectAction {
 public class ActionMessageDisplay : IDisplayable {
     public ActionMessage message;
 
-    public GUIStyle messageStyle = new GUIStyle() { fontSize = 30, fontStyle = FontStyle.Bold, wordWrap = true };
+    public GUIStyle messageStyle = new GUIStyle() { fontSize = 30, fontStyle = FontStyle.Bold, wordWrap = true, normal = new GUIStyleState() { textColor = Color.white } };
+    public GUIStyle headStyle = new GUIStyle() { fontSize = 30, fontStyle = FontStyle.Bold, wordWrap = true, normal = new GUIStyleState() { textColor = Color.white } };
 
     private float lerp;
-    public float duration = 10;
+    public float duration = 2;
+
+    public void Start() {
+        messageStyle = new GUIStyle();
+        messageStyle.fontSize = 30;
+        messageStyle.fontStyle = FontStyle.Bold;
+        messageStyle.wordWrap = true;
+        messageStyle.normal.textColor = Color.white;
+        headStyle = new GUIStyle();
+        headStyle.normal.background = message.face;
+    }
 
     public void Update() {
         lerp += Time.deltaTime / duration;
         if (lerp >= 1) lerp = 1;
-
+        
         if (InputManager.Current.GetKeyDown(KeyCode.Return)) {
             if (lerp < 1)
                 lerp = 1;
@@ -42,12 +53,12 @@ public class ActionMessageDisplay : IDisplayable {
         }
     }
 
-    public override void  Display() {
+    public override void Display() {
         GUILayout.BeginArea(new Rect(0, Screen.height - 200, Screen.width, 200));
         InterfaceUtility.BeginBox();
         GUILayout.BeginHorizontal(GUILayout.MaxWidth(Screen.width));
         if (message.face != null && !message.faceOnRight) {
-            GUILayout.Label(message.face, InterfaceUtility.EmptyStyle, GUILayout.Width(160), GUILayout.Height(160));
+            GUILayout.Label("", headStyle, GUILayout.Width(170), GUILayout.Height(170));
             GUILayout.Space(20);
         }
         string m = message.message;
@@ -55,7 +66,7 @@ public class ActionMessageDisplay : IDisplayable {
         GUILayout.Label(m, messageStyle);
         if (message.face != null && message.faceOnRight) {
             GUILayout.Space(20);
-            GUILayout.Label(message.face, InterfaceUtility.EmptyStyle, GUILayout.Width(160), GUILayout.Height(160));
+            GUILayout.Label("", headStyle, GUILayout.Width(170), GUILayout.Height(170));
         }
         GUILayout.EndHorizontal();
         InterfaceUtility.EndBox();

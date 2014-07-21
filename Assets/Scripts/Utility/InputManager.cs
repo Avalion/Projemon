@@ -83,11 +83,11 @@ public class InputManager : MonoBehaviour {
     /**
      * Keyboard
      */
-    public bool GetKey(KeyCode key) {
+    private List<KeyCode> GetKeysToCheck(KeyCode key) {
         List<KeyCode> keysToInspect = new List<KeyCode>() { key };
-        
+
         switch (key) {
-            case KeyCode.Return :
+            case KeyCode.Return:
                 keysToInspect.Add(KeyCode.KeypadEnter); break;
             case KeyCode.UpArrow:
                 keysToInspect.Add(KeyCode.Z); break;
@@ -103,11 +103,36 @@ public class InputManager : MonoBehaviour {
                 keysToInspect.Add(KeyCode.LeftShift); break;
         }
 
+        return keysToInspect;
+    }
+    
+    public bool GetKey(KeyCode key) {
+        List<KeyCode> keysToInspect = GetKeysToCheck(key);
+
         bool valid = false;
         foreach (KeyCode k in keysToInspect)
             valid = valid || Input.GetKey(k);
 
         return valid;
     }
+    public bool GetKeyDown(KeyCode key) {
+        List<KeyCode> keysToInspect = GetKeysToCheck(key);
+
+        bool valid = false;
+        foreach (KeyCode k in keysToInspect)
+            valid = valid || Input.GetKeyDown(k);
+
+        return valid;
+    }
+    public bool GetKeyUp(KeyCode key) {
+        List<KeyCode> keysToInspect = GetKeysToCheck(key);
+
+        bool valid = false;
+        foreach (KeyCode k in keysToInspect)
+            valid = valid || Input.GetKeyUp(k);
+
+        return valid;
+    }
+
 }
 

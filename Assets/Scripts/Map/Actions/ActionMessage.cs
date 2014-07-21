@@ -20,7 +20,7 @@ public class ActionMessage : MapObjectAction {
     }
 }
 
-public class ActionMessageDisplay : MonoBehaviour {
+public class ActionMessageDisplay : IDisplayable {
     public ActionMessage message;
 
     public GUIStyle messageStyle = new GUIStyle() { fontSize = 30, fontStyle = FontStyle.Bold, wordWrap = true };
@@ -32,20 +32,20 @@ public class ActionMessageDisplay : MonoBehaviour {
         lerp += Time.deltaTime / duration;
         if (lerp >= 1) lerp = 1;
 
-        if (InputManager.Current.GetKey(KeyCode.Return)) {
+        if (InputManager.Current.GetKeyDown(KeyCode.Return)) {
             if (lerp < 1)
                 lerp = 1;
             else {
                 message.Terminate();
-                Destroy(gameObject);
+                Dispose();
             }
         }
     }
 
-    public void OnGUI() {
+    public override void  Display() {
         GUILayout.BeginArea(new Rect(0, Screen.height - 200, Screen.width, 200));
         InterfaceUtility.BeginBox();
-        GUILayout.BeginHorizontal();
+        GUILayout.BeginHorizontal(GUILayout.MaxWidth(Screen.width));
         if (message.face != null && !message.faceOnRight) {
             GUILayout.Label(message.face, InterfaceUtility.EmptyStyle, GUILayout.Width(160), GUILayout.Height(160));
             GUILayout.Space(20);
@@ -58,6 +58,7 @@ public class ActionMessageDisplay : MonoBehaviour {
             GUILayout.Label(message.face, InterfaceUtility.EmptyStyle, GUILayout.Width(160), GUILayout.Height(160));
         }
         GUILayout.EndHorizontal();
+        InterfaceUtility.EndBox();
         GUILayout.EndArea();
     }
 }

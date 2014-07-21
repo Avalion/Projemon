@@ -21,6 +21,9 @@ public class World : MonoBehaviour {
 
     public static bool Show = true;
 
+    public List<IDisplayable> haveToDisplay = new List<IDisplayable>();
+
+
 
     public void Start() {
         currentMap = new Map(0);
@@ -38,6 +41,10 @@ public class World : MonoBehaviour {
 
         foreach (MapObject mo in mapObjects)
             mo.DisplayOnMap();
+
+        foreach (IDisplayable d in haveToDisplay) {
+            d.Display();
+        }
     }
 
     public bool CanMoveOn(Vector2 _destination) {

@@ -27,6 +27,9 @@ public class PNJBattler : MapObject {
     // TEMPORARY
     public void Start() {
         actions.Add(new ActionMessage(temp, "Waouh, un autre dresseur de monstre ! Laisse moi tester tes talents !", false));
+        for (int i = 0; i < distance; i++)
+            actions.Add(new ActionMove(this, PossibleMovement.Forward));
+        actions.Add(new ActionWait(0.5f));
         actions.Add(new ActionBattle(this));
     }
 }

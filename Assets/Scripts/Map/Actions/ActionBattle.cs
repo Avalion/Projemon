@@ -8,7 +8,11 @@ public class ActionBattle : MapObjectAction {
     }
 
     public override void Execute() {
-        // TODO : Battle.Launch(battler);
-        Battle.Launch(new List<Monster>(battler.monsters));
+        Battle.Launch(this, new List<Monster>(battler.monsters));
+    }
+
+    public override void Terminate() {
+        base.Terminate();
+        battler.nbWin++;
     }
 }

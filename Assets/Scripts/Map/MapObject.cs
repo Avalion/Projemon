@@ -6,11 +6,13 @@ using System.Collections;
  * This class defines map objects as Player or PNJBattlers
  */
 public class MapObject : MonoBehaviour {
-    public enum MovementSpeed { None, Slow, Normal, Fast, Instant };
-    public MovementSpeed speed = MovementSpeed.None;
+    public enum MovementSpeed { Slow, Normal, Fast, Instant };
+    public MovementSpeed speed = MovementSpeed.Normal;
 
     public enum Orientation { Down, Left, Right, Up };
     public Orientation orientation = Orientation.Down;
+
+    public enum PossibleMovement { Left, Right, Up, Down, Forward, Backward, StrafeLeft, StrafeRight, FollowPlayer, FleePlayer}
 
     public int CHAR_RESOLUTION_X = 32;
     public int CHAR_RESOLUTION_Y = 48;
@@ -51,7 +53,6 @@ public class MapObject : MonoBehaviour {
     public void Update() {
         if (isMoving) {
             switch (speed) {
-                case MovementSpeed.None: break;
                 case MovementSpeed.Slow: lerp += Time.deltaTime * 2f; break;
                 case MovementSpeed.Normal: lerp += Time.deltaTime * 4f; break;
                 case MovementSpeed.Fast: lerp += Time.deltaTime * 6f; break;
@@ -79,15 +80,51 @@ public class MapObject : MonoBehaviour {
         }
     }
 
-    public void Move(Orientation _o) {
+    public void Move(PossibleMovement _o) {
+
         if (isMoving)
             return;
         
         isMoving = true;
 
-        Vector2 move = new Vector2(_o == Orientation.Left ? -1 : _o == Orientation.Right ? 1 : 0, _o == Orientation.Up ? -1 : _o == Orientation.Down ? 1 : 0);
+        Vector2 move=new Vector2();
 
-        orientation = _o;
+        switch (_o) {
+            case PossibleMovement.Left:
+                move = new Vector2(-1, 0);
+                orientation = Orientation.Left;
+                break;
+            case PossibleMovement.Right:
+                move = new Vector2(1, 0);
+                orientation = Orientation.Right;
+                break;
+            case PossibleMovement.Up:
+                move = new Vector2(0, -1);
+                orientation = Orientation.Up;
+                break;
+            case PossibleMovement.Down:
+                move = new Vector2(0, 1);
+                orientation = Orientation.Down;
+                break;
+            case PossibleMovement.Forward:
+                move = new Vector2(orientation == Orientation.Left ? -1 : orientation == Orientation.Right ? 1 : 0, orientation == Orientation.Up ? -1 : orientation == Orientation.Down ? 1 : 0);
+                break;
+            case PossibleMovement.Backward:
+                move = new Vector2(orientation == Orientation.Left ? 1 : orientation == Orientation.Right ? -1 : 0, orientation == Orientation.Up ? 1 : orientation == Orientation.Down ? -1 : 0);
+                break;
+            case PossibleMovement.StrafeLeft:
+                move = new Vector2(orientation == Orientation.Up ? -1 : orientation == Orientation.Down ? 1 : 0, orientation == Orientation.Right ? -1 : orientation == Orientation.Left ? 1 : 0);
+                break;
+            case PossibleMovement.StrafeRight:
+                move = new Vector2(orientation == Orientation.Up ? 1 : orientation == Orientation.Down ? -1 : 0, orientation == Orientation.Right ? 1 : orientation == Orientation.Left ? -1 : 0);
+                break;
+            case PossibleMovement.FollowPlayer:
+                Debug.LogWarning("FollowPlayer not implemented yet.");
+                break;
+            case PossibleMovement.FleePlayer:
+                Debug.LogWarning("FleePlayer not implemented yet.");
+                break;
+        }
 
         if (World.Current.CanMoveOn(mapCoords + move))
             currentMovement = move;

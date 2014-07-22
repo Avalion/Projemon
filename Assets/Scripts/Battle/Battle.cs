@@ -8,6 +8,7 @@ public class Battle : MonoBehaviour {
     public const float MESSAGE_SPEED = 1.5f; 
     public List<Monster> allies = new List<Monster>();
     public List<Monster> enemies = new List<Monster>();
+    public ActionBattle action;
 
     public int currentAlly = 0;
     public int currentEnemy = 0;
@@ -28,8 +29,9 @@ public class Battle : MonoBehaviour {
     private DisplayMode displayMode;
 
     // Static constructors
-    public static void Launch(List<Monster> enemies) {
+    public static void Launch(ActionBattle _action, List<Monster> enemies) {
         Battle b = new GameObject("Battle").AddComponent<Battle>();
+        b.action = _action;
         b.displayMode = DisplayMode.Choice;
         b.allies = Player.Current.monsters;
         b.enemies = enemies;
@@ -46,6 +48,28 @@ public class Battle : MonoBehaviour {
         b.monsterBoxCurrentStyle.normal.background = InterfaceUtility.GetTexture(Config.GetResourcePath("System/Box") + "monsterBoxCurrentBackground.png");
 
         World.Show = false;
+    }
+
+    public void Update() {
+        if (enemies[currentEnemy].life <= 0)
+            Win();
+
+        if (allies[currentAlly].life <= 0)
+            Lose();
+    }
+
+    public void Win() {
+        Dispose();
+    }
+
+    public void Lose() {
+        Dispose();
+    }
+
+    public void Dispose() {
+        World.Show = true;
+        Destroy(gameObject);
+        action.Terminate();
     }
 
     // Display

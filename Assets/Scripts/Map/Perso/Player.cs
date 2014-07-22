@@ -37,13 +37,13 @@ public class Player : MapObject {
     public override void OnUpdate() {
         if (!isMoving && !Locked) {
             if (InputManager.Current.GetKey(KeyCode.LeftArrow))
-                Move(Orientation.Left);
+                Move(PossibleMovement.Left);
             else if (InputManager.Current.GetKey(KeyCode.RightArrow))
-                Move(Orientation.Right);
+                Move(PossibleMovement.Right);
             else if (InputManager.Current.GetKey(KeyCode.UpArrow))
-                Move(Orientation.Up);
+                Move(PossibleMovement.Up);
             else if (InputManager.Current.GetKey(KeyCode.DownArrow))
-                Move(Orientation.Down);
+                Move(PossibleMovement.Down);
         }
 
         if (isMoving && Locked) {

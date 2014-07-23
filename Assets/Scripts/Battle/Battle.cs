@@ -5,13 +5,9 @@ using System.Collections.Generic;
  * This class manage battles
  */
 public class Battle : MonoBehaviour {
-    public const float MESSAGE_SPEED = 1.5f; 
-    public List<Monster> allies = new List<Monster>();
-    public List<Monster> enemies = new List<Monster>();
-    public ActionBattle action;
-
-    public int currentAlly = 0;
-    public int currentEnemy = 0;
+    public const float MESSAGE_SPEED = 1.5f;
+    public Battler enemy;
+    public MapObjectAction action;
 
     private GUIStyle messageStyle = new GUIStyle();
     private GUIStyle lifeStyle = new GUIStyle();
@@ -26,35 +22,36 @@ public class Battle : MonoBehaviour {
     private static float time;
 
     private enum DisplayMode { Choice, Attack, SwitchMonster };
-    private DisplayMode displayMode;
+    private DisplayMode displayMode = DisplayMode.Choice;
 
     // Static constructors
-    public static void Launch(ActionBattle _action, List<Monster> enemies) {
+    public static void Launch(MapObjectAction _action, Battler _enemy) {
         Battle b = new GameObject("Battle").AddComponent<Battle>();
         b.action = _action;
-        b.displayMode = DisplayMode.Choice;
-        b.allies = Player.Current.monsters;
-        b.enemies = enemies;
+        Player.Current.activeMonster = 0;
+        b.enemy = _enemy;
+        b.enemy.activeMonster = 0;
+        World.ShowMap = false;        
+    }
 
-        b.messageStyle = new GUIStyle();
-        b.messageStyle.normal.textColor = Color.white;
-        b.messageStyle.fontSize = 25;
-        b.lifeStyle = new GUIStyle(b.messageStyle);
-        b.lifeStyle.alignment = TextAnchor.UpperRight;
-        b.monsterBoxStyle = new GUIStyle();
-        b.monsterBoxStyle.normal.background = InterfaceUtility.GetTexture(Config.GetResourcePath("System/Box") + "monsterBoxBackground.png");
-        b.monsterBoxStyle.padding = new RectOffset(7, 7, 7, 7);
-        b.monsterBoxCurrentStyle = new GUIStyle(b.monsterBoxStyle);
-        b.monsterBoxCurrentStyle.normal.background = InterfaceUtility.GetTexture(Config.GetResourcePath("System/Box") + "monsterBoxCurrentBackground.png");
-
-        World.ShowMap = false;
+    public void Start() {
+        messageStyle = new GUIStyle();
+        messageStyle.normal.textColor = Color.white;
+        messageStyle.fontSize = 25;
+        lifeStyle = new GUIStyle(messageStyle);
+        lifeStyle.alignment = TextAnchor.UpperRight;
+        monsterBoxStyle = new GUIStyle();
+        monsterBoxStyle.normal.background = InterfaceUtility.GetTexture(Config.GetResourcePath("System/Box") + "monsterBoxBackground.png");
+        monsterBoxStyle.padding = new RectOffset(7, 7, 7, 7);
+        monsterBoxCurrentStyle = new GUIStyle(monsterBoxStyle);
+        monsterBoxCurrentStyle.normal.background = InterfaceUtility.GetTexture(Config.GetResourcePath("System/Box") + "monsterBoxCurrentBackground.png");
     }
 
     public void Update() {
-        if (enemies[currentEnemy].life <= 0)
+        if (enemy.monsters[enemy.activeMonster].life <= 0)
             Win();
 
-        if (allies[currentAlly].life <= 0)
+        if (Player.Current.monsters[Player.Current.activeMonster].life <= 0)
             Lose();
     }
 
@@ -112,9 +109,9 @@ public class Battle : MonoBehaviour {
         GUILayout.FlexibleSpace();
         GUILayout.BeginHorizontal();
         GUILayout.Space(100);
-        DisplayBattleMonster(allies[currentAlly], false, true);
+        DisplayBattleMonster(Player.Current.monsters[Player.Current.activeMonster], false, true);
         GUILayout.FlexibleSpace();
-        DisplayBattleMonster(enemies[currentEnemy], true, false);
+        DisplayBattleMonster(enemy.monsters[enemy.activeMonster], true, false);
         GUILayout.Space(100);
         GUILayout.EndHorizontal();
         GUILayout.FlexibleSpace();
@@ -134,18 +131,18 @@ public class Battle : MonoBehaviour {
 
         }
 
-        if (choice == 2) {
-            new CaptureScroll().Effect(new List<Monster>() {allies[currentAlly]},new List<Monster>() {enemies[currentEnemy]});
+        if (choice == 2) {  //Temporary
+            new CaptureScroll().Use(Player.Current, new List<Monster>() { enemy.monsters[enemy.activeMonster] });
         }
 
         InterfaceUtility.BeginBox(GUILayout.Height(menuHeight));
         GUILayout.BeginHorizontal();
-        GUILayout.Label(Monster.GetTypeIcon(allies[currentAlly].type), InterfaceUtility.EmptyStyle);
-        GUILayout.Label(allies[currentAlly].monsterName, messageStyle);
+        GUILayout.Label(Monster.GetTypeIcon(Player.Current.monsters[Player.Current.activeMonster].type), InterfaceUtility.EmptyStyle);
+        GUILayout.Label(Player.Current.monsters[Player.Current.activeMonster].monsterName, messageStyle);
         GUILayout.FlexibleSpace();
 
-        InterfaceUtility.ProgressBar(200, 20, allies[currentAlly].life, allies[currentAlly].maxLife, InterfaceUtility.ColorToTexture(Color.green), InterfaceUtility.ColorToTexture(Color.gray));
-        GUILayout.Label(allies[currentAlly].life + "/" + allies[currentAlly].maxLife, lifeStyle, GUILayout.Width(120));
+        InterfaceUtility.ProgressBar(200, 20, Player.Current.monsters[Player.Current.activeMonster].life, Player.Current.monsters[Player.Current.activeMonster].maxLife, InterfaceUtility.ColorToTexture(Color.green), InterfaceUtility.ColorToTexture(Color.gray));
+        GUILayout.Label(Player.Current.monsters[Player.Current.activeMonster].life + "/" + Player.Current.monsters[Player.Current.activeMonster].maxLife, lifeStyle, GUILayout.Width(120));
         GUILayout.EndHorizontal();
         InterfaceUtility.EndBox();
 
@@ -154,7 +151,7 @@ public class Battle : MonoBehaviour {
 
     public void DisplayAttackPanel() {
         int menuHeight = 150;
-        Attack[] attacks = allies[currentAlly].attacks;
+        Attack[] attacks = Player.Current.monsters[Player.Current.activeMonster].attacks;
         List<GUIContent> list = new List<GUIContent>();
 
         foreach (Attack a in attacks) {
@@ -165,19 +162,19 @@ public class Battle : MonoBehaviour {
 
         GUILayout.BeginHorizontal();
         int choice = InterfaceUtility.DisplayMenu(list , GUILayout.Width(200), GUILayout.Height(menuHeight));
-        if (choice >= 0 && choice < list.Count - 1) 
-            allies[currentAlly].Damage(enemies[currentEnemy], allies[currentAlly].attacks[choice].Launch(allies[currentAlly], enemies[currentEnemy], new Rect(Screen.width - 300, (Screen.height / 2f) - 150, 300, 200)));
+        if (choice >= 0 && choice < list.Count - 1)
+            Player.Current.monsters[Player.Current.activeMonster].Damage(enemy.monsters[enemy.activeMonster], Player.Current.monsters[Player.Current.activeMonster].attacks[choice].Launch(Player.Current.monsters[Player.Current.activeMonster], enemy.monsters[enemy.activeMonster], new Rect(Screen.width - 300, (Screen.height / 2f) - 150, 300, 200)));
         if (choice == list.Count - 1)
             displayMode = DisplayMode.Choice;
 
         InterfaceUtility.BeginBox(GUILayout.Height(menuHeight));
         GUILayout.BeginHorizontal();
-        GUILayout.Label(Monster.GetTypeIcon(allies[currentAlly].type), InterfaceUtility.EmptyStyle);
-        GUILayout.Label(allies[currentAlly].monsterName, messageStyle);
+        GUILayout.Label(Monster.GetTypeIcon(Player.Current.monsters[Player.Current.activeMonster].type), InterfaceUtility.EmptyStyle);
+        GUILayout.Label(Player.Current.monsters[Player.Current.activeMonster].monsterName, messageStyle);
         GUILayout.FlexibleSpace();
 
-        InterfaceUtility.ProgressBar(200, 20, allies[currentAlly].life, allies[currentAlly].maxLife, InterfaceUtility.ColorToTexture(Color.green), InterfaceUtility.ColorToTexture(Color.gray));
-        GUILayout.Label(allies[currentAlly].life + "/" + allies[currentAlly].maxLife, lifeStyle, GUILayout.Width(120));
+        InterfaceUtility.ProgressBar(200, 20, Player.Current.monsters[Player.Current.activeMonster].life, Player.Current.monsters[Player.Current.activeMonster].maxLife, InterfaceUtility.ColorToTexture(Color.green), InterfaceUtility.ColorToTexture(Color.gray));
+        GUILayout.Label(Player.Current.monsters[Player.Current.activeMonster].life + "/" + Player.Current.monsters[Player.Current.activeMonster].maxLife, lifeStyle, GUILayout.Width(120));
         GUILayout.EndHorizontal();
         InterfaceUtility.EndBox();
 
@@ -191,11 +188,11 @@ public class Battle : MonoBehaviour {
         GUILayout.FlexibleSpace();
         GUILayout.BeginHorizontal(GUILayout.Height(Screen.height*0.3f));
         GUILayout.FlexibleSpace();
-        DisplayMonsterBox(0.48f, 0.12f, enemies[currentEnemy], true);
+        DisplayMonsterBox(0.48f, 0.12f, enemy.monsters[enemy.activeMonster], true);
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
         
-        for (int i = 0; i < allies.Count; i++)
+        for (int i = 0; i < Player.Current.monsters.Count; i++)
         {
             if(MathUtility.IsPair(i)) {
                 GUILayout.BeginHorizontal();
@@ -203,14 +200,14 @@ public class Battle : MonoBehaviour {
                 GUILayout.BeginVertical();
                 GUILayout.Space(20);
             }
-            DisplayMonsterBox(0.48f, 0.12f, allies[i], currentAlly==i);
+            DisplayMonsterBox(0.48f, 0.12f, Player.Current.monsters[i], Player.Current.activeMonster == i);
             if(!MathUtility.IsPair(i)){
                 GUILayout.Space(-20);
                 GUILayout.EndVertical();
                 GUILayout.EndHorizontal();    
             }
         }
-        if (!MathUtility.IsPair(allies.Count))
+        if (!MathUtility.IsPair(Player.Current.monsters.Count))
         {
             GUILayout.EndHorizontal();
         }
@@ -246,7 +243,7 @@ public class Battle : MonoBehaviour {
         GUILayout.Label(monster.battleSprite, GUILayout.Width(50), GUILayout.Height(50));
         GUILayout.BeginVertical();
         if (GUILayout.Button(content, messageStyle)&& !selected) {
-            currentAlly = allies.IndexOf(monster);
+            Player.Current.activeMonster = Player.Current.monsters.IndexOf(monster);
             displayMode = DisplayMode.Choice;
         }
 

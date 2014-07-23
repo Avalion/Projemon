@@ -4,7 +4,7 @@ using System.Collections.Generic;
 /**
  * This class design the Hero
  */
-public class Player : MapObject {
+public class Player : Battler {
     private static Player current = null;
     public static Player Current {
         get {
@@ -31,8 +31,6 @@ public class Player : MapObject {
     public static void ForceUnlock() {
         locked = 0;
     }
-
-    public List<Monster> monsters;
 
     public override void OnUpdate() {
         if (!isMoving && !Locked) {

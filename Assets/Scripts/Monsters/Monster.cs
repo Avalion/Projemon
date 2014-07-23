@@ -66,6 +66,8 @@ public class Monster : MonoBehaviour {
 
     public string monsterName;
 
+    public Battler battler = null;
+
     // Lvl
     public int lvl = 1;
     public int exp = 0;

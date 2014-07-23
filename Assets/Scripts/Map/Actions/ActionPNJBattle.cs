@@ -4,15 +4,15 @@ using System.Collections.Generic;
 /**
  * This action will launch a battle
  */
-public class ActionBattle : MapObjectAction {
+public class ActionPNJBattle : MapObjectAction {
     public PNJBattler battler;
 
-    public ActionBattle(PNJBattler battler) {
+    public ActionPNJBattle(PNJBattler battler) {
         this.battler = battler;
     }
 
     public override void Execute() {
-        Battle.Launch(this, new List<Monster>(battler.monsters));
+        Battle.Launch(this, battler);
     }
 
     public override void Terminate() {

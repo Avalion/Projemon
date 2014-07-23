@@ -4,9 +4,7 @@ using System.Collections.Generic;
 /**
  * This class design a PNJ which will start a battle.
  */
-public class PNJBattler : MapObject {
-    public List<Monster> monsters;
-
+public class PNJBattler : Battler {
     public int distance;
 
     public int nbWin;
@@ -26,10 +24,15 @@ public class PNJBattler : MapObject {
 
     // TEMPORARY
     public void Start() {
+        List<PossibleMovement> listMovement = new List<PossibleMovement>();
         actions.Add(new ActionMessage(temp, "Waouh, un autre dresseur de monstre ! Laisse moi tester tes talents !", false));
         for (int i = 0; i < distance; i++)
-            actions.Add(new ActionMove(this, PossibleMovement.Forward));
+            listMovement.Add(PossibleMovement.Forward);
+        actions.Add(new ActionMove(this, listMovement));
         actions.Add(new ActionWait(0.5f));
-        actions.Add(new ActionBattle(this));
+        actions.Add(new ActionFade(new Color (0,0,0,1), 1.5f, true));
+        actions.Add(new ActionWait(0.2f));
+        actions.Add(new ActionPNJBattle(this));
+        actions.Add(new ActionFade(new Color(0, 0, 0, 0), 1.5f, true));
     }
 }

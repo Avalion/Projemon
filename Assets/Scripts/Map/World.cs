@@ -26,7 +26,7 @@ public class World : MonoBehaviour {
     // Define background Music
     [HideInInspector] public AudioSource currentBGM;
     // Define camera Filter
-    [HideInInspector] public Color currentFilter = new Color(1, 0, 0, 0);
+    [HideInInspector] public Color currentFilter = new Color(0, 0, 0, 0);
 
     // List of mapObjects on this map to display
                       public List<MapObject> mapObjects = new List<MapObject>();

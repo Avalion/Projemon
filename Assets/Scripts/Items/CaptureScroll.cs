@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-
+/**
+ * This item capture a wild monster
+ */
 public class CaptureScroll : Item {
-
     public enum Quality { Normal, Superior, Hyperior, Master };
     public Quality quality;
 
@@ -45,10 +46,10 @@ public class CaptureScroll : Item {
         return captureRate;
     }
 
-    public override void Effect(List<Monster> caster, List<Monster> target) {
-        float captureRate = CalculCaptureRate(caster, target);
+    protected override void Effect(Battler caster, List<Monster> target) {
+        float captureRate = CalculCaptureRate(caster.monsters, target);
         float random = Random.Range(0, 1f);
-        Debug.Log(captureRate +" # "+ random);
+        Debug.Log(captureRate + "#" + random);
         if (random <= captureRate)
             Battle.Message = target[0].monsterName + " is captured !";
         else

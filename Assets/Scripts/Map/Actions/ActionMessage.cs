@@ -45,8 +45,8 @@ public class ActionMessageDisplay : IDisplayable {
     public float timeCount = 0;
 
     public void Start() {
-        if (duration < 0) ;
-        duration = 0.05f * action.message.Length;
+        if (duration < 0)
+            duration = 0.05f * action.message.Length;
 
         messageStyle = new GUIStyle();
         messageStyle.fontSize = 30;

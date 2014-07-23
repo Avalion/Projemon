@@ -24,9 +24,9 @@ public class World : MonoBehaviour {
     // Define current Map
     [HideInInspector] public Map currentMap;
     // Define background Music
-    [HideInInspector] public AudioSource currentBGM = new AudioSource();
+    [HideInInspector] public AudioSource currentBGM;
     // Define camera Filter
-    [HideInInspector] public Color currentFilter = new Color(0, 0, 0, 0);
+    [HideInInspector] public Color currentFilter = new Color(1, 0, 0, 0);
 
     // List of mapObjects on this map to display
                       public List<MapObject> mapObjects = new List<MapObject>();
@@ -38,6 +38,7 @@ public class World : MonoBehaviour {
     /* Initialize
      */
     public void Start() {
+        currentBGM = gameObject.AddComponent<AudioSource>();
         currentMap = new Map(0);
 
         if (currentBGM.clip != null)
@@ -65,9 +66,8 @@ public class World : MonoBehaviour {
         GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), InterfaceUtility.ColorToTexture(currentFilter));
 
         // Display other displayable objects
-        foreach (IDisplayable d in haveToDisplay) {
+        foreach (IDisplayable d in haveToDisplay)
             d.Display();
-        }
     }
     public void Update() {
         // Loop background music

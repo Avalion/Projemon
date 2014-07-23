@@ -11,7 +11,7 @@ public class PNJBattler : MapObject {
 
     public int nbWin;
 
-    public Texture2D temp;
+    public AudioClip temp;
 
     public override void OnUpdate() {
         if (!isRunning && nbWin == 0 && (
@@ -26,10 +26,17 @@ public class PNJBattler : MapObject {
 
     // TEMPORARY
     public void Start() {
-        actions.Add(new ActionMessage(temp, "Waouh, un autre dresseur de monstre ! Laisse moi tester tes talents !", false));
+        actions.Add(new ActionMessage(null , "Waouh, un autre dresseur de monstre ! Laisse moi tester tes talents !", false));
         for (int i = 0; i < distance; i++)
             actions.Add(new ActionMove(this, PossibleMovement.Forward));
         actions.Add(new ActionWait(0.5f));
-        actions.Add(new ActionBattle(this));
+        actions.Add(new ActionPlaySound(temp, true, false));
+        actions.Add(new ActionFade(new Color(1, 0, 0, 0.5f), 0));
+
+        actions.Add(new ActionWait(1f));
+        actions.Add(new ActionFade(new Color(0, 0, 0, 0), 2));
+        //actions.Add(new ActionWait(0.5f));
+        
+        //actions.Add(new ActionBattle(this));
     }
 }

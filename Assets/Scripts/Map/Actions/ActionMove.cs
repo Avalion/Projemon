@@ -5,7 +5,7 @@ public class ActionMove : MapObjectAction {
     public MapObject target;
     public MapObject.PossibleMovement movement;
 
-    public ActionMove(MapObject _target, MapObject.PossibleMovement _movement, bool _waitForEnd) {
+    public ActionMove(MapObject _target, MapObject.PossibleMovement _movement, bool _waitForEnd = true) {
         target = _target;
         movement = _movement;
         waitForEnd = _waitForEnd;

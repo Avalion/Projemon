@@ -8,14 +8,14 @@ public class ActionFade : MapObjectAction {
 
     public Color color;
 
-    public ActionFade(Color _color, float _duration, bool _waitForEnd) {
+    public ActionFade(Color _color, float _duration, bool _waitForEnd = true) {
         color = _color;
         duration = _duration;
         waitForEnd = _waitForEnd;
     }
 
     public override void Execute() {
-        ActionFadeDisplay display = new GameObject("action_Wait").AddComponent<ActionFadeDisplay>();
+        ActionFadeDisplay display = new GameObject("action_Fade").AddComponent<ActionFadeDisplay>();
         display.action = this;
     }
 
@@ -40,7 +40,7 @@ public class ActionFadeDisplay : IDisplayable {
             else
                 lerp += Time.deltaTime / action.duration;
         }
-        if (lerp >+1) {
+        if (lerp >= 1) {
             World.Current.currentFilter = action.color;
             action.Terminate();
             Destroy(gameObject);

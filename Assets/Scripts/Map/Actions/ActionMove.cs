@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+/**
+ * This action will move a MapObject toward a direction
+ */
 public class ActionMove : MapObjectAction {
     public MapObject target;
     public MapObject.PossibleMovement movement;

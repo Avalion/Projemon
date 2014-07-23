@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 
 /**
- * This class defines map objects as Player or PNJBattlers
+ * This class defines map objects
  */
 public class MapObject : MonoBehaviour {
     public enum MovementSpeed { Slow, Normal, Fast, Instant };

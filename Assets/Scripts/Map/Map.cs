@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 
+/**
+ * This class defines a map and implements functions to display it.
+ */
 public class Map {
     public const string IMAGE_FOLDER = "Maps";
 

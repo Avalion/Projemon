@@ -14,6 +14,3 @@ public abstract class MapObjectAction {
         valid = true;
     }
 }
-
-// LIST OF ACTIONS :
-// { ActionBattle, ActionMessage }

@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 
+/**
+ * This action will wait some seconds
+ */
 public class ActionWait : MapObjectAction {
     public float duration;
 

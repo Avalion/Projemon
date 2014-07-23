@@ -47,7 +47,7 @@ public class Battle : MonoBehaviour {
         b.monsterBoxCurrentStyle = new GUIStyle(b.monsterBoxStyle);
         b.monsterBoxCurrentStyle.normal.background = InterfaceUtility.GetTexture(Config.GetResourcePath("System/Box") + "monsterBoxCurrentBackground.png");
 
-        World.Show = false;
+        World.ShowMap = false;
     }
 
     public void Update() {
@@ -67,7 +67,7 @@ public class Battle : MonoBehaviour {
     }
 
     public void Dispose() {
-        World.Show = true;
+        World.ShowMap = true;
         Destroy(gameObject);
         action.Terminate();
     }

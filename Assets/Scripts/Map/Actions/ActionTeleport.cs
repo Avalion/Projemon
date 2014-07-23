@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 
+/**
+ * This action will teleport a MapObject to a destination
+ */
 public class ActionTeleport : MapObjectAction {
     public MapObject target;
     public MapObject.Orientation orientation;
@@ -19,6 +21,4 @@ public class ActionTeleport : MapObjectAction {
         }
         Terminate();
     }
-
-
 }

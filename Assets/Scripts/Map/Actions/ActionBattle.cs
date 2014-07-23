@@ -1,5 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using UnityEngine;
+using System.Collections.Generic;
 
+/**
+ * This action will launch a battle
+ */
 public class ActionBattle : MapObjectAction {
     public PNJBattler battler;
 

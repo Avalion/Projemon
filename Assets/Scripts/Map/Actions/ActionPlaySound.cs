@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 
+/**
+ * This action will play a BGS or a BGM
+ */
 public class ActionPlaySound : MapObjectAction {
     public AudioClip sound;
 

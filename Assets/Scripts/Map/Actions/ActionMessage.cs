@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 
+/**
+ * This action will display a Message
+ */
 public class ActionMessage : MapObjectAction {
     public Texture2D face;
     public string message;

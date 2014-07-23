@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 /**
- * This class 
+ * This class patterns the Attacks of monsters
  */
 [System.Serializable]
 public class Attack {

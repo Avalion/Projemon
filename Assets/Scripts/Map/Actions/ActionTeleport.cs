@@ -14,8 +14,8 @@ public class ActionTeleport : MapObjectAction {
 
     public override void Execute() {
         if (World.Current.CanMoveOn(arrival)) { 
-        target.mapCoords = arrival;
-        target.orientation = orientation;
+            target.mapCoords = arrival;
+            target.orientation = orientation;
         }
         Terminate();
     }

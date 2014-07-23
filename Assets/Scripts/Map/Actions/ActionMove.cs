@@ -5,9 +5,10 @@ public class ActionMove : MapObjectAction {
     public MapObject target;
     public MapObject.PossibleMovement movement;
 
-    public ActionMove(MapObject _target, MapObject.PossibleMovement _movement) {
+    public ActionMove(MapObject _target, MapObject.PossibleMovement _movement, bool _waitForEnd) {
         target = _target;
         movement = _movement;
+        waitForEnd = _waitForEnd;
     }
 
     public override void Execute() {
@@ -19,8 +20,6 @@ public class ActionMove : MapObjectAction {
         ActionMoveDisplay display = new GameObject("action_Move").AddComponent<ActionMoveDisplay>();
         display.action = this;
     }
-
-    
 }
 
 public class ActionMoveDisplay : MonoBehaviour {

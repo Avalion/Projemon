@@ -19,11 +19,11 @@ public class ActionWait : MapObjectAction {
 public class ActionWaitDisplay : MonoBehaviour {
     public ActionWait action;
 
-    public float count;
+    public float timeCount;
 
     public void Update() {
-        count += Time.deltaTime;
-        if (count >= action.duration) {
+        timeCount += Time.deltaTime;
+        if (timeCount >= action.duration) {
             action.Terminate();
             Destroy(gameObject);
         }

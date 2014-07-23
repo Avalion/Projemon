@@ -4,7 +4,9 @@
 public abstract class MapObjectAction {
     private bool valid = false;
 
-    public bool Done() { return valid; }
+    public bool waitForEnd = true;
+
+    public bool Done() { return valid || !waitForEnd; }
     public void Init() { valid = false; }
 
     public abstract void Execute();

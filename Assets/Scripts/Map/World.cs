@@ -4,6 +4,8 @@ using System.Collections.Generic;
 public class World : MonoBehaviour {
     public Map currentMap;
 
+    public AudioSource currentBGM = new AudioSource();
+    
     private static World current = null;
     public static World Current {
         get {
@@ -25,13 +27,19 @@ public class World : MonoBehaviour {
     public List<IDisplayable> haveToDisplay = new List<IDisplayable>();
 
 
-
+    /* Initialize
+     */
     public void Start() {
         currentMap = new Map(0);
 
         mapObjects = new List<MapObject>(GameObject.FindObjectsOfType<MapObject>());
+
+        if (currentBGM.clip != null)
+            currentBGM.Play();
     }
 
+    /* MonoBehaviour functions
+     */
     public void OnGUI() {
         if (!Show)
             return;
@@ -47,7 +55,15 @@ public class World : MonoBehaviour {
             d.Display();
         }
     }
+    public void Update() {
+        if (currentBGM.clip != null && !currentBGM.isPlaying) {
+            currentBGM.Stop();
+            currentBGM.Play();
+        }
+    }
 
+    /* Utils
+     */
     public bool CanMoveOn(Vector2 _destination) {
         if (currentMap.GetTile(0, (int)_destination.x, (int)_destination.y) == null)
             return false;

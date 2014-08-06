@@ -3,11 +3,16 @@
 /**
  * This action will apply a filter on the camera
  */
+[System.Serializable]
 public class ActionFade : MapObjectAction {
     public float duration;
 
     public Color color;
-
+    
+    public ActionFade() {
+        color = new Color(0,0,0,0);
+        duration = 0;
+    }
     public ActionFade(Color _color, float _duration, bool _waitForEnd = true) {
         color = _color;
         duration = _duration;
@@ -20,6 +25,7 @@ public class ActionFade : MapObjectAction {
     }
 
 
+    
 }
 
 public class ActionFadeDisplay : IDisplayable {

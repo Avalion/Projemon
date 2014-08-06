@@ -77,6 +77,12 @@ public class World : MonoBehaviour {
         }
     }
 
+    /* Load
+     */
+    public void LoadMap(int mapId) {
+        currentMap = new Map(mapId); 
+    }
+
     /* Utils
      */
     public bool CanMoveOn(Vector2 _destination) {

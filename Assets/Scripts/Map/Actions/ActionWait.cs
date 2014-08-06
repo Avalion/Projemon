@@ -3,9 +3,11 @@
 /**
  * This action will wait some seconds
  */
+[System.Serializable]
 public class ActionWait : MapObjectAction {
     public float duration;
 
+    public ActionWait() {}
     public ActionWait(float _duration) {
         duration = _duration;
     }

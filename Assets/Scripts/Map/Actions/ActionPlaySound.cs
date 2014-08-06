@@ -3,11 +3,13 @@
 /**
  * This action will play a BGS or a BGM
  */
+[System.Serializable]
 public class ActionPlaySound : MapObjectAction {
     public AudioClip sound;
 
-    public bool bgm;
+    public bool bgm = false;
 
+    public ActionPlaySound() {}
     public ActionPlaySound(AudioClip _sound, bool _bgm = false, bool _waitForEnd = false) {
         sound = _sound;
         bgm = _bgm;

@@ -3,12 +3,14 @@
 /**
  * This action will display a Message
  */
+[System.Serializable]
 public class ActionMessage : MapObjectAction {
     public Texture2D face;
-    public string message;
+    public string message = "";
     public bool faceOnRight = false;
     public float maxDuration = -1;
 
+    public ActionMessage() {}
     public ActionMessage(string _message, bool _waitForEnd = true) {
         waitForEnd = _waitForEnd;
         message = _message;

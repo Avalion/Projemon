@@ -4,10 +4,14 @@ using System.Collections.Generic;
 /**
  * This action will move a MapObject toward a path, ignore not possible moves
  */
+[System.Serializable]
 public class ActionMove : MapObjectAction {
     public MapObject target;
-    public List<MapObject.PossibleMovement> movements;
+    public List<MapObject.PossibleMovement> movements = new List<MapObject.PossibleMovement>();
 
+    public ActionMove() {
+        target = Player.Current;
+    }
     public ActionMove(MapObject _target, List<MapObject.PossibleMovement> _movements, bool _waitForEnd = true) {
         target = _target;
         movements = _movements;

@@ -12,7 +12,7 @@ public class MapObject : MonoBehaviour {
     public enum Orientation { Down, Left, Right, Up };
     public Orientation orientation = Orientation.Down;
 
-    public enum PossibleMovement { Left, Right, Up, Down, Forward, Backward, StrafeLeft, StrafeRight, FollowPlayer, FleePlayer}
+    public enum PossibleMovement { Left, Right, Up, Down, Forward, Backward, StrafeLeft, StrafeRight, TurnLeft, TurnRight, TurnUp, TurnDown, TurnLeftward, TurnRightward, TurnBackward, FollowPlayer, FleePlayer }
 
     public int CHAR_RESOLUTION_X = 32;
     public int CHAR_RESOLUTION_Y = 48;
@@ -87,37 +87,65 @@ public class MapObject : MonoBehaviour {
         
         isMoving = true;
 
-        Vector2 move=new Vector2();
+        Vector2 move = new Vector2();
 
         switch (_o) {
             case PossibleMovement.Left:
                 move = new Vector2(-1, 0);
                 orientation = Orientation.Left;
                 break;
+            case PossibleMovement.TurnLeft:
+                orientation = Orientation.Left;
+                break;
+
             case PossibleMovement.Right:
                 move = new Vector2(1, 0);
                 orientation = Orientation.Right;
                 break;
+            case PossibleMovement.TurnRight:
+                orientation = Orientation.Right;
+                break;
+
             case PossibleMovement.Up:
                 move = new Vector2(0, -1);
                 orientation = Orientation.Up;
                 break;
+            case PossibleMovement.TurnUp:
+                orientation = Orientation.Up;
+                break;
+
             case PossibleMovement.Down:
                 move = new Vector2(0, 1);
                 orientation = Orientation.Down;
                 break;
+            case PossibleMovement.TurnDown:
+                orientation = Orientation.Down;
+                break;
+
             case PossibleMovement.Forward:
                 move = new Vector2(orientation == Orientation.Left ? -1 : orientation == Orientation.Right ? 1 : 0, orientation == Orientation.Up ? -1 : orientation == Orientation.Down ? 1 : 0);
                 break;
             case PossibleMovement.Backward:
                 move = new Vector2(orientation == Orientation.Left ? 1 : orientation == Orientation.Right ? -1 : 0, orientation == Orientation.Up ? 1 : orientation == Orientation.Down ? -1 : 0);
                 break;
+
             case PossibleMovement.StrafeLeft:
                 move = new Vector2(orientation == Orientation.Up ? -1 : orientation == Orientation.Down ? 1 : 0, orientation == Orientation.Right ? -1 : orientation == Orientation.Left ? 1 : 0);
                 break;
             case PossibleMovement.StrafeRight:
                 move = new Vector2(orientation == Orientation.Up ? 1 : orientation == Orientation.Down ? -1 : 0, orientation == Orientation.Right ? 1 : orientation == Orientation.Left ? -1 : 0);
                 break;
+
+            case PossibleMovement.TurnLeftward:
+                orientation = orientation == Orientation.Up ? Orientation.Left : orientation == Orientation.Left ? Orientation.Down : orientation == Orientation.Down ? Orientation.Right : Orientation.Up;
+                break;
+            case PossibleMovement.TurnRightward:
+                orientation = orientation == Orientation.Up ? Orientation.Right : orientation == Orientation.Right ? Orientation.Down : orientation == Orientation.Down ? Orientation.Left : Orientation.Up;
+                break;
+            case PossibleMovement.TurnBackward:
+                orientation = orientation == Orientation.Up ? Orientation.Down : orientation == Orientation.Down ? Orientation.Up : orientation == Orientation.Left ? Orientation.Right : Orientation.Left;
+                break;
+            
             case PossibleMovement.FollowPlayer:
                 Debug.LogWarning("FollowPlayer not implemented yet.");
                 break;

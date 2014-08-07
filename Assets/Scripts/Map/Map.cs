@@ -93,7 +93,7 @@ public class Map {
         StreamWriter sw = new StreamWriter(filePath);
 
         sw.WriteLine("------------");
-        sw.WriteLine("- Anim " + InterfaceUtility.IntString(ID, 3) + " -");
+        sw.WriteLine("- Map " + InterfaceUtility.IntString(ID, 4) + " -");
         sw.WriteLine("------------");
         sw.WriteLine(name);
         sw.WriteLine(size.x + ";" + size.y);

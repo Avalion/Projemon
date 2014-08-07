@@ -22,6 +22,10 @@ public class ActionMove : MapObjectAction {
         ActionMoveDisplay display = new GameObject("action_Move").AddComponent<ActionMoveDisplay>();
         display.action = this;
     }
+
+    public override string InLine() {
+        return target.name + " move : " + movements[0].ToString() + (movements.Count > 1 ? "(...)" : "");
+    }
 }
 
 public class ActionMoveDisplay : MonoBehaviour {

@@ -58,7 +58,6 @@ public class MapObject : MonoBehaviour {
                 case MovementSpeed.Fast: lerp += Time.deltaTime * 6f; break;
                 case MovementSpeed.Instant: lerp = 1f; break;
             }
-            
         }
         
         if (lerp >= 1) {
@@ -81,7 +80,6 @@ public class MapObject : MonoBehaviour {
     }
 
     public void Move(PossibleMovement _o) {
-
         if (isMoving)
             return;
         

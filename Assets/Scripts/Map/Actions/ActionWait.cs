@@ -17,7 +17,9 @@ public class ActionWait : MapObjectAction {
         display.action = this;
     }
 
-    
+    public override string InLine() {
+        return "Wait " + duration + " seconds";
+    }
 }
 
 public class ActionWaitDisplay : MonoBehaviour {

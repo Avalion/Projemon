@@ -25,4 +25,8 @@ public class ActionMonsterBattle : MapObjectAction {
         battler.monsters = monsters;
         Battle.Launch(this, battler);
     }
+
+    public override string InLine() {
+        return "Battle wild monsters : " + monsters[0] + (monsters.Count > 1 ? "(...)" : "");
+    }
 }

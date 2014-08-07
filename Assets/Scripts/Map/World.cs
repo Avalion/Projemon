@@ -90,6 +90,9 @@ public class World : MonoBehaviour {
         if (currentMap.GetTile(0, (int)_destination.x, (int)_destination.y) == null)
             return false;
 
+        if (!currentMap.collisions[(int)_destination.x, (int)_destination.y])
+            return false;
+
         // If there is already an Event on this -- TODO : Check and Add layers on MapObjects
         foreach (MapObject mo in mapObjects)
             if (mo.mapCoords == _destination)

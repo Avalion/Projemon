@@ -16,9 +16,10 @@ public class Map {
     public int ID;
 
     public string name;
-    public Vector2 size;
+    public Vector2 size = new Vector2(32, 18);
 
     public List<Tile> tiles = new List<Tile>();
+    public bool[,] collisions;
     public class Tile {
         // CONST
         public const int TILE_RESOLUTION = 32;
@@ -53,6 +54,8 @@ public class Map {
         this.ID = _id;
 
         size = new Vector2(32, 32);
+
+        collisions = new bool[(int)size.x, (int)size.y];
 
         Import();
 
@@ -106,6 +109,12 @@ public class Map {
         }
         sw.WriteLine();
 
+        sw.WriteLine(collisions.Length);
+        for (int i = 0; i < size.x; i++)
+            for (int j= 0; j < size.y; j++)
+                sw.WriteLine(i + "#" + j + "#" + collisions[i, j]);
+        sw.WriteLine();
+
         sw.Close();
         sw.Dispose();
     }
@@ -115,10 +124,13 @@ public class Map {
             return;
         
         StreamReader sr = new StreamReader(filePath);
+        
+        // Read title
+        sr.ReadLine();
+        sr.ReadLine();
+        sr.ReadLine();
 
-        sr.ReadLine();
-        sr.ReadLine();
-        sr.ReadLine();
+        // Read file info
         name = sr.ReadLine();
         string line = sr.ReadLine();
         string[] values = line.Split(';');
@@ -127,6 +139,7 @@ public class Map {
 
         sr.ReadLine();
 
+        // Read tiles
         tiles = new List<Tile>();
         int count = int.Parse(sr.ReadLine());
         for (int i = 0; i < count; i++) {
@@ -144,6 +157,28 @@ public class Map {
 
             tiles.Add(t);
         }
+
+        line = sr.ReadLine();
+
+        // Read collisions
+        collisions = new bool[(int)size.x, (int)size.y];
+        for (int i = 0; i < size.x; i++)
+            for (int j= 0; j < size.y; j++)
+                collisions[i, j] = true;
+            
+        try {
+            count = int.Parse(sr.ReadLine());
+            for (int i = 0; i < count; i++) {
+                line = sr.ReadLine();
+
+                values = line.Split('#');
+
+                collisions[int.Parse(values[0]), int.Parse(values[1])] = bool.Parse(values[2]);
+            }
+        } catch { }
+        line = sr.ReadLine();
+
+
         sr.Close();
         sr.Dispose();
     }

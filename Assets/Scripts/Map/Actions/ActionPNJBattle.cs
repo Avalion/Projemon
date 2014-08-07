@@ -21,4 +21,8 @@ public class ActionPNJBattle : MapObjectAction {
         base.Terminate();
         battler.nbWin++;
     }
+
+    public override string InLine() {
+        return "Battle pnj : " + battler.name;
+    }
 }

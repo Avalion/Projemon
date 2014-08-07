@@ -28,6 +28,10 @@ public class ActionPlaySound : MapObjectAction {
             display.action = this;
         }
     }
+
+    public override string InLine() {
+        return "Play " + (bgm ? "BGM : " : "BGS : ") + sound.name;
+    }
 }
 
 public class ActionPlaySoundDisplay : MonoBehaviour {

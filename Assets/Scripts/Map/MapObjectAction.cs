@@ -14,4 +14,8 @@ public class MapObjectAction {
     public virtual void Terminate() {
         valid = true;
     }
+
+    public virtual string InLine() {
+        return "Unknown action";
+    }
 }

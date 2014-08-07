@@ -62,6 +62,17 @@ public class InterfaceUtility {
         }
     }
 
+    private static GUIStyle centeredStyle = null;
+    public static GUIStyle CenteredStyle {
+        get {
+            if (centeredStyle == null) {
+                centeredStyle = new GUIStyle(GUI.skin.label);
+                centeredStyle.alignment = TextAnchor.MiddleCenter;
+            }
+            return centeredStyle;
+        }
+    }
+
 
     /** Texture loading
      */

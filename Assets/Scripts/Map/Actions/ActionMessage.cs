@@ -33,6 +33,10 @@ public class ActionMessage : MapObjectAction {
         ActionMessageDisplay display = new GameObject("action_Message").AddComponent<ActionMessageDisplay>();
         display.action = this;
     }
+
+    public override string InLine() {
+        return "Message : " + message;
+    }
 }
 
 public class ActionMessageDisplay : IDisplayable {

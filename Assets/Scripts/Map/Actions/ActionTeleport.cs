@@ -29,4 +29,8 @@ public class ActionTeleport : MapObjectAction {
         }
         Terminate();
     }
+
+    public override string InLine() {
+        return "Teleport " + target.name + " to : " + arrival + ":" + orientation;
+    }
 }

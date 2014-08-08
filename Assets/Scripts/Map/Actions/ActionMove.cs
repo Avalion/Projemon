@@ -11,11 +11,13 @@ public class ActionMove : MapObjectAction {
 
     public ActionMove() {
         target = Player.Current;
+        movements.Add(MapObject.PossibleMovement.NULL);
     }
     public ActionMove(MapObject _target, List<MapObject.PossibleMovement> _movements, bool _waitForEnd = true) {
         target = _target;
         movements = _movements;
         waitForEnd = _waitForEnd;
+        movements.Add(MapObject.PossibleMovement.NULL);
     }
 
     public override void Execute() {

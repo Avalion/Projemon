@@ -12,7 +12,7 @@ public class ObjectActionList : EditorWindow {
     Vector2 scrollPosList;
     Vector2 scrollPosEdit;
 
-    string[] types = new string[] { "", "ActionFade", "ActionMessage", "ActionMonsterBattle", "ActionMove", "ActionPlaySound", "ActionPNJBattle", "ActionTeleport", "ActionWait" };
+    string[] types = new string[] { "Select a Action to Add", "ActionFade", "ActionMessage", "ActionMonsterBattle", "ActionMove", "ActionPlaySound", "ActionPNJBattle", "ActionTeleport", "ActionWait" };
 
     public void OnGUI() {
         GUILayout.BeginHorizontal();
@@ -20,8 +20,16 @@ public class ObjectActionList : EditorWindow {
         scrollPosList = GUILayout.BeginScrollView(scrollPosList);
         GUILayout.BeginVertical();
         foreach (MapObjectAction a in mapObject.actions) {
-            if (GUILayout.Button((a.waitForEnd ? "*" : "") + EditInLineDisplay(a)))
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button((a.waitForEnd ? "*" : "") + EditInLineDisplay(a), GUILayout.Width(Screen.width / 3 - 100)))
                 selectedElement = mapObject.actions.IndexOf(a);
+            if (GUILayout.Button("X")) {
+                mapObject.actions.Remove(a);
+                GUIUtility.ExitGUI();
+                return;
+            }
+            GUILayout.EndHorizontal();
+            
         }
         GUILayout.EndVertical();
         GUILayout.EndScrollView();
@@ -29,6 +37,7 @@ public class ObjectActionList : EditorWindow {
         int value = EditorGUILayout.Popup(0, types);
         if (value != 0) {
             mapObject.actions.Add(System.Activator.CreateInstance(Types.GetType(types[value], "Assembly-CSharp")) as MapObjectAction);
+            selectedElement = mapObject.actions.Count - 1;
         }
         GUILayout.EndVertical();
         

@@ -9,8 +9,6 @@ public class PNJBattler : Battler {
 
     public int nbWin;
 
-    public Texture2D temp;
-
     public override void OnUpdate() {
         if (!isRunning && nbWin == 0 && (
             orientation == Orientation.Down  && Player.Current.mapCoords.x == mapCoords.x && Player.Current.mapCoords.y - mapCoords.y <= distance && Player.Current.mapCoords.y - mapCoords.y > 0 ||
@@ -25,7 +23,7 @@ public class PNJBattler : Battler {
     // TEMPORARY
     public void Start() {
         //List<PossibleMovement> listMovement = new List<PossibleMovement>();
-        //actions.Add(new ActionMessage(temp, "Waouh, un autre dresseur de monstre ! Laisse moi tester tes talents !", false));
+        //actions.Add(new ActionMessage(null, "Waouh, un autre dresseur de monstre ! Laisse moi tester tes talents !", false));
         //for (int i = 0; i < distance; i++)
         //    listMovement.Add(PossibleMovement.Forward);
         //actions.Add(new ActionMove(this, listMovement));

@@ -183,6 +183,7 @@ public class MapKreator : EditorWindow {
         GUI.BeginGroup(canvasRect);
         
         if (elements.Count > 0 && selectedElement >= 0) {
+            // Map
             for (int layer = 0; layer < 3; layer++) {
                 if (layer == currentLayer) {
                     for (int i = 1; i < Map.MAP_SCREEN_X; i++)
@@ -197,6 +198,26 @@ public class MapKreator : EditorWindow {
                     if (tile.Image != null)
                         GUI.DrawTexture(new Rect(resolution.x * tile.mapCoords.x, resolution.y * tile.mapCoords.y, resolution.x, resolution.y), tile.Image);
                 }
+            }
+            // Collision 
+            if (currentLayer == 3) {
+                for (int i = 0; i < Map.MAP_SCREEN_X; i++)
+                    for (int j = 0; j < Map.MAP_SCREEN_Y; j++)
+                        if (GUI.Button(new Rect(i * resolution.x, j * resolution.y, resolution.x, resolution.y), current.collisions[i, j] ? "O" : "X", InterfaceUtility.CenteredStyle)) {
+                            if (Event.current.control) {
+                                Map.Tile reftile = current.tiles.Find(T => T.mapCoords.x == i && T.mapCoords.y == j && T.layer == 0);
+                                if (reftile != null) {
+                                    foreach (Map.Tile tile in current.tiles.FindAll(T => T != reftile && T.originTile == reftile.originTile && T.originTileCoords == reftile.originTileCoords))
+                                        current.collisions[(int)tile.mapCoords.x, (int)tile.mapCoords.y] = !current.collisions[i, j];
+                                }
+                            }
+                            current.collisions[i, j] = !current.collisions[i, j];
+                            
+                        }
+            }
+            // EVents
+            if (currentLayer == 4) {
+
             }
         }
         GUI.EndGroup();

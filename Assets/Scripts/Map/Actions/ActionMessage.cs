@@ -35,7 +35,7 @@ public class ActionMessage : MapObjectAction {
     }
 
     public override string InLine() {
-        return "Message : " + message;
+        return "Message : " + message+".";
     }
 }
 

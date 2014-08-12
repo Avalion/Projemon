@@ -26,7 +26,7 @@ public class ActionMove : MapObjectAction {
     }
 
     public override string InLine() {
-        return target.name + " move : " + movements[0].ToString() + (movements.Count > 1 ? "(...)" : "");
+        return target.name + " move : " + movements[0].ToString() + (movements.Count > 1 ? "(...)" : "")+".";
     }
 }
 

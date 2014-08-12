@@ -21,7 +21,7 @@ public class ActionTeleport : MapObjectAction {
     }
 
     public override void Execute() {
-        World.Current.LoadMap(mapID);
+        if(World.Current.currentMap.ID != mapID) World.Current.LoadMap(mapID);
 
         if (World.Current.CanMoveOn(arrival)) { 
             target.mapCoords = arrival;

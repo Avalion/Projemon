@@ -26,7 +26,7 @@ public class ActionFade : MapObjectAction {
 
 
     public override string InLine() {
-        return "Fade to C(" + (int)(color.r * 256) + "," + (int)(color.g * 256) + "," + (int)(color.b * 256) + "," + (int)(color.a * 256) + ") in " + duration + " seconds";
+        return "Fade to C(" + (int)(color.r * 256) + "," + (int)(color.g * 256) + "," + (int)(color.b * 256) + "," + (int)(color.a * 256) + ") in " + duration + " seconds.";
     }
 }
 

@@ -30,7 +30,7 @@ public class ActionPlaySound : MapObjectAction {
     }
 
     public override string InLine() {
-        return "Play " + (bgm ? "BGM : " : "BGS : ") + sound.name;
+        return "Play " + (bgm ? "BGM : " : "BGS : ") + sound.name+".";
     }
 }
 

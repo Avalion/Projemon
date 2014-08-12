@@ -18,7 +18,7 @@ public class ActionWait : MapObjectAction {
     }
 
     public override string InLine() {
-        return "Wait " + duration + " seconds";
+        return "Wait " + duration + " seconds.";
     }
 }
 

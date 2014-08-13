@@ -12,7 +12,20 @@ public class ObjectActionList : EditorWindow {
     Vector2 scrollPosList;
     Vector2 scrollPosEdit;
 
-    string[] types = new string[] { "Select a Action to Add", "ActionFade", "ActionMessage", "ActionMonsterBattle", "ActionMove", "ActionPlaySound", "ActionPNJBattle", "ActionTeleport", "ActionWait" };
+    string[] types = new string[] { 
+        "Select an Action to Add", 
+        "ActionEXP",
+        "ActionFade", 
+        "ActionHeal",
+        "ActionMessage", 
+        "ActionMonsterBattle", 
+        "ActionMove", 
+        "ActionPlaySound", 
+        "ActionPNJBattle", 
+        "ActionTeleport",
+        "ActionTransform",
+        "ActionWait"        
+    };
 
     public void OnGUI() {
         GUILayout.BeginHorizontal();
@@ -21,7 +34,7 @@ public class ObjectActionList : EditorWindow {
         GUILayout.BeginVertical();
         foreach (MapObjectAction a in mapObject.actions) {
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button((a.waitForEnd ? "*" : "") + EditInLineDisplay(a), GUILayout.Width(Screen.width / 3 - 100)))
+            if (GUILayout.Button((a.waitForEnd ? "*" : "") + a.InLine(), GUILayout.Width(Screen.width / 3 - 100)))
                 selectedElement = mapObject.actions.IndexOf(a);
             if (GUILayout.Button("X")) {
                 mapObject.actions.Remove(a);
@@ -49,54 +62,18 @@ public class ObjectActionList : EditorWindow {
         GUILayout.EndVertical();
         GUILayout.EndScrollView();
         GUILayout.EndHorizontal();
-    }
-
-
-    public string EditInLineDisplay(MapObjectAction _action) {
-        switch (_action.GetType().ToString()) {
-            case "ActionFade":
-                ActionFadeScreen a0 = ((ActionFadeScreen)_action);
-                return "Fade to C(" + (int)(a0.color.r * 256) + "," + (int)(a0.color.g * 256) + "," + (int)(a0.color.b * 256) + "," + (int)(a0.color.a * 256) + ") in " + a0.duration + " seconds";
-
-            case "ActionMessage":
-                ActionMessage a1 = ((ActionMessage)_action);
-                return "Message : " + a1.message;
-
-            case "ActionMove":
-                ActionMove a2 = ((ActionMove)_action);
-                return a2.target.name + " move : " + a2.movements[0].ToString() + (a2.movements.Count > 1 ? "(...)" : "");
-
-            case "ActionPlaySound":
-                ActionPlaySound a3 = ((ActionPlaySound)_action);
-                return "Play " + (a3.bgm ? "BGM : " : "BGS : ") + a3.sound.name;
-
-            case "ActionTeleport":
-                ActionTeleport a4 = ((ActionTeleport)_action);
-                return "Teleport " + a4.target.name + " to : " + a4.arrival + ":" + a4.orientation;
-
-            case "ActionWait":
-                ActionWait a5 = ((ActionWait)_action);
-                return "Wait " + a5.duration + " seconds";
-
-            case "ActionMonsterBattle":
-                ActionMonsterBattle a6 = ((ActionMonsterBattle)_action);
-                return "Battle wild monsters : " + a6.monsters[0] + (a6.monsters.Count > 1 ? "(...)" : "");
-            case "ActionPNJBattle":
-                ActionPNJBattle a7 = ((ActionPNJBattle)_action);
-                return "Battle pnj : " + a7.battler.name;
-
-            default:
-                return "Unknown action : " + _action.GetType();
-        }
-    }
-    
+    }    
 
     public void EditDisplay(MapObjectAction _action) {
         _action.waitForEnd = EditorGUILayout.ToggleLeft("Wait For End", _action.waitForEnd);
 
         switch (_action.GetType().ToString()) {
+            case "ActionEXP":
+                DisplayEditor((ActionEXP)_action); break;
             case "ActionFade":
                 DisplayEditor((ActionFadeScreen)_action); break;
+            case "ActionHeal":
+                DisplayEditor((ActionHeal)_action); break;
             case "ActionMessage":
                 DisplayEditor((ActionMessage)_action); break;
             case "ActionMove":
@@ -105,6 +82,8 @@ public class ObjectActionList : EditorWindow {
                 DisplayEditor((ActionPlaySound)_action); break;
             case "ActionTeleport":
                 DisplayEditor((ActionTeleport)_action); break;
+            case "ActionTransform":
+                DisplayEditor((ActionTransform)_action); break;
             case "ActionWait":
                 DisplayEditor((ActionWait)_action); break;
             case "ActionMonsterBattle":
@@ -157,6 +136,14 @@ public class ObjectActionList : EditorWindow {
     }
     private void DisplayEditor(ActionPNJBattle a) {
         GUILayout.Label("TODO : Display a popup with all PNJBattler");
-
+    }
+    private void DisplayEditor(ActionTransform a) {
+        GUILayout.Label("TODO : Display a popup with all MapObject");
+    }
+    private void DisplayEditor(ActionHeal a) {
+        GUILayout.Label("TODO : Display a popup with all Battler and its Monsters");
+    }
+    private void DisplayEditor(ActionEXP a) {
+        GUILayout.Label("TODO : Display a popup with all Battler and its Monsters");
     }
 }

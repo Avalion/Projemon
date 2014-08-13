@@ -23,6 +23,6 @@ public class ActionPNJBattle : MapObjectAction {
     }
 
     public override string InLine() {
-        return "Battle pnj : " + battler.name;
+        return "Battle pnj : " + battler.name+".";
     }
 }

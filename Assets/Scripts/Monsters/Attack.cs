@@ -29,7 +29,7 @@ public class Attack {
             message = caster.monsterName + " has failed his attack.";
         }
 
-        Battle.Message = message;
+        Battle.Current.Message = message;
         return damage;
     }
 

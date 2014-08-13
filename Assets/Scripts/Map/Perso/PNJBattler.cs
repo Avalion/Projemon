@@ -31,9 +31,9 @@ public class PNJBattler : Battler {
             listMovement.Add(PossibleMovement.Forward);
         actions.Add(new ActionMove(this, listMovement));
         actions.Add(new ActionWait(0.5f));
-        actions.Add(new ActionFade(new Color(0, 0, 0, 1), 1.5f, true));
+        actions.Add(new ActionFadeScreen(new Color(0, 0, 0, 1), 1.5f, true));
         actions.Add(new ActionWait(0.2f));
         actions.Add(new ActionPNJBattle(this));
-        actions.Add(new ActionFade(new Color(0, 0, 0, 0), 1.5f, true));        
+        actions.Add(new ActionFadeScreen(new Color(0, 0, 0, 0), 1.5f, true));        
     }
 }

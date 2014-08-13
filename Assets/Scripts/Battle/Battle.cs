@@ -152,6 +152,8 @@ public class Battle : MonoBehaviour {
 
     public void DisplayBottomPanel() {
         int menuHeight = 150;
+
+        GUI.enabled = locked;
         
         GUILayout.BeginHorizontal();
         int choice = InterfaceUtility.DisplayMenu(new List<GUIContent>() { new GUIContent("Attack"), new GUIContent("Switch Monster"), new GUIContent("Capture Test")}, GUILayout.Width(200), GUILayout.Height(menuHeight));
@@ -167,6 +169,7 @@ public class Battle : MonoBehaviour {
             new CaptureScroll().Use(Player.Current, new List<Monster>() { enemy.monsters[enemy.activeMonster] });
         }
 
+        GUI.enabled = true;
         InterfaceUtility.BeginBox(GUILayout.Height(menuHeight));
         GUILayout.BeginHorizontal();
         GUILayout.Label(Monster.GetTypeIcon(Player.Current.monsters[Player.Current.activeMonster].type), InterfaceUtility.EmptyStyle);

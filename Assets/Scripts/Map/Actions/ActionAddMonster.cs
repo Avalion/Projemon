@@ -18,7 +18,7 @@ public class ActionAddMonster : MapObjectAction {
     }
 
     public override void Execute() {
-        MonsterCollection.AddToCollection(Monster.GenerateFromPattern(new GameObject(m.name), m, lvl, lvl));
+        MonsterCollection.AddToCollection(Monster.GenerateFromPattern(m, lvl, lvl));
     }
 
 

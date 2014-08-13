@@ -30,6 +30,6 @@ public class ActionEXP : MapObjectAction {
     }
 
     public override string InLine() {
-        return "Add "+ expValue + " exp to " + (targetMonster == -1 ? "all the group " : target.monsters[targetMonster].name) + ".";
+        return "Add "+ expValue + " exp to " + (targetMonster == -1 ? "all the group " : target.monsters[targetMonster].monsterName) + ".";
     }
 }

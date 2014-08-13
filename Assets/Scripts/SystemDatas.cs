@@ -160,4 +160,6 @@ public class SystemDatas {
             sw.WriteLine(a.name + "#" + (int)a.type + "#" + a.power + "#" + a.precision + "#" + a.battleAnimationID);
         sw.Dispose();
     }
+
+
 }

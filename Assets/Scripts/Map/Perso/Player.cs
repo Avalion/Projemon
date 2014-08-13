@@ -32,6 +32,10 @@ public class Player : Battler {
         locked = 0;
     }
 
+    public void Start() {
+        monsters.Add(Monster.GenerateFromPattern(SystemDatas.GetMonsterPatterns()[0], 5, 5));
+    }
+
     public override void OnUpdate() {
         if (!isMoving && !Locked) {
             if (InputManager.Current.GetKey(KeyCode.LeftArrow))

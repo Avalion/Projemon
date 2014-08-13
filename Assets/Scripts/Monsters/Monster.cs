@@ -3,7 +3,7 @@
 /**
  * This class design a Monster type. 
  */
-public class Monster : MonoBehaviour {
+public class Monster{
     public const string IMAGE_FOLDER = "Battlers";
 
     public MonsterPattern monsterPattern;
@@ -171,14 +171,10 @@ public class Monster : MonoBehaviour {
 
     /* Contstructors
      */
-    public static Monster GenerateFromPattern(GameObject gameObject, MonsterPattern _pattern, int lvlMin, int lvlMax) {
+    public static Monster GenerateFromPattern(MonsterPattern _pattern, int lvlMin, int lvlMax) {
         int lvl = Random.Range(lvlMin, lvlMax);
-        Monster m = gameObject.GetComponent<Monster>();
-        if (m == null) {
-            m = gameObject.AddComponent<Monster>();
-        }
-
-        gameObject.name = _pattern.name;
+        Monster m = new Monster();
+        
         m.monsterPattern = _pattern;
         m.monsterName = _pattern.name;
         m.stat_might = _pattern.stat_might;
@@ -194,7 +190,7 @@ public class Monster : MonoBehaviour {
         for (int i = 1; i < lvl; i++) {
             m.LevelUp();
         }
-
+        return m;
         return m;
     }
 }

@@ -22,15 +22,18 @@ public class PNJBattler : Battler {
 
     // TEMPORARY
     public void Start() {
-        //List<PossibleMovement> listMovement = new List<PossibleMovement>();
-        //actions.Add(new ActionMessage(null, "Waouh, un autre dresseur de monstre ! Laisse moi tester tes talents !", false));
-        //for (int i = 0; i < distance; i++)
-        //    listMovement.Add(PossibleMovement.Forward);
-        //actions.Add(new ActionMove(this, listMovement));
-        //actions.Add(new ActionWait(0.5f));
-        //actions.Add(new ActionFade(new Color (0,0,0,1), 1.5f, true));
-        //actions.Add(new ActionWait(0.2f));
-        //actions.Add(new ActionPNJBattle(this));
-        //actions.Add(new ActionFade(new Color(0, 0, 0, 0), 1.5f, true));
+
+        monsters.Add(Monster.GenerateFromPattern(SystemDatas.GetMonsterPatterns()[5], 5, 5));
+
+        List<PossibleMovement> listMovement = new List<PossibleMovement>();
+        actions.Add(new ActionMessage(null, "Waouh, un autre dresseur de monstre ! Laisse moi tester tes talents !", false));
+        for (int i = 0; i < distance; i++)
+            listMovement.Add(PossibleMovement.Forward);
+        actions.Add(new ActionMove(this, listMovement));
+        actions.Add(new ActionWait(0.5f));
+        actions.Add(new ActionFade(new Color(0, 0, 0, 1), 1.5f, true));
+        actions.Add(new ActionWait(0.2f));
+        actions.Add(new ActionPNJBattle(this));
+        actions.Add(new ActionFade(new Color(0, 0, 0, 0), 1.5f, true));        
     }
 }

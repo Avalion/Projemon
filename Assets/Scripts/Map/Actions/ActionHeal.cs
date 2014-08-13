@@ -30,6 +30,6 @@ public class ActionHeal : MapObjectAction {
     }
 
     public override string InLine() {
-        return "Heal " + (targetMonster == -1 ? "all the group " : target.monsters[targetMonster].name) + " of " + healValue + " pv.";
+        return "Heal " + (targetMonster == -1 ? "all the group " : target.monsters[targetMonster].monsterName) + " of " + healValue + " pv.";
     }
 }

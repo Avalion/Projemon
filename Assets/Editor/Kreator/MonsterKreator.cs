@@ -61,10 +61,6 @@ public class MonsterKreator : EditorWindow {
                 elements[selectedElement] = new MonsterPattern();
             }
         }
-        if (GUILayout.Button("Generate")) {
-            GameObject monster = new GameObject();
-            Monster.GenerateFromPattern(monster, elements[selectedElement], 0, 99);
-        }
         GUILayout.EndHorizontal();
         GUILayout.EndVertical();
 

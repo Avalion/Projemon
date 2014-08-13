@@ -27,6 +27,6 @@ public class ActionMonsterBattle : MapObjectAction {
     }
 
     public override string InLine() {
-        return "Battle wild monsters : " + (monsters.Count > 0 ? monsters[0].name : "") + (monsters.Count > 1 ? "(...)" : "") + ".";
+        return "Battle wild monsters : " + (monsters.Count > 0 ? monsters[0].monsterName : "") + (monsters.Count > 1 ? "(...)" : "") + ".";
     }
 }

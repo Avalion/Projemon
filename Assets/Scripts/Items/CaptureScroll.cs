@@ -49,10 +49,17 @@ public class CaptureScroll : Item {
     protected override void Effect(Battler caster, List<Monster> target) {
         float captureRate = CalculCaptureRate(caster.monsters, target);
         float random = Random.Range(0, 1f);
-        Debug.Log(captureRate + "#" + random);
-        if (random <= captureRate)
-            Battle.Message = target[0].monsterName + " is captured !";
-        else
-            Battle.Message = "Capture has failed. Noob !";
+        //Debug.Log(captureRate + "#" + random);
+        if (random <= captureRate) {
+            // SUCCESS
+            Battle.Current.Message = target[0].monsterName + " is captured !";
+
+            MonsterCollection.AddToCollection(target[0]);
+
+            Battle.Current.Win();
+        } else {
+            // FAIL
+            Battle.Current.Message = "Capture has failed !";
+        }
     }
 }

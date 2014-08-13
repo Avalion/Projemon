@@ -1,11 +1,27 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 /**
  * This class manage battles
  */
 public class Battle : MonoBehaviour {
     public const float MESSAGE_SPEED = 1.5f;
+
+    private static Battle current = null;
+    public static Battle Current {
+        get {
+            if (current == null) {
+                current = GameObject.FindObjectOfType<Battle>();
+            }
+            return current;
+        }
+    }
+
+    private static bool locked = false;
+    public static void Lock() { locked = true; }
+    public static void Unlock() { locked = false; }
+
     public Battler enemy;
     public MapObjectAction action;
 
@@ -14,8 +30,8 @@ public class Battle : MonoBehaviour {
     private GUIStyle monsterBoxStyle = new GUIStyle();
     private GUIStyle monsterBoxCurrentStyle = new GUIStyle();
 
-    private static List<string> message = new List<string>();
-    public static string Message { 
+    private List<string> message = new List<string>();
+    public string Message { 
         get { return message.Count > 0 ? message[0] : ""; }
         set { if (value == "") message.RemoveAt(0); else message.Add(value); time = Time.time; }
     }
@@ -24,6 +40,7 @@ public class Battle : MonoBehaviour {
     private enum DisplayMode { Choice, Attack, SwitchMonster };
     private DisplayMode displayMode = DisplayMode.Choice;
 
+
     // Static constructors
     public static void Launch(MapObjectAction _action, Battler _enemy) {
         Battle b = new GameObject("Battle").AddComponent<Battle>();
@@ -31,9 +48,10 @@ public class Battle : MonoBehaviour {
         Player.Current.activeMonster = 0;
         b.enemy = _enemy;
         b.enemy.activeMonster = 0;
-        World.ShowMap = false;        
+        World.ShowMap = false;
     }
 
+    // Start
     public void Start() {
         messageStyle = new GUIStyle();
         messageStyle.normal.textColor = Color.white;
@@ -47,6 +65,7 @@ public class Battle : MonoBehaviour {
         monsterBoxCurrentStyle.normal.background = InterfaceUtility.GetTexture(Config.GetResourcePath("System/Box") + "monsterBoxCurrentBackground.png");
     }
 
+    // Update
     public void Update() {
         if (enemy.monsters[enemy.activeMonster].life <= 0)
             Win();
@@ -55,17 +74,30 @@ public class Battle : MonoBehaviour {
             Lose();
     }
 
+    // End
     public void Win() {
-        Dispose();
+        Lock();
+        if (enemy != null) {
+            Message = "You defeated " + enemy.name + " !";
+            Message = enemy.name + " gave you " + enemy.goldCount + " gold !";
+            Player.Current.goldCount += enemy.goldCount;
+        }
+        
+        StartCoroutine(Dispose());
     }
 
     public void Lose() {
+        Lock();
         Dispose();
     }
 
-    public void Dispose() {
+    public IEnumerator Dispose() {
+        while (Message != "")
+            yield return new WaitForEndOfFrame();
+        
         World.ShowMap = true;
         Destroy(gameObject);
+        Unlock();
         action.Terminate();
     }
 

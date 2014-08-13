@@ -5,6 +5,8 @@ public abstract class Item {
     public enum PossibleTarget { All, Ally, Enemy, WildMonster };
     public PossibleTarget possibleTarget;
 
+    public int cost = 0;
+
     /**
      * On suppose que tous les monstres de target appartiennent au même Battler
      */

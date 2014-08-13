@@ -4,23 +4,23 @@
  * This action will apply a filter on the camera
  */
 [System.Serializable]
-public class ActionFade : MapObjectAction {
+public class ActionFadeScreen : MapObjectAction {
     public float duration;
 
     public Color color;
     
-    public ActionFade() {
+    public ActionFadeScreen() {
         color = new Color(0,0,0,0);
         duration = 0;
     }
-    public ActionFade(Color _color, float _duration, bool _waitForEnd = true) {
+    public ActionFadeScreen(Color _color, float _duration, bool _waitForEnd = true) {
         color = _color;
         duration = _duration;
         waitForEnd = _waitForEnd;
     }
 
     public override void Execute() {
-        ActionFadeDisplay display = new GameObject("action_Fade").AddComponent<ActionFadeDisplay>();
+        ActionFadeDisplay display = new GameObject("action_FadeScreen").AddComponent<ActionFadeDisplay>();
         display.action = this;
     }
 
@@ -31,7 +31,7 @@ public class ActionFade : MapObjectAction {
 }
 
 public class ActionFadeDisplay : IDisplayable {
-    public ActionFade action;
+    public ActionFadeScreen action;
 
     public float lerp = 0;
 

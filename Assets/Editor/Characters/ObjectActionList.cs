@@ -55,7 +55,7 @@ public class ObjectActionList : EditorWindow {
     public string EditInLineDisplay(MapObjectAction _action) {
         switch (_action.GetType().ToString()) {
             case "ActionFade":
-                ActionFade a0 = ((ActionFade)_action);
+                ActionFadeScreen a0 = ((ActionFadeScreen)_action);
                 return "Fade to C(" + (int)(a0.color.r * 256) + "," + (int)(a0.color.g * 256) + "," + (int)(a0.color.b * 256) + "," + (int)(a0.color.a * 256) + ") in " + a0.duration + " seconds";
 
             case "ActionMessage":
@@ -96,7 +96,7 @@ public class ObjectActionList : EditorWindow {
 
         switch (_action.GetType().ToString()) {
             case "ActionFade":
-                DisplayEditor((ActionFade)_action); break;
+                DisplayEditor((ActionFadeScreen)_action); break;
             case "ActionMessage":
                 DisplayEditor((ActionMessage)_action); break;
             case "ActionMove":
@@ -117,7 +117,7 @@ public class ObjectActionList : EditorWindow {
         }
     }
 
-    private void DisplayEditor(ActionFade a) {
+    private void DisplayEditor(ActionFadeScreen a) {
         a.color = EditorGUILayout.ColorField("Color", a.color);
         a.duration = EditorGUILayout.FloatField("Duration", a.duration);
     }

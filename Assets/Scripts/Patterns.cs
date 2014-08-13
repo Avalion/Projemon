@@ -7,6 +7,8 @@ using System.Collections.Generic;
  */
 
 public class MonsterPattern {
+    public int ID;
+    
     public string name;
     public Monster.Type type;
 

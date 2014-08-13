@@ -171,7 +171,7 @@ public class Monster : MonoBehaviour {
 
     /* Contstructors
      */
-    public static void GenerateFromPattern(GameObject gameObject, MonsterPattern _pattern, int lvlMin, int lvlMax) {
+    public static Monster GenerateFromPattern(GameObject gameObject, MonsterPattern _pattern, int lvlMin, int lvlMax) {
         int lvl = Random.Range(lvlMin, lvlMax);
         Monster m = gameObject.GetComponent<Monster>();
         if (m == null) {
@@ -195,5 +195,6 @@ public class Monster : MonoBehaviour {
             m.LevelUp();
         }
 
+        return m;
     }
 }

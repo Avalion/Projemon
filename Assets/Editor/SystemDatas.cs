@@ -76,10 +76,12 @@ public class SystemDatas {
         StreamReader sr = new StreamReader(Config.GetConfigPath("Datas") + "Patterns.txt");
 
         string line = sr.ReadLine();
+        int count = 1;
         while (line != "" && line != null) {
             MonsterPattern p = new MonsterPattern();
 
             string[] values = line.Split('#');
+            p.ID = count;
             p.name = values[0];
             p.type = (Monster.Type)int.Parse(values[1]);
             p.maxLife = int.Parse(values[2]);
@@ -94,6 +96,7 @@ public class SystemDatas {
             list.Add(p);
 
             line = sr.ReadLine();
+            count++;
         }
 
         sr.Dispose();

@@ -7,4 +7,6 @@ using System.Collections.Generic;
 public class Battler : MapObject {
     public List<Monster> monsters;
     public int activeMonster;
+
+    public int goldCount;
 }

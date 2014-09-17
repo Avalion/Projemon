@@ -12,7 +12,10 @@ public class MapObject : MonoBehaviour {
     public enum Orientation { Down, Left, Right, Up };
     public Orientation orientation = Orientation.Down;
 
-    public enum PossibleMovement { NULL, Left, Right, Up, Down, Forward, Backward, StrafeLeft, StrafeRight, TurnLeft, TurnRight, TurnUp, TurnDown, TurnLeftward, TurnRightward, TurnBackward, FollowPlayer, FleePlayer }
+    public enum PossibleMovement { NULL, Left, Right, Up, Down, Forward, Backward, StrafeLeft, StrafeRight, TurnLeft, TurnRight, TurnUp, TurnDown, TurnLeftward, TurnRightward, TurnBackward, FollowPlayer, FleePlayer, LookPlayer }
+
+    public enum ExecutionCondition { NULL, Action, ActionFace, Contact, Automatique }
+    public ExecutionCondition execCondition = ExecutionCondition.Action;
 
     public int CHAR_RESOLUTION_X = 32;
     public int CHAR_RESOLUTION_Y = 48;
@@ -48,6 +51,12 @@ public class MapObject : MonoBehaviour {
     public bool isRunning = false;
 
 
+    public void Start() {
+        if (execCondition == ExecutionCondition.Automatique)
+            ExecuteActions();
+    }
+    public virtual void OnStart() {}
+
     /* Functions
      */
     public void Update() {
@@ -67,9 +76,11 @@ public class MapObject : MonoBehaviour {
             isMoving = false;
         }
 
+        if (HaveToExecute(execCondition))
+            ExecuteActions();
+
         OnUpdate();
     }
-
     public virtual void OnUpdate() {}
 
     public void DisplayOnMap() {
@@ -150,14 +161,43 @@ public class MapObject : MonoBehaviour {
             case PossibleMovement.FleePlayer:
                 Debug.LogWarning("FleePlayer not implemented yet.");
                 break;
+            case PossibleMovement.LookPlayer:
+                Debug.LogWarning("FleePlayer not implemented yet.");
+                break;
             default :
                 break;
         }
 
-        if (World.Current.CanMoveOn(mapCoords + move))
+        if (World.Current.CanMoveOn(this, mapCoords + move))
             currentMovement = move;
         else
             isMoving = false;
+    }
+
+    public void OnCollision() {
+        if (execCondition == ExecutionCondition.Contact)
+            ExecuteActions();
+    }
+
+    protected bool HaveToExecute(ExecutionCondition cond) {
+        if (isRunning)
+            return false;
+        switch (cond) {
+            case ExecutionCondition.Action:
+                return InputManager.Current.GetKeyDown(KeyCode.Return) && (
+                    Player.Current.orientation == Orientation.Down  && Player.Current.mapCoords == mapCoords + new Vector2 (0,-1) ||
+                    Player.Current.orientation == Orientation.Up    && Player.Current.mapCoords == mapCoords + new Vector2 (0, 1) ||
+                    Player.Current.orientation == Orientation.Left  && Player.Current.mapCoords == mapCoords + new Vector2 (-1,0) ||
+                    Player.Current.orientation == Orientation.Right && Player.Current.mapCoords == mapCoords + new Vector2 ( 1,0));
+            case ExecutionCondition.ActionFace:
+                return InputManager.Current.GetKeyDown(KeyCode.Return) && (
+                    Player.Current.orientation == Orientation.Down  && orientation == Orientation.Up    && Player.Current.mapCoords == mapCoords + new Vector2(0,-1) ||
+                    Player.Current.orientation == Orientation.Up    && orientation == Orientation.Down  && Player.Current.mapCoords == mapCoords + new Vector2(0, 1) ||
+                    Player.Current.orientation == Orientation.Left  && orientation == Orientation.Right && Player.Current.mapCoords == mapCoords + new Vector2(-1,0) ||
+                    Player.Current.orientation == Orientation.Right && orientation == Orientation.Left  && Player.Current.mapCoords == mapCoords + new Vector2( 1,0));
+        }
+
+        return false;
     }
 
     public void ExecuteActions() {
@@ -178,4 +218,5 @@ public class MapObject : MonoBehaviour {
             action.Init();
         isRunning = false;
     }
+
 }

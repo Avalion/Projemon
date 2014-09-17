@@ -106,6 +106,7 @@ public class Monster{
 
     // Design
     public Texture2D battleSprite;
+    public Texture2D miniSprite;
 
     public Attack[] attacks = new Attack[4];
 
@@ -184,6 +185,7 @@ public class Monster{
         m.maxLife = _pattern.maxLife;
         m.maxStamina = _pattern.maxStamina;
         m.battleSprite = Resources.LoadAssetAtPath(Config.GetResourcePath(IMAGE_FOLDER) + _pattern.battleSprite, typeof(Texture2D)) as Texture2D;
+        m.miniSprite = Resources.LoadAssetAtPath(Config.GetResourcePath(IMAGE_FOLDER) + _pattern.miniSprite, typeof(Texture2D)) as Texture2D;
         m.type = _pattern.type;
 
         m.lvl = 1;

@@ -95,9 +95,9 @@ public class InputManager : MonoBehaviour {
                 keysToInspect.Add(KeyCode.Q); break;
             case KeyCode.RightArrow:
                 keysToInspect.Add(KeyCode.S); break;
-            case KeyCode.LeftShift:
-                keysToInspect.Add(KeyCode.D); break;
             case KeyCode.DownArrow:
+                keysToInspect.Add(KeyCode.D); break;
+            case KeyCode.LeftShift:
                 keysToInspect.Add(KeyCode.RightShift); break;
             case KeyCode.RightShift:
                 keysToInspect.Add(KeyCode.LeftShift); break;

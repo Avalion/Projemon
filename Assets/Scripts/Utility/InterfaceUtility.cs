@@ -187,6 +187,15 @@ public class InterfaceUtility {
         GUILayout.EndHorizontal();
     }
 
+    /**
+     * Rect
+     */
+    public static Rect GetScreenRelativeRect(Rect r, bool sizeRelative = false) {
+        float width = sizeRelative ? r.width * Screen.width : r.width;
+        float height = sizeRelative ? r.height * Screen.height : r.height;
+        return new Rect(r.x * (Screen.width - width), r.y * (Screen.height - height), width, height);
+    }
+
     /** Tooltip
     */
     private static GUIStyle ms_tooltipStyle;

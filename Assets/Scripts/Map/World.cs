@@ -85,7 +85,7 @@ public class World : MonoBehaviour {
 
     /* Utils
      */
-    public bool CanMoveOn(Vector2 _destination) {
+    public bool CanMoveOn(MapObject o, Vector2 _destination) {
         // If no tile -- TODO : Check and Add permissivity on Tiles
         if (currentMap.GetTile(0, (int)_destination.x, (int)_destination.y) == null)
             return false;
@@ -95,8 +95,11 @@ public class World : MonoBehaviour {
 
         // If there is already an Event on this -- TODO : Check and Add layers on MapObjects
         foreach (MapObject mo in mapObjects)
-            if (mo.mapCoords == _destination)
+            if (mo.mapCoords == _destination) {
+                o.OnCollision();
+                mo.OnCollision();
                 return false;
+            }
 
         return true;
     }

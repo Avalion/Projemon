@@ -82,6 +82,7 @@ public class MonsterKreator : EditorWindow {
                 string localpath = Config.GetResourcePath(Monster.IMAGE_FOLDER) + battlersTextures[value];
                 previewBattleSprite = Resources.LoadAssetAtPath(localpath, typeof(Texture2D)) as Texture2D;
                 mp.battleSprite = battlersTextures[value];
+                mp.miniSprite = battlersTextures[value];
             }
             GUILayout.FlexibleSpace();
             GUILayout.EndVertical();

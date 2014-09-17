@@ -21,6 +21,7 @@ public class MonsterPattern {
     public float capture_rate = 1;
     
     public string battleSprite;
+    public string miniSprite;
 
     public override string ToString() {
         return name;

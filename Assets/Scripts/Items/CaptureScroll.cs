@@ -60,9 +60,6 @@ public class CaptureScroll : Item {
 
             MonsterCollection.AddToCollection(target[0]);
 
-            if (Player.Current.monsters.Count < 6)
-                Player.Current.monsters.Add(target[0]);
-
             Battle.Current.Win();
         } else {
             // FAIL

@@ -88,7 +88,10 @@ public class Battle : MonoBehaviour {
 
     public void Lose() {
         Lock();
-        Dispose();
+
+        Message = "You Lose !!!";
+
+        StartCoroutine(Dispose());
     }
 
     public IEnumerator Dispose() {
@@ -153,7 +156,7 @@ public class Battle : MonoBehaviour {
     public void DisplayBottomPanel() {
         int menuHeight = 150;
 
-        GUI.enabled = locked;
+        GUI.enabled = !locked;
         
         GUILayout.BeginHorizontal();
         int choice = InterfaceUtility.DisplayMenu(new List<GUIContent>() { new GUIContent("Attack"), new GUIContent("Switch Monster"), new GUIContent("Capture Test")}, GUILayout.Width(200), GUILayout.Height(menuHeight));

@@ -9,7 +9,7 @@ public class PNJBattler : Battler {
     public int nbWin;
 
     // TEMPORARY
-    public void Start() {
+    public override void OnStart() {
         monsters.Add(Monster.GenerateFromPattern(SystemDatas.GetMonsterPatterns()[5], 5, 5));
 
         List<PossibleMovement> listMovement = new List<PossibleMovement>() { PossibleMovement.LookPlayer };
@@ -21,7 +21,7 @@ public class PNJBattler : Battler {
         actions.Add(new ActionFadeScreen(new Color(0, 0, 0, 1), 1.5f, true));
         actions.Add(new ActionWait(0.2f));
         actions.Add(new ActionPNJBattle(this));
-        actions.Add(new ActionFadeScreen(new Color(0, 0, 0, 0), 1.5f, true));        
+        actions.Add(new ActionFadeScreen(new Color(0, 0, 0, 0), 1.5f, true));
     }
 
     public override void OnUpdate() {

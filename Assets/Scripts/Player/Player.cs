@@ -34,8 +34,11 @@ public class Player : Battler {
         locked = 0;
     }
 
-    public void Start() {
+    // TEMPORARY !
+    public new void Start() {
         monsters.Add(Monster.GenerateFromPattern(SystemDatas.GetMonsterPatterns()[0], 5, 5));
+
+        MonsterCollection.capturedMonsters.Add(Monster.GenerateFromPattern(SystemDatas.GetMonsterPatterns()[3], 5, 5));
     }
 
     public override void OnUpdate() {

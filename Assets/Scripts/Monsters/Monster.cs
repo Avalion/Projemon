@@ -3,7 +3,7 @@
 /**
  * This class design a Monster type. 
  */
-public class Monster{
+public class Monster {
     public const string IMAGE_FOLDER = "Battlers";
 
     public MonsterPattern monsterPattern;

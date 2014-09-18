@@ -54,6 +54,8 @@ public class MapObject : MonoBehaviour {
     public void Start() {
         if (execCondition == ExecutionCondition.Automatique)
             ExecuteActions();
+
+        OnStart();
     }
     public virtual void OnStart() {}
 
@@ -162,7 +164,7 @@ public class MapObject : MonoBehaviour {
                 Debug.LogWarning("FleePlayer not implemented yet.");
                 break;
             case PossibleMovement.LookPlayer:
-                Debug.LogWarning("FleePlayer not implemented yet.");
+                Debug.LogWarning("LookPlayer not implemented yet.");
                 break;
             default :
                 break;
@@ -182,25 +184,26 @@ public class MapObject : MonoBehaviour {
     protected bool HaveToExecute(ExecutionCondition cond) {
         if (isRunning)
             return false;
+        
         switch (cond) {
             case ExecutionCondition.Action:
                 return InputManager.Current.GetKeyDown(KeyCode.Return) && (
                     Player.Current.orientation == Orientation.Down  && Player.Current.mapCoords == mapCoords + new Vector2 (0,-1) ||
                     Player.Current.orientation == Orientation.Up    && Player.Current.mapCoords == mapCoords + new Vector2 (0, 1) ||
-                    Player.Current.orientation == Orientation.Left  && Player.Current.mapCoords == mapCoords + new Vector2 (-1,0) ||
-                    Player.Current.orientation == Orientation.Right && Player.Current.mapCoords == mapCoords + new Vector2 ( 1,0));
+                    Player.Current.orientation == Orientation.Left  && Player.Current.mapCoords == mapCoords + new Vector2 ( 1,0) ||
+                    Player.Current.orientation == Orientation.Right && Player.Current.mapCoords == mapCoords + new Vector2 (-1,0));
             case ExecutionCondition.ActionFace:
                 return InputManager.Current.GetKeyDown(KeyCode.Return) && (
                     Player.Current.orientation == Orientation.Down  && orientation == Orientation.Up    && Player.Current.mapCoords == mapCoords + new Vector2(0,-1) ||
                     Player.Current.orientation == Orientation.Up    && orientation == Orientation.Down  && Player.Current.mapCoords == mapCoords + new Vector2(0, 1) ||
-                    Player.Current.orientation == Orientation.Left  && orientation == Orientation.Right && Player.Current.mapCoords == mapCoords + new Vector2(-1,0) ||
-                    Player.Current.orientation == Orientation.Right && orientation == Orientation.Left  && Player.Current.mapCoords == mapCoords + new Vector2( 1,0));
+                    Player.Current.orientation == Orientation.Left  && orientation == Orientation.Right && Player.Current.mapCoords == mapCoords + new Vector2( 1,0) ||
+                    Player.Current.orientation == Orientation.Right && orientation == Orientation.Left  && Player.Current.mapCoords == mapCoords + new Vector2(-1,0));
         }
 
         return false;
     }
 
-    public void ExecuteActions() {
+    public virtual void ExecuteActions() {
         isRunning = true;
         Player.Lock();
         

@@ -10,7 +10,7 @@ public class Computer : MapObject {
     public MenuPage currentPage;
 
     private int _selectedMonster;
-    private Vector2 scrollPos;
+    private Vector2 scrollPos = Vector2.zero;
 
 
     public void OnGUI() {
@@ -19,7 +19,7 @@ public class Computer : MapObject {
                 DisplayGeneralMenu(); return;
             case MenuPage.MonsterChoice: 
             case MenuPage.MonsterChoicePlayerList: 
-                DisplayGeneralMenu(); return;
+                DisplayMonsterMenu(); return;
         }
     }
 
@@ -29,8 +29,10 @@ public class Computer : MapObject {
 
         if (GUILayout.Button("Monsters"))
             currentPage = MenuPage.MonsterChoice;
-        if (GUILayout.Button("Exit"))
+        if (GUILayout.Button("Exit")) {
             currentPage = MenuPage.NULL;
+            Player.Unlock();
+        }
         
         GUILayout.FlexibleSpace();
         InterfaceUtility.EndBox();
@@ -99,7 +101,9 @@ public class Computer : MapObject {
     }
 
 
-    public new void ExecuteActions() {
+    public override void ExecuteActions() {
+        Player.Lock();
+        
         if (currentPage == MenuPage.NULL)
             currentPage = MenuPage.General;
     }

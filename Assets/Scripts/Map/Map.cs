@@ -182,4 +182,7 @@ public class Map {
         sr.Close();
         sr.Dispose();
     }
+
+    // Destructor
+    public void Dispose() {}
 }

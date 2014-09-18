@@ -80,6 +80,8 @@ public class World : MonoBehaviour {
     /* Load
      */
     public void LoadMap(int mapId) {
+        currentMap.Dispose();
+
         currentMap = new Map(mapId); 
     }
 

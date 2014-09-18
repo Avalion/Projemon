@@ -4,7 +4,7 @@
  * this class is a MapObject to work on monster collection
  */
 public class Computer : MapObject {
-    public const Rect DISPLAY_POSITION_GENERAL = new Rect(1,0,150,300);
+    public static Rect DISPLAY_POSITION_GENERAL = new Rect(1,0,150,300); // Rect class cannot be a const...
 
     public enum MenuPage { NULL, General, MonsterChoice, MonsterChoicePlayerList };
     public MenuPage currentPage;

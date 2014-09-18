@@ -2,13 +2,16 @@
 using UnityEngine;
 
 public abstract class Item {
+    public enum Usability { None, Once, All }
+    public Usability usability;
+
     public enum PossibleTarget { All, Ally, Enemy, WildMonster };
     public PossibleTarget possibleTarget;
 
     public int cost = 0;
 
     /**
-     * On suppose que tous les monstres de target appartiennent au même Battler
+     * Vérifications des règles d'utilisation des objets.
      */
     public virtual void Use(Battler caster, List<Monster> target) {
         switch(possibleTarget){
@@ -35,6 +38,10 @@ public abstract class Item {
         }
         
         Effect(caster, target);
+
+        if (usability == Usability.Once) {
+            // TODO : Remove item from Battler Collection !
+        }
     }
 
     protected abstract void Effect(Battler caster, List<Monster> target);

@@ -5,6 +5,8 @@ using System.Collections.Generic;
  * This class design the Hero
  */
 public class Player : Battler {
+    public const int MAX_TEAM_NUMBER = 6;
+
     private static Player current = null;
     public static Player Current {
         get {

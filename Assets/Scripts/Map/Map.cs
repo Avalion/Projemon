@@ -4,6 +4,8 @@ using System.IO;
 
 /**
  * This class defines a map and implements functions to display it.
+ * 
+ * WARNING ! When you modify this class, you should modify associated functions in SystemDatas !
  */
 public class Map {
     public const string IMAGE_FOLDER = "Maps";

@@ -74,20 +74,6 @@ public class InterfaceUtility {
     }
 
 
-    /** Texture loading
-     */
-    public static Texture2D GetTexture(string _relativePath) {
-        if (loaded.ContainsKey(_relativePath))
-            return loaded[_relativePath];
-        
-        try {
-            Texture2D tex = Resources.LoadAssetAtPath(_relativePath, typeof(Texture2D)) as Texture2D;
-            loaded.Add(_relativePath, tex);
-            return tex;
-        } catch { Debug.LogError("File not found at " + _relativePath); }
-        return null;
-    }
-
     /** String Gestion
      */
     public static string VerticalText(string _input) {
@@ -168,7 +154,7 @@ public class InterfaceUtility {
 
         colored.Add(serializedId, tex);
 
-		return tex;
+        return tex;
     }
 
     /** ProgressBar
@@ -219,7 +205,7 @@ public class InterfaceUtility {
     }
 
     /** Box 
-	*/
+    */
     private static List<GUIStyle> ms_borders = null;
     public static GUIStyle GetBorder(string _border) {
         if (ms_borders == null) {
@@ -306,6 +292,17 @@ public class InterfaceUtility {
 
     /** Textures
      */
+    public static Texture2D GetTexture(string _relativePath) {
+        if (loaded.ContainsKey(_relativePath))
+            return loaded[_relativePath];
+
+        try {
+            Texture2D tex = Resources.LoadAssetAtPath(_relativePath, typeof(Texture2D)) as Texture2D;
+            loaded.Add(_relativePath, tex);
+            return tex;
+        } catch { Debug.LogError("File not found at " + _relativePath); }
+        return null;
+    }
     public static Texture2D InvertTexture(Texture2D _texture) {
         string serializedId = _texture.name;
         

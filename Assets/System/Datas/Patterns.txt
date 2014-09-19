@@ -1,6 +1,6 @@
-Chancerbe#0#100#50#0#0#0#0#0#001-Chancerbe.png
-Grazon#0#0#0#0#0#0#0#0#002-Grazon.png
-Terroi#0#0#0#0#0#0#0#0#003-Terroi.png
-Daufeu#1#10#10#0#0#0#0#1#004-Daufeu.png
-Princendie#1#10#10#0#0#0#0#1#005-Princendie.png
-Droigon#0#10#10#0#0#0#0#1#006-Droigon.png
+Chancerbe#0#100#50#0#0#0#0#0#001-Chancerbe.png#001-Chancerbe.png
+Grazon#0#0#0#0#0#0#0#0#002-Grazon.png#002-Grazon.png
+Terroi#0#0#0#0#0#0#0#0#003-Terroi.png#003-Terroi.png
+Daufeu#1#10#10#0#0#0#0#1#004-Daufeu.png#004-Daufeu.png
+Princendie#1#10#10#0#0#0#0#1#005-Princendie.png#005-Princendie.png
+Droigon#0#10#10#0#0#0#0#1#006-Droigon.png#006-Droigon.png

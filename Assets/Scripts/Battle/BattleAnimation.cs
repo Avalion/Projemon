@@ -4,6 +4,8 @@ using System.IO;
 
 /**
  * This class designs animation in battles as list of images linked to frames
+ * 
+ * WARNING ! When you modify this class, you should modify associated functions in SystemDatas !
  */
 public class BattleAnimation {
     // Constantes

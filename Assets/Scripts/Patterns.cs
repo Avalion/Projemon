@@ -4,8 +4,9 @@ using System.Collections.Generic;
 
 /**
  * This script regroup all Patterns classes usefull for defining
+ * 
+ * WARNING ! When you modify this class, you should modify associated functions in SystemDatas !
  */
-
 public class MonsterPattern {
     public int ID;
     

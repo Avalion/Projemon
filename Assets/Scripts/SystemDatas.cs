@@ -92,6 +92,9 @@ public class SystemDatas {
             p.stat_luck = int.Parse(values[7]);
             p.capture_rate = float.Parse(values[8]);
             p.battleSprite = values[9];
+            try {
+                p.miniSprite = values[10];
+            } catch { }
 
             list.Add(p);
 
@@ -120,7 +123,8 @@ public class SystemDatas {
                          p.stat_speed + "#" +
                          p.stat_luck + "#" +
                          p.capture_rate + "#" +
-                         p.battleSprite);
+                         p.battleSprite + "#" +
+                         p.miniSprite);
         sw.Dispose();
     }
 

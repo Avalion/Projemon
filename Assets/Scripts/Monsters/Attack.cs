@@ -2,6 +2,8 @@
 
 /**
  * This class patterns the Attacks of monsters
+ * 
+ * WARNING ! When you modify this class, you should modify associated functions in SystemDatas !
  */
 [System.Serializable]
 public class Attack {

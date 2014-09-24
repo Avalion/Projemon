@@ -8,8 +8,6 @@ public class CaptureScroll : Item {
     public enum Quality { Normal, Superior, Hyperior, Master };
     public Quality quality;
 
-    public int price = 100;
-
     public float CalculCaptureRate(List<Monster> caster, List<Monster> target) {
         float captureRate = 0;
         float stateFactor = 1;

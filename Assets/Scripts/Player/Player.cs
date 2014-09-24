@@ -36,6 +36,11 @@ public class Player : Battler {
 
     // TEMPORARY !
     public new void Start() {
+        CaptureScroll scroll = new CaptureScroll();
+        scroll.name = "Capture Scroll";
+        actions.Add(new ActionAddItem(scroll, Player.Current));
+        
+        monsters.Add(Monster.GenerateFromPattern(SystemDatas.GetMonsterPatterns()[0], 5, 5));
         monsters.Add(Monster.Generate(SystemDatas.GetMonsterPatterns()[0], 5, 5));
 
         MonsterCollection.capturedMonsters.Add(Monster.Generate(SystemDatas.GetMonsterPatterns()[3], 5, 5));

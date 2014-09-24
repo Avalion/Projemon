@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.20506</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{CD596982-6262-51E3-DFEC-5092D949A83E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>
+    </RootNamespace>
+    <AssemblyName>Assembly-CSharp</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <BaseDirectory>Assets</BaseDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Temp\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;UNITY_4_5_0;UNITY_4_5;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_UNITYEVENTS;ENABLE_NEW_HIERARCHY ;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_TERRAIN;ENABLE_SUBSTANCE;ENABLE_GENERICS;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Temp\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Mono.Data.Sqlite">
+      <HintPath>Assets\Plugins\Mono.Data.Sqlite.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="UnityEngine">
+      <HintPath>C:/Program Files (x86)/Unity/Editor4.5/Data/Managed/UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor">
+      <HintPath>C:/Program Files (x86)/Unity/Editor4.5/Data/Managed/UnityEditor.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Assets\Scripts\Actions\ActionAddMonster.cs" />
+    <Compile Include="Assets\Scripts\Actions\ActionEXP.cs" />
+    <Compile Include="Assets\Scripts\Actions\ActionFadeScreen.cs" />
+    <Compile Include="Assets\Scripts\Actions\ActionHeal.cs" />
+    <Compile Include="Assets\Scripts\Actions\ActionMessage.cs" />
+    <Compile Include="Assets\Scripts\Actions\ActionMonsterBattle.cs" />
+    <Compile Include="Assets\Scripts\Actions\ActionMove.cs" />
+    <Compile Include="Assets\Scripts\Actions\ActionPlaySound.cs" />
+    <Compile Include="Assets\Scripts\Actions\ActionPNJBattle.cs" />
+    <Compile Include="Assets\Scripts\Actions\ActionTeleport.cs" />
+    <Compile Include="Assets\Scripts\Actions\ActionTransform.cs" />
+    <Compile Include="Assets\Scripts\Actions\ActionWait.cs" />
+    <Compile Include="Assets\Scripts\Battle\Battle.cs" />
+    <Compile Include="Assets\Scripts\Battle\BattleAnimation.cs" />
+    <Compile Include="Assets\Scripts\Battle\DisplayBattleAnimation.cs" />
+    <Compile Include="Assets\Scripts\Config.cs" />
+    <Compile Include="Assets\Scripts\Database\Database.cs" />
+    <Compile Include="Assets\Scripts\Database\SQLTable.cs" />
+    <Compile Include="Assets\Scripts\Database\Tables\DBMonster.cs" />
+    <Compile Include="Assets\Scripts\Database\Tables\DBSystem.cs" />
+    <Compile Include="Assets\Scripts\Items\CaptureScroll.cs" />
+    <Compile Include="Assets\Scripts\Items\Item.cs" />
+    <Compile Include="Assets\Scripts\Macros\Computer.cs" />
+    <Compile Include="Assets\Scripts\Macros\PNJBattler.cs" />
+    <Compile Include="Assets\Scripts\Map\IDisplayable.cs" />
+    <Compile Include="Assets\Scripts\Map\Map.cs" />
+    <Compile Include="Assets\Scripts\Map\MapObject.cs" />
+    <Compile Include="Assets\Scripts\Map\MapObjectAction.cs" />
+    <Compile Include="Assets\Scripts\Map\World.cs" />
+    <Compile Include="Assets\Scripts\Monsters\Attack.cs" />
+    <Compile Include="Assets\Scripts\Monsters\Monster.cs" />
+    <Compile Include="Assets\Scripts\Monsters\MonsterCollection.cs" />
+    <Compile Include="Assets\Scripts\Patterns.cs" />
+    <Compile Include="Assets\Scripts\Player\Battler.cs" />
+    <Compile Include="Assets\Scripts\Player\InputManager.cs" />
+    <Compile Include="Assets\Scripts\Player\Player.cs" />
+    <Compile Include="Assets\Scripts\SystemDatas.cs" />
+    <Compile Include="Assets\Scripts\Utility\InterfaceUtility.cs" />
+    <Compile Include="Assets\Scripts\Utility\MathUtility.cs" />
+    <Compile Include="Assets\Scripts\Utility\Utility.cs" />
+    <None Include="Assets\System\Maps\0.txt" />
+    <None Include="Assets\System\BattleAnims\0.txt" />
+    <None Include="Assets\System\Datas\Patterns.txt" />
+    <None Include="Assets\System\Datas\Attacks.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+	   Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

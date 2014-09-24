@@ -92,6 +92,14 @@ public class MapObject : MonoBehaviour {
         }
     }
 
+    public Orientation GetOrientation() {
+        return orientation;
+    }
+
+    public Orientation GetOrientation(Vector2 _vector){
+        return _vector.y == 1 ? Orientation.Down : _vector.y == -1 ? Orientation.Up : _vector.x == 1 ? Orientation.Right : Orientation.Left;
+    }
+
     public void Move(PossibleMovement _o) {
         if (isMoving)
             return;
@@ -99,6 +107,7 @@ public class MapObject : MonoBehaviour {
         isMoving = true;
 
         Vector2 move = new Vector2();
+        Vector2 vector = Player.Current.mapCoords - this.mapCoords;
 
         switch (_o) {
             case PossibleMovement.Left:
@@ -156,15 +165,77 @@ public class MapObject : MonoBehaviour {
             case PossibleMovement.TurnBackward:
                 orientation = orientation == Orientation.Up ? Orientation.Down : orientation == Orientation.Down ? Orientation.Up : orientation == Orientation.Left ? Orientation.Right : Orientation.Left;
                 break;
-            
             case PossibleMovement.FollowPlayer:
-                Debug.LogWarning("FollowPlayer not implemented yet.");
+                if (vector.magnitude == 1) { orientation = GetOrientation(vector); break; }
+                if(Mathf.Abs(vector.x) >= Mathf.Abs(vector.y)){
+                    move = new Vector2(vector.x/Mathf.Abs(vector.x) , 0);
+                    if (!World.Current.CanMoveOn(this, mapCoords + move)) {
+                        if (vector.y != 0) { 
+                            move = new Vector2(0, this.orientation == Orientation.Down ? 1 : this.orientation == Orientation.Up ? -1 : vector.y/Mathf.Abs(vector.y));
+                            if (!World.Current.CanMoveOn(this, mapCoords + move)) {
+                                move = -move;
+                            }
+                        } else {
+                            move = new Vector2(0, this.orientation == Orientation.Down ? 1 : this.orientation == Orientation.Up ? -1 : MathUtility.Alea(new float[]{-1,1}));
+                            if (!World.Current.CanMoveOn(this, mapCoords + move)) {
+                                move = -move;
+                            }
+                        }
+                    }
+                } else {
+                    move = new Vector2(0 , vector.y / Mathf.Abs(vector.y));
+                    if (!World.Current.CanMoveOn(this, mapCoords + move)) {
+                        if (vector.x != 0) {
+                            move = new Vector2(this.orientation == Orientation.Right ? 1 : this.orientation == Orientation.Left ? -1 : vector.x / Mathf.Abs(vector.x) , 0);
+                            if (!World.Current.CanMoveOn(this, mapCoords + move)) {
+                                move = -move;
+                            }
+                        } else {
+                            move = new Vector2(this.orientation == Orientation.Right ? 1 : this.orientation == Orientation.Left ? -1 : MathUtility.Alea(new float[] { -1, 1 }) , 0);
+                            if (!World.Current.CanMoveOn(this, mapCoords + move)) {
+                                move = -move;
+                            }
+                        }
+                    }
+                }
+                orientation = GetOrientation(move);
                 break;
             case PossibleMovement.FleePlayer:
-                Debug.LogWarning("FleePlayer not implemented yet.");
+                if (Mathf.Abs(vector.x) >= Mathf.Abs(vector.y)) {
+                    move = new Vector2(- vector.x / Mathf.Abs(vector.x), 0);
+                    if (!World.Current.CanMoveOn(this, mapCoords + move)) {
+                        if (vector.y != 0) {
+                            move = new Vector2(0, (this.orientation == Orientation.Down ? 1 : this.orientation == Orientation.Up ? -1 : -vector.y / Mathf.Abs(vector.y)));
+                            if (!World.Current.CanMoveOn(this, mapCoords + move)) {
+                                move = -move;
+                            }
+                        } else {
+                            move = new Vector2(0, (this.orientation == Orientation.Down ? 1 : this.orientation == Orientation.Up ? -1 : MathUtility.Alea(new float[] { -1, 1 })));
+                            if (!World.Current.CanMoveOn(this, mapCoords + move)) {
+                                move = -move;
+                            }
+                        }
+                    }
+                } else {
+                    move = new Vector2(0, -vector.y / Mathf.Abs(vector.y));
+                    if (!World.Current.CanMoveOn(this, mapCoords + move)) {
+                        if (vector.x != 0) {
+                            move = new Vector2((this.orientation == Orientation.Right ? 1 : this.orientation == Orientation.Left ? -1 : -vector.x / Mathf.Abs(vector.x)), 0);
+                            if (!World.Current.CanMoveOn(this, mapCoords + move)) {
+                                move = -move;
+                            }
+                        } else {
+                            move = new Vector2((this.orientation == Orientation.Right ? 1 : this.orientation == Orientation.Left ? -1 : MathUtility.Alea(new float[] { -1, 1 })), 0);
+                            if (!World.Current.CanMoveOn(this, mapCoords + move)) {
+                                move = -move;
+                            }
+                        }
+                    }
+                }
+                orientation = GetOrientation(move);
                 break;
             case PossibleMovement.LookPlayer:
-                Debug.LogWarning("LookPlayer not implemented yet.");
+                orientation = vector.x == Mathf.Max(Mathf.Abs(vector.x), Mathf.Abs(vector.y)) ? Orientation.Right : vector.x == - Mathf.Max(Mathf.Abs(vector.x), Mathf.Abs(vector.y)) ? Orientation.Left : vector.y == Mathf.Max(Mathf.Abs(vector.x), Mathf.Abs(vector.y)) ? Orientation.Down : Orientation.Up;
                 break;
             default :
                 break;

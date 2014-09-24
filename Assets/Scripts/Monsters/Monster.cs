@@ -108,7 +108,7 @@ public class Monster {
     public Texture2D battleSprite;
     public Texture2D miniSprite;
 
-    public Attack[] attacks = new Attack[4];
+    public Attack[] attacks = new Attack[4] { new Attack() { name = "null" }, new Attack() { name = "null" }, new Attack() { name = "null" }, new Attack() { name = "null" } };
 
 
     /* Experience

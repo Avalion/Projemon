@@ -37,7 +37,7 @@ public class Battle : MonoBehaviour {
     }
     private static float time;
 
-    private enum DisplayMode { Choice, Attack, SwitchMonster };
+    private enum DisplayMode { Choice, Attack, SwitchMonster, Items};
     private DisplayMode displayMode = DisplayMode.Choice;
 
 
@@ -118,6 +118,10 @@ public class Battle : MonoBehaviour {
             DisplayMessage();
             DisplayBattleArea();
             DisplayAttackPanel();
+        } else if (displayMode == DisplayMode.Items) {
+            DisplayMessage();
+            DisplayBattleArea();
+            DisplayItemsPanel();
         }
         GUILayout.EndVertical();
         GUILayout.EndArea();
@@ -159,7 +163,7 @@ public class Battle : MonoBehaviour {
         GUI.enabled = !locked;
         
         GUILayout.BeginHorizontal();
-        int choice = InterfaceUtility.DisplayMenu(new List<GUIContent>() { new GUIContent("Attack"), new GUIContent("Switch Monster"), new GUIContent("Capture Test")}, GUILayout.Width(200), GUILayout.Height(menuHeight));
+        int choice = InterfaceUtility.DisplayMenu(new List<GUIContent>() { new GUIContent("Attack"), new GUIContent("Switch Monster"), new GUIContent("Items")}, GUILayout.Width(200), GUILayout.Height(menuHeight));
         if (choice == 0) {
             displayMode = DisplayMode.Attack;
         }
@@ -168,8 +172,8 @@ public class Battle : MonoBehaviour {
 
         }
 
-        if (choice == 2) {  //Temporary
-            new CaptureScroll().Use(Player.Current, new List<Monster>() { enemy.monsters[enemy.activeMonster] });
+        if (choice == 2) {
+            displayMode = DisplayMode.Items;
         }
 
         GUI.enabled = true;
@@ -199,12 +203,43 @@ public class Battle : MonoBehaviour {
         list.Add(new GUIContent("Cancel"));
 
         GUILayout.BeginHorizontal();
-        int choice = InterfaceUtility.DisplayMenu(list , GUILayout.Width(200), GUILayout.Height(menuHeight));
-        if (choice >= 0 && choice < list.Count - 1)
-            Player.Current.monsters[Player.Current.activeMonster].Damage(enemy.monsters[enemy.activeMonster], Player.Current.monsters[Player.Current.activeMonster].attacks[choice].Launch(Player.Current.monsters[Player.Current.activeMonster], enemy.monsters[enemy.activeMonster], new Rect(Screen.width - 300, (Screen.height / 2f) - 150, 300, 200)));
+        int choice = InterfaceUtility.DisplayMenu(list, GUILayout.Width(200), GUILayout.Height(menuHeight));
+     //   if (choice >= 0 && choice < list.Count - 1)
+            //A finir
+            if (choice == list.Count - 1)
+                displayMode = DisplayMode.Choice;
+        GUI.enabled = true;
+        InterfaceUtility.BeginBox(GUILayout.Height(menuHeight));
+        GUILayout.BeginHorizontal();
+        GUILayout.Label(Monster.GetTypeIcon(Player.Current.monsters[Player.Current.activeMonster].type), InterfaceUtility.EmptyStyle);
+        GUILayout.Label(Player.Current.monsters[Player.Current.activeMonster].monsterName, messageStyle);
+        GUILayout.FlexibleSpace();
+
+        InterfaceUtility.ProgressBar(200, 20, Player.Current.monsters[Player.Current.activeMonster].life, Player.Current.monsters[Player.Current.activeMonster].maxLife, InterfaceUtility.ColorToTexture(Color.green), InterfaceUtility.ColorToTexture(Color.gray));
+        GUILayout.Label(Player.Current.monsters[Player.Current.activeMonster].life + "/" + Player.Current.monsters[Player.Current.activeMonster].maxLife, lifeStyle, GUILayout.Width(120));
+        GUILayout.EndHorizontal();
+        InterfaceUtility.EndBox();
+
+        GUILayout.EndHorizontal();
+    }
+
+    public void DisplayItemsPanel() {
+        int menuHeight = 150;
+        List<GUIContent> list = new List<GUIContent>();
+
+        foreach (var a in Player.Current.inventory) {
+            System.Diagnostics.Debug.Assert(a.Value > 0);
+            list.Add(new GUIContent(a.Key));
+        }
+        list.Add(new GUIContent("Cancel"));
+
+        GUILayout.BeginHorizontal();
+        int choice = InterfaceUtility.DisplayMenu(list, GUILayout.Width(200), GUILayout.Height(menuHeight));
+ //       if (choice >= 0 && choice < list.Count - 1)
+ //           Player.Current.inventory;
         if (choice == list.Count - 1)
             displayMode = DisplayMode.Choice;
-
+        GUI.enabled = true;
         InterfaceUtility.BeginBox(GUILayout.Height(menuHeight));
         GUILayout.BeginHorizontal();
         GUILayout.Label(Monster.GetTypeIcon(Player.Current.monsters[Player.Current.activeMonster].type), InterfaceUtility.EmptyStyle);

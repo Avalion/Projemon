@@ -19,10 +19,11 @@ public class ActionAddMonster : MapObjectAction {
 
     public override void Execute() {
         MonsterCollection.AddToCollection(Monster.GenerateFromPattern(m, lvl, lvl));
+        Terminate();
     }
 
 
     public override string InLine() {
-        return "Add Monster " + m.name + " at level " + lvl;
+        return "Add Monster " + m.name + " at level " + lvl+".";
     }
 }

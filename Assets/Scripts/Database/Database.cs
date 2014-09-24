@@ -38,7 +38,7 @@ public class DataBase {
         if (system.dbversion < 1)
             V0toV1();
 
-        //Update<DBSystem>("dbversion", CURRENT_DB_VERSION, "id=" + system.ID);
+        Update<DBSystem>("dbversion", CURRENT_DB_VERSION, "id=" + system.ID);
     }
 
     private static void V0toV1() {
@@ -48,7 +48,6 @@ public class DataBase {
     // Destructors
     public static void Close() {
         m_dbConnection.Close();
-        m_dbConnection.Dispose();
         m_dbConnection = null;
     }
 
@@ -62,7 +61,6 @@ public class DataBase {
                 cmd.Parameters.AddRange(param);
             }
             int r = cmd.ExecuteNonQuery();
-            cmd.Dispose();
             cmd = null;
             return r;
         }
@@ -94,7 +92,6 @@ public class DataBase {
         // clean up
         reader.Close();
         reader = null;
-        cmd.Dispose();
         cmd = null;
 
         return r;
@@ -125,7 +122,6 @@ public class DataBase {
         // clean up
         reader.Close();
         reader = null;
-        cmd.Dispose();
         cmd = null;
 
         return count;
@@ -157,7 +153,6 @@ public class DataBase {
             cmd.CommandText = "SELECT last_insert_rowid();";
             SqliteDataReader reader = cmd.ExecuteReader();
             int r = reader.Read() ? reader.GetInt32(0) : -1;
-            cmd.Dispose();
             cmd = null;
             return r;
         }

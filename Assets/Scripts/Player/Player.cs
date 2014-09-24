@@ -36,9 +36,9 @@ public class Player : Battler {
 
     // TEMPORARY !
     public new void Start() {
-        monsters.Add(Monster.GenerateFromPattern(SystemDatas.GetMonsterPatterns()[0], 5, 5));
+        monsters.Add(Monster.Generate(SystemDatas.GetMonsterPatterns()[0], 5, 5));
 
-        MonsterCollection.capturedMonsters.Add(Monster.GenerateFromPattern(SystemDatas.GetMonsterPatterns()[3], 5, 5));
+        MonsterCollection.capturedMonsters.Add(Monster.Generate(SystemDatas.GetMonsterPatterns()[3], 5, 5));
 
         DataBase.Connect(Application.dataPath + "/database.sql");
     }

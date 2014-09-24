@@ -164,29 +164,3 @@ public class DataBase {
         catch (System.Exception e) { throw new System.Exception("SQL error with InsertLastId.", e); }
     }
 }
-
-
-#region Tables
-public class DBSystem : SQLTable {
-    public int dbversion;
-
-    public override void FromRow(SqliteDataReader reader) {
-        int pos = 0;
-        ID = reader.GetInt32(pos++);
-        dbversion = reader.GetInt32(pos++);
-    }
-    public override string Fields() {
-        return "dbversion";
-    }
-    public override string TypedFields() {
-        return "dbversion integer DEFAULT 0";
-    }
-    public override string TableName() {
-        return "T_System";
-    }
-    public override string ToRow() {
-        return
-            Stringize(dbversion);
-    }
-}
-#endregion

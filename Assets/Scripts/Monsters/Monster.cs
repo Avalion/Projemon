@@ -5,6 +5,9 @@
  */
 public class Monster {
     public const string IMAGE_FOLDER = "Battlers";
+    public const bool REFILL_LIFE_LVL_UP = true;
+    public const bool REFILL_STAMINA_LVL_UP = true;
+
 
     public MonsterPattern monsterPattern;
 
@@ -79,8 +82,6 @@ public class Monster {
     public int maxStamina = 50;
     public int stamina;
 
-    public int giveExp;
-
     // Stats
     public int stat_might = 0;
     public int stat_resistance = 0;
@@ -95,15 +96,7 @@ public class Monster {
     public int expMultiplier2 = 10;
     public int expMultiplier3 = 5;
     public int[] expRequired = new int[99];
-    public Vector2 lifeUp = new Vector2(5, 15);
-    public Vector2 staminaUp = new Vector2(5, 15);
-    public Vector2 stat_mightUp = new Vector2(1, 3);
-    public Vector2 stat_resistanceUp = new Vector2(1, 3);
-    public Vector2 stat_luckUp = new Vector2(1, 3);
-    public Vector2 stat_speedUp = new Vector2(1, 3);
-    public bool refillLife = true;
-    public bool refillStamina = true;
-
+    
     // Design
     public Texture2D battleSprite;
     public Texture2D miniSprite;
@@ -124,16 +117,16 @@ public class Monster {
     }
     public void LevelUp() {
         lvl++;
-        int tempLife = Random.Range((int)lifeUp.x, (int)lifeUp.y + 1);
+        int tempLife = Random.Range((int)monsterPattern.lifeUp.x, (int)monsterPattern.lifeUp.y + 1);
         maxLife += tempLife;
-        life = refillLife ? maxLife : life + tempLife;
-        int tempStamina = Random.Range((int)staminaUp.x, (int)staminaUp.y + 1);
+        life = REFILL_LIFE_LVL_UP ? maxLife : life + tempLife;
+        int tempStamina = Random.Range((int)monsterPattern.staminaUp.x, (int)monsterPattern.staminaUp.y + 1);
         maxStamina += tempStamina;
-        stamina = refillStamina ? maxStamina : stamina + tempLife;
-        stat_might += Random.Range((int)stat_mightUp.x, (int)stat_mightUp.y + 1);
-        stat_resistance += Random.Range((int)stat_resistanceUp.x, (int)stat_resistanceUp.y + 1);
-        stat_luck += Random.Range((int)stat_luckUp.x, (int)stat_luckUp.y + 1);
-        stat_speed += Random.Range((int)stat_speedUp.x, (int)stat_speedUp.y + 1);
+        stamina = REFILL_STAMINA_LVL_UP ? maxStamina : stamina + tempLife;
+        stat_might += Random.Range((int)monsterPattern.stat_mightUp.x, (int)monsterPattern.stat_mightUp.y + 1);
+        stat_resistance += Random.Range((int)monsterPattern.stat_resistanceUp.x, (int)monsterPattern.stat_resistanceUp.y + 1);
+        stat_luck += Random.Range((int)monsterPattern.stat_luckUp.x, (int)monsterPattern.stat_luckUp.y + 1);
+        stat_speed += Random.Range((int)monsterPattern.stat_speedUp.x, (int)monsterPattern.stat_speedUp.y + 1);
 
         foreach (MonsterPattern.AttackLevelUp a in monsterPattern.attackLevelUp) {
             if (a.lvl == lvl)
@@ -149,6 +142,10 @@ public class Monster {
         }
     }
 
+    public int CalcExpGiven() {
+        return 0;
+    }
+
     /* Damages
      */
     public void Damage(Monster target, int value) {
@@ -159,7 +156,7 @@ public class Monster {
             target.life -= value;
             if (target.life <= 0) {
                 if (this != target)
-                    Exp(target.giveExp);
+                    Exp(target.CalcExpGiven());
                 target.Death();
             }
         }
@@ -172,7 +169,7 @@ public class Monster {
 
     /* Contstructors
      */
-    public static Monster GenerateFromPattern(MonsterPattern _pattern, int lvlMin, int lvlMax) {
+    public static Monster Generate(MonsterPattern _pattern, int lvlMin, int lvlMax) {
         int lvl = Random.Range(lvlMin, lvlMax);
         Monster m = new Monster();
         

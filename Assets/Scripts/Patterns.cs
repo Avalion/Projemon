@@ -20,6 +20,13 @@ public class MonsterPattern {
     public int stat_luck = 0;
     public int stat_speed = 0;
     public float capture_rate = 1;
+
+    public Vector2 lifeUp = new Vector2(5, 15);
+    public Vector2 staminaUp = new Vector2(5, 15);
+    public Vector2 stat_mightUp = new Vector2(1, 3);
+    public Vector2 stat_resistanceUp = new Vector2(1, 3);
+    public Vector2 stat_luckUp = new Vector2(1, 3);
+    public Vector2 stat_speedUp = new Vector2(1, 3);
     
     public string battleSprite;
     public string miniSprite;

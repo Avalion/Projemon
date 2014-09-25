@@ -87,6 +87,7 @@ public class World : MonoBehaviour {
 
     /* Utils
      */
+    //TODO: Modifier pour éviter d'être à deux sur une case pendant un mouvement
     public bool CanMoveOn(MapObject o, Vector2 _destination) {
         // If no tile -- TODO : Check and Add permissivity on Tiles
         if (currentMap.GetTile(0, (int)_destination.x, (int)_destination.y) == null)

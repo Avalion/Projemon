@@ -8,7 +8,9 @@ public abstract class Item {
     public enum PossibleTarget { All, Ally, Enemy, WildMonster };
     public PossibleTarget possibleTarget;
 
-    public int cost = 0;
+    public int price = 0;
+
+    public string name;
 
     /**
      * Vérifications des règles d'utilisation des objets.
@@ -40,7 +42,7 @@ public abstract class Item {
         Effect(caster, target);
 
         if (usability == Usability.Once) {
-            // TODO : Remove item from Battler Collection !
+           
         }
     }
 

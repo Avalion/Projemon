@@ -27,6 +27,10 @@ public class MathUtility {
         return new RectOffset((int)(_in.left * _value), (int)(_in.right * _value), (int)(_in.top * _value), (int)(_in.bottom * _value));
     }
 
+    public static float Alea(float[] _float) {
+        return _float[Random.Range(0, _float.Length - 1)];
+    }
+
     public static bool IsPair(int _value) { 
         return _value % 2 == 0; 
     }

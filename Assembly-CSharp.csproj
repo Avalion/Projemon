@@ -46,6 +46,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\Actions\ActionAddItem.cs" />
      <Compile Include="Assets\Scripts\Actions\ActionAddMonster.cs" />
      <Compile Include="Assets\Scripts\Actions\ActionEXP.cs" />
      <Compile Include="Assets\Scripts\Actions\ActionFadeScreen.cs" />
@@ -55,6 +56,7 @@
      <Compile Include="Assets\Scripts\Actions\ActionMove.cs" />
      <Compile Include="Assets\Scripts\Actions\ActionPNJBattle.cs" />
      <Compile Include="Assets\Scripts\Actions\ActionPlaySound.cs" />
+     <Compile Include="Assets\Scripts\Actions\ActionRemoveItem.cs" />
      <Compile Include="Assets\Scripts\Actions\ActionTeleport.cs" />
      <Compile Include="Assets\Scripts\Actions\ActionTransform.cs" />
      <Compile Include="Assets\Scripts\Actions\ActionWait.cs" />

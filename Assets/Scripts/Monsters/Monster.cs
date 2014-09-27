@@ -5,11 +5,11 @@
  */
 public class Monster {
     public const string IMAGE_FOLDER = "Battlers";
-    public const bool REFILL_LIFE_LVL_UP = true;
-    public const bool REFILL_STAMINA_LVL_UP = true;
+    public static bool REFILL_LIFE_LVL_UP = true;
+    public static bool REFILL_STAMINA_LVL_UP = true;
 
 
-    public MonsterPattern monsterPattern;
+    public DBMonsterPattern monsterPattern;
 
     // Type
     public enum Type {
@@ -117,21 +117,21 @@ public class Monster {
     }
     public void LevelUp() {
         lvl++;
-        int tempLife = Random.Range((int)monsterPattern.lifeUp.x, (int)monsterPattern.lifeUp.y + 1);
+        int tempLife = Random.Range((int)monsterPattern.lifeUp.x, (int)monsterPattern.lifeUp.y);
         maxLife += tempLife;
         life = REFILL_LIFE_LVL_UP ? maxLife : life + tempLife;
-        int tempStamina = Random.Range((int)monsterPattern.staminaUp.x, (int)monsterPattern.staminaUp.y + 1);
+        int tempStamina = Random.Range((int)monsterPattern.staminaUp.x, (int)monsterPattern.staminaUp.y);
         maxStamina += tempStamina;
         stamina = REFILL_STAMINA_LVL_UP ? maxStamina : stamina + tempLife;
-        stat_might += Random.Range((int)monsterPattern.stat_mightUp.x, (int)monsterPattern.stat_mightUp.y + 1);
-        stat_resistance += Random.Range((int)monsterPattern.stat_resistanceUp.x, (int)monsterPattern.stat_resistanceUp.y + 1);
-        stat_luck += Random.Range((int)monsterPattern.stat_luckUp.x, (int)monsterPattern.stat_luckUp.y + 1);
-        stat_speed += Random.Range((int)monsterPattern.stat_speedUp.x, (int)monsterPattern.stat_speedUp.y + 1);
+        stat_might += Random.Range((int)monsterPattern.mightUp.x, (int)monsterPattern.mightUp.y);
+        stat_resistance += Random.Range((int)monsterPattern.resistanceUp.x, (int)monsterPattern.resistanceUp.y);
+        stat_luck += Random.Range((int)monsterPattern.luckUp.x, (int)monsterPattern.luckUp.y);
+        stat_speed += Random.Range((int)monsterPattern.speedUp.x, (int)monsterPattern.speedUp.y);
 
-        foreach (MonsterPattern.AttackLevelUp a in monsterPattern.attackLevelUp) {
-            if (a.lvl == lvl)
-                attacks[0]=a.attack;
-        }
+        //foreach (MonsterPattern.AttackLevelUp a in monsterPattern.attackLevelUp) {
+        //    if (a.lvl == lvl)
+        //        attacks[0]=a.attack;
+        //}
     }
 
     public void CalcExpRequired() {
@@ -169,18 +169,18 @@ public class Monster {
 
     /* Contstructors
      */
-    public static Monster Generate(MonsterPattern _pattern, int lvlMin, int lvlMax) {
+    public static Monster Generate(DBMonsterPattern _pattern, int lvlMin, int lvlMax) {
         int lvl = Random.Range(lvlMin, lvlMax);
         Monster m = new Monster();
         
         m.monsterPattern = _pattern;
         m.monsterName = _pattern.name;
-        m.stat_might = _pattern.stat_might;
-        m.stat_resistance = _pattern.stat_resistance;
-        m.stat_luck = _pattern.stat_luck;
-        m.stat_speed = _pattern.stat_speed;
-        m.maxLife = _pattern.maxLife;
-        m.maxStamina = _pattern.maxStamina;
+        m.stat_might = _pattern.start_might;
+        m.stat_resistance = _pattern.start_resistance;
+        m.stat_luck = _pattern.start_luck;
+        m.stat_speed = _pattern.start_speed;
+        m.maxLife = _pattern.start_life;
+        m.maxStamina = _pattern.start_stamina;
         m.battleSprite = Resources.LoadAssetAtPath(Config.GetResourcePath(IMAGE_FOLDER) + _pattern.battleSprite, typeof(Texture2D)) as Texture2D;
         m.miniSprite = Resources.LoadAssetAtPath(Config.GetResourcePath(IMAGE_FOLDER) + _pattern.miniSprite, typeof(Texture2D)) as Texture2D;
         m.type = _pattern.type;

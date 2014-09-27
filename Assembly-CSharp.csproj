@@ -67,6 +67,7 @@
      <Compile Include="Assets\Scripts\Database\Database.cs" />
      <Compile Include="Assets\Scripts\Database\SQLTable.cs" />
      <Compile Include="Assets\Scripts\Database\Tables\DBMonster.cs" />
+     <Compile Include="Assets\Scripts\Database\Tables\DBMonsterPattern.cs" />
      <Compile Include="Assets\Scripts\Database\Tables\DBSystem.cs" />
      <Compile Include="Assets\Scripts\Items\CaptureScroll.cs" />
      <Compile Include="Assets\Scripts\Items\Item.cs" />
@@ -80,7 +81,6 @@
      <Compile Include="Assets\Scripts\Monsters\Attack.cs" />
      <Compile Include="Assets\Scripts\Monsters\Monster.cs" />
      <Compile Include="Assets\Scripts\Monsters\MonsterCollection.cs" />
-     <Compile Include="Assets\Scripts\Patterns.cs" />
      <Compile Include="Assets\Scripts\Player\Battler.cs" />
      <Compile Include="Assets\Scripts\Player\InputManager.cs" />
      <Compile Include="Assets\Scripts\Player\Player.cs" />
@@ -90,7 +90,6 @@
      <Compile Include="Assets\Scripts\Utility\Utility.cs" />
      <None Include="Assets\System\Maps\0.txt" />
      <None Include="Assets\System\BattleAnims\0.txt" />
-     <None Include="Assets\System\Datas\Patterns.txt" />
      <None Include="Assets\System\Datas\Attacks.txt" />
  <Reference Include="Mono.Data.Sqlite">
  <HintPath>C:/Users/JULIAN/Documents/GIT/Projemon/Assets/Plugins/Mono.Data.Sqlite.dll</HintPath>

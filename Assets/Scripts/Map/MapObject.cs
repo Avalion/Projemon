@@ -258,13 +258,13 @@ public class MapObject : MonoBehaviour {
         
         switch (cond) {
             case ExecutionCondition.Action:
-                return InputManager.Current.GetKeyDown(KeyCode.Return) && (
+                return (InputManager.Current.GetKeyDown(KeyCode.Return) || InputManager.Current.GetKeyDown(KeyCode.Space)) && (
                     Player.Current.orientation == Orientation.Down  && Player.Current.mapCoords == mapCoords + new Vector2 (0,-1) ||
                     Player.Current.orientation == Orientation.Up    && Player.Current.mapCoords == mapCoords + new Vector2 (0, 1) ||
                     Player.Current.orientation == Orientation.Left  && Player.Current.mapCoords == mapCoords + new Vector2 ( 1,0) ||
                     Player.Current.orientation == Orientation.Right && Player.Current.mapCoords == mapCoords + new Vector2 (-1,0));
             case ExecutionCondition.ActionFace:
-                return InputManager.Current.GetKeyDown(KeyCode.Return) && (
+                return (InputManager.Current.GetKeyDown(KeyCode.Return) || InputManager.Current.GetKeyDown(KeyCode.Space)) && (
                     Player.Current.orientation == Orientation.Down  && orientation == Orientation.Up    && Player.Current.mapCoords == mapCoords + new Vector2(0,-1) ||
                     Player.Current.orientation == Orientation.Up    && orientation == Orientation.Down  && Player.Current.mapCoords == mapCoords + new Vector2(0, 1) ||
                     Player.Current.orientation == Orientation.Left  && orientation == Orientation.Right && Player.Current.mapCoords == mapCoords + new Vector2( 1,0) ||

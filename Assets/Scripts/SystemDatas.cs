@@ -67,67 +67,6 @@ public class SystemDatas {
             m.Export();
     }
 
-    private static string MONSTERPATTERN_FILE = Config.GetConfigPath("Datas") + "Patterns.txt";
-    public static List<MonsterPattern> GetMonsterPatterns() {
-        List<MonsterPattern> list = new List<MonsterPattern>();
-        if (!File.Exists(MONSTERPATTERN_FILE))
-            return list;
-
-        StreamReader sr = new StreamReader(Config.GetConfigPath("Datas") + "Patterns.txt");
-
-        string line = sr.ReadLine();
-        int count = 1;
-        while (line != "" && line != null) {
-            MonsterPattern p = new MonsterPattern();
-
-            string[] values = line.Split('#');
-            p.ID = count;
-            p.name = values[0];
-            p.type = (Monster.Type)int.Parse(values[1]);
-            p.maxLife = int.Parse(values[2]);
-            p.maxStamina = int.Parse(values[3]);
-            p.stat_might = int.Parse(values[4]);
-            p.stat_resistance = int.Parse(values[5]);
-            p.stat_speed = int.Parse(values[6]);
-            p.stat_luck = int.Parse(values[7]);
-            p.capture_rate = float.Parse(values[8]);
-            p.battleSprite = values[9];
-            try {
-                p.miniSprite = values[10];
-            } catch { }
-
-            list.Add(p);
-
-            line = sr.ReadLine();
-            count++;
-        }
-
-        sr.Dispose();
-        return list;
-    }
-    public static void SetMonsterPatterns(List<MonsterPattern> _elements) {
-        if (_elements.Count == 0) {
-            if (File.Exists(MONSTERPATTERN_FILE))
-                File.Delete(MONSTERPATTERN_FILE);
-            return;
-        }
-
-        StreamWriter sw = new StreamWriter(MONSTERPATTERN_FILE);
-        foreach (MonsterPattern p in _elements)
-            sw.WriteLine(p.name + "#" +
-                    (int)p.type + "#" +
-                         p.maxLife + "#" +
-                         p.maxStamina + "#" +
-                         p.stat_might + "#" +
-                         p.stat_resistance + "#" +
-                         p.stat_speed + "#" +
-                         p.stat_luck + "#" +
-                         p.capture_rate + "#" +
-                         p.battleSprite + "#" +
-                         p.miniSprite);
-        sw.Dispose();
-    }
-
     private static string ATTACKS_FILE = Config.GetConfigPath("Datas") + "Attacks.txt";
     public static List<Attack> GetAttacks() {
         List<Attack> list = new List<Attack>();

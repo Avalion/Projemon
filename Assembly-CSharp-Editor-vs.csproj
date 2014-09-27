@@ -56,7 +56,6 @@
      <Compile Include="Assets\Editor\Utility\EditorUtility.cs" />
      <None Include="Assets\System\Maps\0.txt" />
      <None Include="Assets\System\BattleAnims\0.txt" />
-     <None Include="Assets\System\Datas\Patterns.txt" />
      <None Include="Assets\System\Datas\Attacks.txt" />
  <Reference Include="Mono.Data.Sqlite">
  <HintPath>C:/Users/JULIAN/Documents/GIT/Projemon/Assets/Plugins/Mono.Data.Sqlite.dll</HintPath>
@@ -64,6 +63,10 @@
  <Reference Include="UnityEditor.Graphs">
  <HintPath>C:/Program Files (x86)/Unity/Editor4.5/Data/Managed/UnityEditor.Graphs.dll</HintPath>
  </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Assembly-CSharp-vs.csproj">
+      <Project>{CD596982-6262-51E3-DFEC-5092D949A83E}</Project>      <Name>Assembly-CSharp-vs</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

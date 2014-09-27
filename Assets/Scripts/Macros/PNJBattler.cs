@@ -10,7 +10,7 @@ public class PNJBattler : Battler {
 
     // TEMPORARY
     public override void OnStart() {
-        monsters.Add(Monster.Generate(SystemDatas.GetMonsterPatterns()[5], 5, 5));
+        monsters.Add(Monster.Generate(DataBase.SelectById<DBMonsterPattern>(5), 5, 5));
 
         List<PossibleMovement> listMovement = new List<PossibleMovement>() { PossibleMovement.LookPlayer };
         actions.Add(new ActionMessage(null, "Waouh, un autre dresseur de monstre ! Laisse moi tester tes talents !", false));

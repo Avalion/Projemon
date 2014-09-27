@@ -34,17 +34,19 @@ public class Player : Battler {
         locked = 0;
     }
 
+    public void Awake() {
+        if (!DataBase.IsConnected) DataBase.Connect(Application.dataPath + "/database.sql");
+    }
+
     // TEMPORARY !
     public new void Start() {
         CaptureScroll scroll = new CaptureScroll();
         scroll.name = "Capture Scroll";
         actions.Add(new ActionAddItem(scroll, Player.Current));
         
-        monsters.Add(Monster.Generate(SystemDatas.GetMonsterPatterns()[0], 5, 5));
+        monsters.Add(Monster.Generate(DataBase.SelectById<DBMonsterPattern>(0), 5, 5));
 
-        MonsterCollection.capturedMonsters.Add(Monster.Generate(SystemDatas.GetMonsterPatterns()[3], 5, 5));
-
-        DataBase.Connect(Application.dataPath + "/database.sql");
+        MonsterCollection.capturedMonsters.Add(Monster.Generate(DataBase.SelectById<DBMonsterPattern>(3), 5, 5));
     }
 
     public override void OnUpdate() {
@@ -64,5 +66,9 @@ public class Player : Battler {
             currentMovement = Vector2.zero;
             isMoving = false;
         }
+    }
+
+    public void OnDestroy() {
+        DataBase.Close();
     }
 }

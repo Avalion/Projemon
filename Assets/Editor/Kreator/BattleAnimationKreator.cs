@@ -46,7 +46,7 @@ public class BattleAnimationKreator : EditorWindow {
 
 
     // Launch
-    [MenuItem("Creation/Battle Animations")]
+    [MenuItem("Creation/Battle Animations &B")]
     public static void Init() {
         BattleAnimationKreator window = EditorWindow.GetWindow<BattleAnimationKreator>();
         window.minSize = new Vector2(1000, 500);

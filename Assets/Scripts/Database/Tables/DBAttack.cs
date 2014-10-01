@@ -5,7 +5,7 @@ using UnityEngine;
  * this table manage attack patterns
  */
 public class DBAttack : SQLTable {
-    public string name = "null";
+    public string name;
     public Monster.Type type;
 
     public int power;
@@ -52,7 +52,7 @@ public class DBAttack : SQLTable {
             Stringize((int)type) + ", " + 
             Stringize(power) + ", " +
             Stringize(accuracy) + ", " +
-            Stringize(stateChange) + ", " +
+            Stringize((int)stateChange) + ", " +
             Stringize(stateChangeAccuracy) + ", " +
             Stringize(battleAnimationID);
     }

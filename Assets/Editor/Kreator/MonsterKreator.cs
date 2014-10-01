@@ -22,7 +22,7 @@ public class MonsterKreator : EditorWindow {
 
     
     // Launch
-    [MenuItem("Creation/Monsters")]
+    [MenuItem("Creation/Monsters &M")]
     public static void Init() {
         MonsterKreator window = EditorWindow.GetWindow<MonsterKreator>();
         window.minSize = new Vector2(1000, 500);
@@ -79,7 +79,7 @@ public class MonsterKreator : EditorWindow {
                 elements.Add(new DBMonsterPattern() { ID = elements.Count });
             while (elements.Count > numberElements)
                 elements.RemoveAt(elements.Count - 1);
-            Select(Mathf.Min(selectedElement, numberElements) - 1);
+            Select(Mathf.Clamp(selectedElement, 0, numberElements - 1));
         }
         GUILayout.EndHorizontal();
 

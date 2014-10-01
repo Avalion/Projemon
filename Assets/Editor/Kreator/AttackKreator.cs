@@ -8,10 +8,10 @@ using System.Collections.Generic;
  */
 public class AttackKreator : EditorWindow {
     public static List<DBAttack> elements = new List<DBAttack>();
-    int selectedElement = -1;
-    DBAttack current {
-        get { return elements[selectedElement]; }
-    }
+    private int selectedElement = -1;
+    private DBAttack current { get { return elements[selectedElement]; } }
+
+    private static int numberElements = 0;
 
     public static List<BattleAnimation> battleAnimations;
 
@@ -19,7 +19,7 @@ public class AttackKreator : EditorWindow {
     Vector2 _scrollPosList = Vector2.zero;
 
     // Launch
-    [MenuItem("Creation/Attacks")]
+    [MenuItem("Creation/Attacks &A")]
     public static void Init() {
         AttackKreator window = EditorWindow.GetWindow<AttackKreator>();
         window.minSize = new Vector2(1000, 500);
@@ -56,7 +56,18 @@ public class AttackKreator : EditorWindow {
             } else {
                 elements[selectedElement] = new DBAttack();
             }
-        } 
+        }
+        GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Nb ");
+        numberElements = EditorGUILayout.IntField(numberElements);
+        if (GUILayout.Button("Apply")) {
+            while (elements.Count < numberElements)
+                elements.Add(new DBAttack() { ID = elements.Count });
+            while (elements.Count > numberElements)
+                elements.RemoveAt(elements.Count - 1);
+            Select(Mathf.Clamp(selectedElement, 0, numberElements - 1));
+        }
         GUILayout.EndHorizontal();
         GUILayout.EndVertical();
 
@@ -68,6 +79,9 @@ public class AttackKreator : EditorWindow {
             GUILayout.Label("- Stats");
             current.power = EditorGUILayout.IntField("Power", current.power);
             current.accuracy = EditorGUILayout.IntField("Precision", current.accuracy);
+
+            current.stateChange = (Monster.State)EditorGUILayout.EnumPopup("State change", current.stateChange);
+            current.stateChangeAccuracy = EditorGUILayout.IntField("Precision", current.stateChangeAccuracy);
 
             List<string> names = new List<string>();
             foreach (BattleAnimation ba in battleAnimations)

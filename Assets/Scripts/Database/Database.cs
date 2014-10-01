@@ -49,6 +49,7 @@ public class DataBase {
     private static void V0toV1() {
         ExecCommand(new DBMonster().Create());
         ExecCommand(new DBMonsterPattern().Create());
+        ExecCommand(new DBAttack().Create());
     }
 
     // Destructors

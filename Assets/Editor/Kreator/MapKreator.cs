@@ -34,7 +34,7 @@ public class MapKreator : EditorWindow {
     public bool drawRectMode = true;
 
     // Launch
-    [MenuItem("Creation/Maps")]
+    [MenuItem("Creation/Maps &L")]
     public static void Init() {
         MapKreator window = EditorWindow.GetWindow<MapKreator>();
         window.minSize = new Vector2(1200, 500);

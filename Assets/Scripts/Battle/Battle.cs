@@ -78,8 +78,8 @@ public class Battle : MonoBehaviour {
     public void Win() {
         Lock();
         if (enemy != null) {
-            Message = "You defeated " + enemy.name + " !";
-            Message = enemy.name + " gave you " + enemy.goldCount + " gold !";
+            Message = "Vous avez battu " + enemy.name + " !";
+            Message = "Vous recevez " + enemy.goldCount + " PO !";
             Player.Current.goldCount += enemy.goldCount;
         }
         
@@ -193,10 +193,12 @@ public class Battle : MonoBehaviour {
 
     public void DisplayAttackPanel() {
         int menuHeight = 150;
-        Attack[] attacks = Player.Current.monsters[Player.Current.activeMonster].attacks;
+        DBAttack[] attacks = Player.Current.monsters[Player.Current.activeMonster].attacks;
         List<GUIContent> list = new List<GUIContent>();
 
-        foreach (Attack a in attacks) {
+        foreach (DBAttack a in attacks) {
+            if (a == null)
+                continue;
             if (a.name != "null")
                 list.Add(new GUIContent(a.name));
         }

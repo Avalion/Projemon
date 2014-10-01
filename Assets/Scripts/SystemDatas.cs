@@ -66,46 +66,4 @@ public class SystemDatas {
         foreach (Map m in _elements)
             m.Export();
     }
-
-    private static string ATTACKS_FILE = Config.GetConfigPath("Datas") + "Attacks.txt";
-    public static List<Attack> GetAttacks() {
-        List<Attack> list = new List<Attack>();
-        if (!File.Exists(ATTACKS_FILE))
-            return list;
-
-        StreamReader sr = new StreamReader(ATTACKS_FILE);
-
-        string line = sr.ReadLine();
-        while (line != "" && line != null) {
-            Attack a = new Attack();
-
-            string[] values = line.Split('#');
-            a.name = values[0];
-            a.type = (Monster.Type)int.Parse(values[1]);
-            a.power = int.Parse(values[2]);
-            a.precision = int.Parse(values[3]);
-            a.battleAnimationID = int.Parse(values[4]);
-
-            list.Add(a);
-
-            line = sr.ReadLine();
-        }
-
-        sr.Dispose();
-        return list;
-    }
-    public static void SetAttacks(List<Attack> _elements) {
-        if (_elements.Count == 0) {
-            if (File.Exists(ATTACKS_FILE))
-                File.Delete(ATTACKS_FILE);
-            return;
-        }
-
-        StreamWriter sw = new StreamWriter(ATTACKS_FILE);
-        foreach (Attack a in _elements)
-            sw.WriteLine(a.name + "#" + (int)a.type + "#" + a.power + "#" + a.precision + "#" + a.battleAnimationID);
-        sw.Dispose();
-    }
-
-
 }

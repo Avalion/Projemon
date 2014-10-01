@@ -11,7 +11,7 @@ public class Monster {
 
     public DBMonsterPattern monsterPattern;
 
-    // Type
+    #region Type
     public enum Type {
         Water,
         Fire,
@@ -27,6 +27,11 @@ public class Monster {
         Metal,
         COUNT
     }
+    public static Texture2D GetTypeIcon(Type _type) {
+        return InterfaceUtility.GetTexture(Config.GetResourcePath("System/Icons") + _type.ToString() + ".png");
+    }
+
+    public Type type;
 
     public static float[][] resistances = new float[0][];
     public static float GetTypeResistance(Type _attack, Type _against) {
@@ -49,13 +54,9 @@ public class Monster {
 
         return resistances[(int)_attack][(int)_against];
     }
+    #endregion
 
-    public static Texture2D GetTypeIcon(Type _type) {
-        return InterfaceUtility.GetTexture(Config.GetResourcePath("System/Icons") + _type.ToString() + ".png");
-    }
-
-    public Type type;
-
+    #region State
     public enum State {
         Healthy,
         Dead,
@@ -65,7 +66,20 @@ public class Monster {
         Sleepy,
         COUNT
     }
+    public static string GetStateAltName(State s) {
+        switch (s) {
+            case State.Healthy: return " est en pleine forme !";
+            case State.Dead: return " est mort !";
+            case State.Poisoned: return " est empoisonné";
+            case State.Insane: return " devient fou !";
+            case State.Paralized: return " est paralysé !";
+            case State.Sleepy: return " s'endors...";
+        }
+        return "";
+    }
+    
     public State state;
+    #endregion
 
     public string monsterName;
 
@@ -101,7 +115,7 @@ public class Monster {
     public Texture2D battleSprite;
     public Texture2D miniSprite;
 
-    public Attack[] attacks = new Attack[4] { new Attack() { name = "null" }, new Attack() { name = "null" }, new Attack() { name = "null" }, new Attack() { name = "null" } };
+    public DBAttack[] attacks = new DBAttack[4];
 
 
     /* Experience

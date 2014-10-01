@@ -54,14 +54,14 @@ public class CaptureScroll : Item {
         //Debug.Log(captureRate + "#" + random);
         if (random <= captureRate) {
             // SUCCESS
-            Battle.Current.Message = target[0].monsterName + " is captured !";
+            Battle.Current.Message = target[0].monsterName + " est capturé !";
 
             MonsterCollection.AddToCollection(target[0]);
 
             Battle.Current.Win();
         } else {
             // FAIL
-            Battle.Current.Message = "Capture has failed !";
+            Battle.Current.Message = "Mince, ca n'a pas réussi !";
         }
     }
 }

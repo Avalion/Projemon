@@ -32,7 +32,6 @@ public class InputManager : MonoBehaviour {
     }
     public float XAxisScreen01 {
         get {
-            System.Diagnostics.Debug.Assert(Screen.width > 0);
             return XAxisPixels / Screen.width;
         }
     }
@@ -41,7 +40,6 @@ public class InputManager : MonoBehaviour {
     }
     public float YAxisScreen01 {
         get {
-            System.Diagnostics.Debug.Assert(Screen.height > 0);
             return YAxisPixels / Screen.height;
         }
     }

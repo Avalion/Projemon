@@ -16,7 +16,7 @@ public class MonsterKreator : EditorWindow {
     public static List<string> battlersTextures = new List<string>();
     public static Texture2D previewBattleSprite;
 
-    public static List<Attack> attackList = new List<Attack>();
+    public static List<DBAttack> attackList = new List<DBAttack>();
 
     private Vector2 _scrollPosList = Vector2.zero;
 
@@ -40,7 +40,7 @@ public class MonsterKreator : EditorWindow {
         elements = DataBase.Select<DBMonsterPattern>();
         numberElements = elements.Count;
 
-        attackList = SystemDatas.GetAttacks();
+        attackList = DataBase.Select<DBAttack>();
     }
 
     public static void InitStyles() {
@@ -210,7 +210,7 @@ public class MonsterKreator : EditorWindow {
         GUILayout.FlexibleSpace();
         if (GUILayout.Button("OK")) {
             if (elements.Find(P => P.name == null) != null) {
-                Debug.LogError("You can't save if some élements have no name !");
+                Debug.LogError("You can't save if some elements have no name !");
             } else {
                 foreach (DBMonsterPattern pattern in elements)
                     DataBase.Replace<DBMonsterPattern>(pattern);

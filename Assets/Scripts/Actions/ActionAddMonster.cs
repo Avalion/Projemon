@@ -16,6 +16,7 @@ public class ActionAddMonster : MapObjectAction {
         lvl = _lvl;
 
         m = Monster.Generate(DataBase.SelectById<DBMonsterPattern>(_patternId), lvl, lvl);
+        m.battler = Player.Current;
     }
 
     public override void Execute() {

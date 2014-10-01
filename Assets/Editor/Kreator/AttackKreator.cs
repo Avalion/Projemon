@@ -7,9 +7,9 @@ using System.Collections.Generic;
  * This class provides gestion of Attacks
  */
 public class AttackKreator : EditorWindow {
-    public static List<Attack> elements = new List<Attack>();
+    public static List<DBAttack> elements = new List<DBAttack>();
     int selectedElement = -1;
-    Attack current {
+    DBAttack current {
         get { return elements[selectedElement]; }
     }
 
@@ -28,7 +28,10 @@ public class AttackKreator : EditorWindow {
 
         InterfaceUtility.ClearAllCache();
 
-        elements = SystemDatas.GetAttacks();
+        if (!DataBase.IsConnected) DataBase.Connect(Application.dataPath + "/database.sql");
+
+        elements = DataBase.Select<DBAttack>();
+
         battleAnimations = SystemDatas.GetBattleAnimations();
     }
 
@@ -36,14 +39,14 @@ public class AttackKreator : EditorWindow {
     public void OnGUI() {
         GUILayout.BeginHorizontal();
         GUILayout.BeginVertical(GUILayout.Width(150));
-        int value = EditorUtility.DisplayList<Attack>(selectedElement, elements, ref _scrollPosList);
+        int value = EditorUtility.DisplayList<DBAttack>(selectedElement, elements, ref _scrollPosList);
         if (selectedElement != value) {
             Select(value);
         }
         GUILayout.FlexibleSpace();
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Add")) {
-            elements.Add(new Attack());
+            elements.Add(new DBAttack());
             selectedElement = elements.Count - 1;
         }
         if (GUILayout.Button("Delete") && elements.Count > 1) {
@@ -51,7 +54,7 @@ public class AttackKreator : EditorWindow {
                 elements.RemoveAt(selectedElement);
                 Select(elements.Count - 1);
             } else {
-                elements[selectedElement] = new Attack();
+                elements[selectedElement] = new DBAttack();
             }
         } 
         GUILayout.EndHorizontal();
@@ -62,24 +65,17 @@ public class AttackKreator : EditorWindow {
             current.name = EditorGUILayout.TextField("Name", current.name);
             current.type = (Monster.Type)EditorGUILayout.EnumPopup("Type", current.type);
 
-            GUILayout.BeginHorizontal(GUILayout.Height(100));
-
-            GUILayout.BeginVertical();
-            GUILayout.FlexibleSpace();
-            
-            GUILayout.FlexibleSpace();
-            GUILayout.EndVertical();
-            GUILayout.EndHorizontal();
-
             GUILayout.Label("- Stats");
             current.power = EditorGUILayout.IntField("Power", current.power);
-            current.precision = EditorGUILayout.IntField("Precision", current.precision);
+            current.accuracy = EditorGUILayout.IntField("Precision", current.accuracy);
 
             List<string> names = new List<string>();
             foreach (BattleAnimation ba in battleAnimations)
                 names.Add(InterfaceUtility.IntString(ba.ID + 1, 3) + ": " + ba.name);
+
             int index = names.FindIndex(P => P.StartsWith(InterfaceUtility.IntString(current.battleAnimationID + 1, 3)));
             index = EditorGUILayout.Popup("Battle animation", index, names.ToArray());
+            
             if (index >= 0 && index < battleAnimations.Count)
                 current.battleAnimationID = battleAnimations[index].ID;
         }
@@ -90,8 +86,14 @@ public class AttackKreator : EditorWindow {
         GUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
         if (GUILayout.Button("OK")) {
-            SystemDatas.SetAttacks(elements);
-            Close();
+            if (elements.Find(P => P.name == null) != null) {
+                Debug.LogError("You can't save if some elements have no name !");
+            } else {
+                foreach (DBAttack attack in elements)
+                    DataBase.Replace<DBAttack>(attack);
+                Close();
+            }
+            
         }
         GUILayout.EndHorizontal();
     }

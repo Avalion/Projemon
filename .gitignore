@@ -2,7 +2,8 @@ Library
 obj
 ProjectSettings
 Temp
-ProjeMon-csharp.suo
-/Projemon-csharp.v12.suo
-/Projemon-csharp.sln.docstates.suo
 /Assets/01.unity
+/*.sln
+/*.suo
+/*.csproj
+/*.userprefs

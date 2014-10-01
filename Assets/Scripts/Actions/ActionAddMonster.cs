@@ -5,25 +5,26 @@
  */
 [System.Serializable]
 public class ActionAddMonster : MapObjectAction {
-    MonsterPattern m;
+    public int lvl;
 
-    int lvl;
+    private Monster m;
 
     public ActionAddMonster() {
-        
+        throw new System.Exception("ActionAddMonster have to be initialized");
     }
-    public ActionAddMonster(MonsterPattern _m, int _lvl) {
-        m = _m;
+    public ActionAddMonster(int _patternId, int _lvl) {
         lvl = _lvl;
+
+        m = Monster.Generate(DataBase.SelectById<DBMonsterPattern>(_patternId), lvl, lvl);
     }
 
     public override void Execute() {
-        MonsterCollection.AddToCollection(Monster.GenerateFromPattern(m, lvl, lvl));
+        MonsterCollection.AddToCollection(m);
         Terminate();
     }
 
 
     public override string InLine() {
-        return "Add Monster " + m.name + " at level " + lvl+".";
+        return "Add Monster " + m.monsterPattern.name + " at level " + lvl + ".";
     }
 }

@@ -186,7 +186,7 @@ public class MonsterKreator : EditorWindow {
             mp.capture_rate = EditorGUILayout.FloatField("Capture Rate", mp.capture_rate);
 
             if (attackList.Count == 0) {
-                GUILayout.Label("Please Define attacks !", InterfaceUtility.ErroStyle);
+                GUILayout.Label("Please define attacks !", InterfaceUtility.ErroStyle);
             } else {
                 GUILayout.BeginHorizontal();
                 GUILayout.Label("- Attacks");

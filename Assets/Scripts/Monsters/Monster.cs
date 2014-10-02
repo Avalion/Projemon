@@ -143,8 +143,9 @@ public class Monster {
         stat_speed += Random.Range((int)monsterPattern.speedUp.x, (int)monsterPattern.speedUp.y);
 
         foreach (DBMonsterPattern.AttackLevelUp a in monsterPattern.attackLevelUp) {
-            if (a.lvl == lvl)
-                attacks[0]=a.attack;
+            if (a.lvl == lvl) {
+                // TODO !
+            }
         }
     }
 

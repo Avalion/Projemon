@@ -185,22 +185,22 @@ public class MonsterKreator : EditorWindow {
             
             mp.capture_rate = EditorGUILayout.FloatField("Capture Rate", mp.capture_rate);
 
-            //GUILayout.Label("- Attacks");
-            //List<string> attackListString = EditorUtility.ToStringList<Attack>(attackList);
+            GUILayout.Label("- Attacks");
+            List<string> attackListString = EditorUtility.ToStringList<DBAttack>(attackList);
 
-            //foreach(MonsterPattern.AttackLevelUp a in mp.attackLevelUp) {
-            //    GUILayout.BeginHorizontal();
-            //    a.lvl = EditorGUILayout.IntField(a.lvl);
-            //    int k = EditorGUILayout.Popup(attackList.IndexOf(a.attack),attackListString.ToArray());
-            //    a.attack = attackList[k];
-            //    GUILayout.EndHorizontal();
-            //}
-            //if (GUILayout.Button("Add")) {
-            //   mp.attackLevelUp.Add(new MonsterPattern.AttackLevelUp(){attack = attackList[0]});
-            //}
-            //if (GUILayout.Button("Delete")) {
-            //    mp.attackLevelUp.RemoveAt(mp.attackLevelUp.Count-1);
-            //}
+            foreach (DBMonsterPattern.AttackLevelUp a in mp.attackLevelUp) {
+                GUILayout.BeginHorizontal();
+                a.lvl = EditorGUILayout.IntField(a.lvl);
+                int k = EditorGUILayout.Popup(attackList.IndexOf(a.attack), attackListString.ToArray());
+                a.attack = attackList[k];
+                GUILayout.EndHorizontal();
+            }
+            if (GUILayout.Button("Add")) {
+                mp.attackLevelUp.Add(new DBMonsterPattern.AttackLevelUp() { attack = attackList[0], lvl = 0 });
+            }
+            if (GUILayout.Button("Delete")) {
+                mp.attackLevelUp.RemoveAt(mp.attackLevelUp.Count-1);
+            }
         }
         GUILayout.EndVertical();
 

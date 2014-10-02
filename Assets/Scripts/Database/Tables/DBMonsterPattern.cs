@@ -60,7 +60,7 @@ public class DBMonsterPattern : SQLTable {
         string[] attacks = reader.GetString(pos++).Split('#');
         attackLevelUp = new List<AttackLevelUp>();
         foreach (string attack in attacks) {
-            if (attack == "")
+            if (attack == "" || attack == null)
                 continue;
             string[] values = attack.Split(';');
             attackLevelUp.Add(new AttackLevelUp() { lvl = int.Parse(values[0]), attack = DataBase.SelectById<DBAttack>(int.Parse(values[1])) });

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Mono.Data.Sqlite;
+using System.Collections.Generic;
 
 public class DBMonsterPattern : SQLTable {
     public string name;
@@ -24,12 +25,11 @@ public class DBMonsterPattern : SQLTable {
     public string miniSprite;
 
 
-    //TODO !
-    //public struct AttackLevelUp {
-    //    public int lvl;
-    //    public Attack attack;
-    //}
-    //public List<AttackLevelUp> attackLevelUp = new List<AttackLevelUp>();
+    public class AttackLevelUp {
+        public int lvl;
+        public DBAttack attack;
+    }
+    public List<AttackLevelUp> attackLevelUp = new List<AttackLevelUp>();
 
 
     public override void FromRow(SqliteDataReader reader) {
@@ -55,7 +55,16 @@ public class DBMonsterPattern : SQLTable {
         capture_rate = reader.GetInt32(pos++); 
 
         battleSprite = reader.GetString(pos++); 
-        miniSprite = reader.GetString(pos++); 
+        miniSprite = reader.GetString(pos++);
+
+        string[] attacks = reader.GetString(pos++).Split('#');
+        attackLevelUp = new List<AttackLevelUp>();
+        foreach (string attack in attacks) {
+            if (attack == "" || attack == null)
+                continue;
+            string[] values = attack.Split(';');
+            attackLevelUp.Add(new AttackLevelUp() { lvl = int.Parse(values[0]), attack = DataBase.SelectById<DBAttack>(int.Parse(values[1])) });
+        }
     }
     public override string Fields() {
         return "name, type, " + 
@@ -65,7 +74,8 @@ public class DBMonsterPattern : SQLTable {
             "start_resistance, resistanceUpX, resistanceUpY, " +
             "start_luck, luckUpX, luckUpY, " +
             "start_speed, speedUpX, speedUpY, " + 
-            "capture_rate, battleSprite, miniSprite";
+            "capture_rate, battleSprite, miniSprite, " + 
+            "attackLeveled";
     }
     public override string TypedFields() {
         return "name text NOT NULL, type integer, " +
@@ -75,12 +85,18 @@ public class DBMonsterPattern : SQLTable {
             "start_resistance integer, resistanceUpX integer, resistanceUpY integer, " +
             "start_luck integer, luckUpX integer, luckUpY integer, " +
             "start_speed integer, speedUpX integer, speedUpY integer, " + 
-            "capture_rate integer, battleSprite text, miniSprite text";
+            "capture_rate integer, battleSprite text, miniSprite text, " + 
+            "attackLeveled text";
     }
     public override string TableName() {
         return "T_MonsterPattern";
     }
     public override string ToRow() {
+        string attacks = "";
+        foreach (AttackLevelUp attack in attackLevelUp) {
+            attacks += attack.lvl + ";" + attack.attack.ID + "#";
+        }
+
         return
             Stringize(name) + ", " +
             Stringize((int)type) + ", " +
@@ -101,7 +117,9 @@ public class DBMonsterPattern : SQLTable {
             Stringize(capture_rate) + ", " + 
 
             Stringize(battleSprite) + ", " + 
-            Stringize(miniSprite);
+            Stringize(miniSprite) + ", " + 
+            Stringize(attacks);
+
     }
 
     public override string ToString() {

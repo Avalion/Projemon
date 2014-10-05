@@ -185,22 +185,33 @@ public class MonsterKreator : EditorWindow {
             
             mp.capture_rate = EditorGUILayout.FloatField("Capture Rate", mp.capture_rate);
 
-            //GUILayout.Label("- Attacks");
-            //List<string> attackListString = EditorUtility.ToStringList<Attack>(attackList);
+            if (attackList.Count == 0) {
+                GUILayout.Label("Please define attacks !", InterfaceUtility.ErroStyle);
+            } else {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("- Attacks");
+                GUILayout.FlexibleSpace();
 
-            //foreach(MonsterPattern.AttackLevelUp a in mp.attackLevelUp) {
-            //    GUILayout.BeginHorizontal();
-            //    a.lvl = EditorGUILayout.IntField(a.lvl);
-            //    int k = EditorGUILayout.Popup(attackList.IndexOf(a.attack),attackListString.ToArray());
-            //    a.attack = attackList[k];
-            //    GUILayout.EndHorizontal();
-            //}
-            //if (GUILayout.Button("Add")) {
-            //   mp.attackLevelUp.Add(new MonsterPattern.AttackLevelUp(){attack = attackList[0]});
-            //}
-            //if (GUILayout.Button("Delete")) {
-            //    mp.attackLevelUp.RemoveAt(mp.attackLevelUp.Count-1);
-            //}
+                if (GUILayout.Button("Add"))
+                    mp.attackLevelUp.Add(new DBMonsterPattern.AttackLevelUp() { attack = attackList[0], lvl = 0 });
+                GUILayout.EndHorizontal();
+
+                List<string> attackListString = EditorUtility.ToStringList<DBAttack>(attackList);
+
+                foreach (DBMonsterPattern.AttackLevelUp a in mp.attackLevelUp) {
+                    GUILayout.BeginHorizontal();
+                    a.lvl = EditorGUILayout.IntField(a.lvl);
+                    int k = EditorGUILayout.Popup(attackList.IndexOf(a.attack), attackListString.ToArray());
+                    a.attack = attackList[k];
+
+                    if (GUILayout.Button("X")) {
+                        mp.attackLevelUp.RemoveAt(mp.attackLevelUp.IndexOf(a));
+                        GUIUtility.ExitGUI();
+                        return;
+                    }
+                    GUILayout.EndHorizontal();
+                }
+            }
         }
         GUILayout.EndVertical();
 

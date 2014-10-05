@@ -142,10 +142,11 @@ public class Monster {
         stat_luck += Random.Range((int)monsterPattern.luckUp.x, (int)monsterPattern.luckUp.y);
         stat_speed += Random.Range((int)monsterPattern.speedUp.x, (int)monsterPattern.speedUp.y);
 
-        //foreach (MonsterPattern.AttackLevelUp a in monsterPattern.attackLevelUp) {
-        //    if (a.lvl == lvl)
-        //        attacks[0]=a.attack;
-        //}
+        foreach (DBMonsterPattern.AttackLevelUp a in monsterPattern.attackLevelUp) {
+            if (a.lvl == lvl) {
+                // TODO !
+            }
+        }
     }
 
     public void CalcExpRequired() {

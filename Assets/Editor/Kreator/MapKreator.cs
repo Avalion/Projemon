@@ -247,7 +247,7 @@ public class MapKreator : EditorWindow {
                     int starty = (int)((startDragMousePosition.y - _rect.y) / resolution.y);
                     for (int i = (int)Mathf.Min(x, startx); i <= Mathf.Max(x, startx); i++) {
                         for (int j = (int)Mathf.Min(y, starty); j <= Mathf.Max(y, starty); j++) {
-                            SetTile(currentLayer, i, j);
+                            SetTile(currentLayer, i, j, patterns[selectedPattern], currentTileCoords);
                         }
                     }
                 }
@@ -257,7 +257,7 @@ public class MapKreator : EditorWindow {
                 if (drawRectMode) {
                     EditorGUI.DrawRect(new Rect(startDragMousePosition.x, startDragMousePosition.y, Event.current.mousePosition.x - startDragMousePosition.x, Event.current.mousePosition.y - startDragMousePosition.y), InterfaceUtility.HexaToColor("#00CC0044"));
                 } else {
-                    SetTile(currentLayer, x, y);
+                    SetTile(currentLayer, x, y, patterns[selectedPattern], currentTileCoords);
                 }
             }
         
@@ -282,8 +282,69 @@ public class MapKreator : EditorWindow {
         Repaint();
     }
 
-    public void SetTile(int layer, int x, int y) {
-        if (currentTileCoords.x < 0 || currentTileCoords.y < 0) {
+    public Vector2 CalcMapCoords(int layer, int x, int y, string pattern) {
+        bool[] l = new bool[8] { false, false, false, false, false, false, false, false };
+        // 0 down left // 1 down // 2 down right // 3 left // 4 right // 5 up left // 6 up // 7 up right 
+        
+        Map.Tile tile;
+        for (int i = -1; i <= 1; ++i)
+        for (int j = 1; j >= -1; --j) {
+            if (i == 0 && j == 0)
+                continue;
+            tile = current.GetTile(layer, x + j, y + i);
+            if (tile != null) l[0] = tile.originTile == pattern;
+        }
+
+        Vector2 mapCoords = Vector2.zero;
+
+        if (!l[1] && !l[3] && !l[4] && !l[6]) // no direct links
+            return new Vector2(0, 2);
+        if (l[0] && l[1] && l[2] && l[3] && l[4] && l[5] && l[6] && l[7] && l[8]) // Full links
+            return new Vector2(0, 0);
+        if (l[1] && l[3] && l[4] && l[6]) { // if 4 direct links
+            // 0 corners
+            if (!l[0] && !l[2] && !l[5] && !l[7]) 
+                return new Vector2(4, 0);
+            // 1 corner
+            if (l[0] && !l[2] && !l[5] && !l[7]) // Only down left corner
+                return new Vector2();
+            if (!l[0] && l[2] && !l[5] && !l[7]) // Only down right corner
+                return new Vector2();
+            if (!l[0] && !l[2] && l[5] && !l[7]) // Only up left corner
+                return new Vector2();
+            if (!l[0] && !l[2] && !l[5] && l[7]) // Only up right corner
+                return new Vector2();
+            // 2 corner
+            if (!l[0] && !l[2] && l[5] && l[7]) // all down
+                return new Vector2();
+            if (l[0] && !l[2] && l[5] && !l[7]) // all right
+                return new Vector2();
+            if (l[0] && l[2] && !l[5] && !l[7]) // all up
+                return new Vector2();
+            if (!l[0] && l[2] && !l[5] && l[7]) // all left
+                return new Vector2();
+            if (!l[0] && l[2] && l[5] && !l[7]) // Diag /
+                return new Vector2();
+            if (l[0] && !l[2] && !l[5] && l[7]) // Diag \
+                return new Vector2();
+            // 3  corners
+            if (!l[0] && l[2] && l[5] && l[7]) // Only down left corner missing
+                return new Vector2(4, 0);
+            if (l[0] && !l[2] && l[5] && l[7]) // Only down right corner missing
+                return new Vector2(1, 0);
+            if (l[0] && l[2] && !l[5] && l[7]) // Only up left corner missing
+                return new Vector2(2, 0);
+            if (l[0] && l[2] && l[5] && !l[7]) // Only up right corner missing
+                return new Vector2(3, 0);
+        }
+            
+        
+
+        return mapCoords;
+    }
+
+    public void SetTile(int layer, int x, int y, string pattern, Vector2 tileCoords) {
+        if (tileCoords.x < 0 || tileCoords.y < 0) {
             if (current.GetTile(currentLayer, x, y) != null) {
                 current.tiles.Remove(current.GetTile(currentLayer, x, y));
             }
@@ -293,17 +354,16 @@ public class MapKreator : EditorWindow {
             Map.Tile t = new Map.Tile();
             t.layer = layer;
             t.mapCoords = new Vector2(x, y);
-            t.originTile = patterns[selectedPattern];
-            t.originTileCoords = currentTileCoords;
+            t.originTile = pattern;
+            t.originTileCoords = tileCoords;
 
             t.LoadTexture();
 
             current.tiles.Add(t);
         } else {
             Map.Tile t = current.GetTile(layer, x, y);
-            t.mapCoords = new Vector2(x, y);
-            t.originTile = patterns[selectedPattern];
-            t.originTileCoords = currentTileCoords;
+            t.originTile = pattern;
+            t.originTileCoords = tileCoords;
 
             t.LoadTexture();
         }

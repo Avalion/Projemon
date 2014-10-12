@@ -207,7 +207,7 @@ public class MapKreator : EditorWindow {
                             if (Event.current.control) {
                                 Map.Tile reftile = current.tiles.Find(T => T.mapCoords.x == i && T.mapCoords.y == j && T.layer == 0);
                                 if (reftile != null) {
-                                    foreach (Map.Tile tile in current.tiles.FindAll(T => T != reftile && T.originTile == reftile.originTile && T.originTileCoords == reftile.originTileCoords))
+                                    foreach (Map.Tile tile in current.tiles.FindAll(T => T != reftile && T.originTile == reftile.originTile))
                                         current.collisions[(int)tile.mapCoords.x, (int)tile.mapCoords.y] = !current.collisions[i, j];
                                 }
                             }

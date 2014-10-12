@@ -193,7 +193,7 @@ public class Battle : MonoBehaviour {
 
     public void DisplayAttackPanel() {
         int menuHeight = 150;
-        DBAttack[] attacks = Player.Current.monsters[Player.Current.activeMonster].attacks;
+        DBAttack[] attacks = Player.Current.monsters[Player.Current.activeMonster].attacks.ToArray();
         List<GUIContent> list = new List<GUIContent>();
 
         foreach (DBAttack a in attacks) {

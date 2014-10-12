@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 /**
  * This class design a Monster type. 
@@ -115,7 +116,7 @@ public class Monster {
     public Texture2D battleSprite;
     public Texture2D miniSprite;
 
-    public DBAttack[] attacks = new DBAttack[4];
+    public List<DBAttack> attacks = new List<DBAttack>();
 
 
     /* Experience
@@ -129,7 +130,7 @@ public class Monster {
             LevelUp();
         }
     }
-    public void LevelUp() {
+    public void LevelUp(bool force = false) {
         lvl++;
         int tempLife = Random.Range((int)monsterPattern.lifeUp.x, (int)monsterPattern.lifeUp.y);
         maxLife += tempLife;
@@ -144,7 +145,13 @@ public class Monster {
 
         foreach (DBMonsterPattern.AttackLevelUp a in monsterPattern.attackLevelUp) {
             if (a.lvl == lvl) {
-                // TODO !
+                if (force) {
+                    attacks.Add(a.attack);
+                    if (attacks.Count > 4)
+                        attacks.RemoveAt(Random.Range(0, 3));
+                } else {
+                    // TODO
+                }
             }
         }
     }
@@ -201,9 +208,17 @@ public class Monster {
         m.type = _pattern.type;
 
         m.lvl = 1;
-        for (int i = 1; i < lvl; i++) {
-            m.LevelUp();
+        foreach (DBMonsterPattern.AttackLevelUp a in _pattern.attackLevelUp) {
+            if (a.lvl <= 1) {
+                m.attacks.Add(a.attack);
+                if (m.attacks.Count > 4)
+                    m.attacks.RemoveAt(Random.Range(0, 3));
+            }
         }
+        for (int i = 1; i < lvl; i++) {
+            m.LevelUp(true);
+        }
+        
         return m;
     }
 }

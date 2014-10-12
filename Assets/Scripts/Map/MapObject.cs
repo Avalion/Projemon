@@ -42,6 +42,7 @@ public class MapObject : MonoBehaviour {
     }
 
     public Vector2 mapCoords;
+    public Vector2 tempRestrictedCase = new Vector2(-1, -1);
 
     [HideInInspector] public bool isMoving;
     [HideInInspector] public Vector2 currentMovement;
@@ -166,38 +167,124 @@ public class MapObject : MonoBehaviour {
                 orientation = orientation == Orientation.Up ? Orientation.Down : orientation == Orientation.Down ? Orientation.Up : orientation == Orientation.Left ? Orientation.Right : Orientation.Left;
                 break;
             case PossibleMovement.FollowPlayer:
-                if (vector.magnitude == 1) { orientation = GetOrientation(vector); break; }
+                if(vector.magnitude == 1) { orientation = GetOrientation(vector); break; }
+                if ((tempRestrictedCase - mapCoords).magnitude > 1) { tempRestrictedCase = new Vector2(-1, -1); }
                 if(Mathf.Abs(vector.x) >= Mathf.Abs(vector.y)){
                     move = new Vector2(vector.x/Mathf.Abs(vector.x) , 0);
-                    if (!World.Current.CanMoveOn(this, mapCoords + move)) {
-                        if (vector.y != 0) { 
-                            move = new Vector2(0, this.orientation == Orientation.Down ? 1 : this.orientation == Orientation.Up ? -1 : vector.y/Mathf.Abs(vector.y));
-                            if (!World.Current.CanMoveOn(this, mapCoords + move)) {
-                                move = -move;
+                    if (!World.Current.CanMoveOn(this, mapCoords + move) || (mapCoords + move == tempRestrictedCase)) {
+                        if (vector.y != 0) {
+                            move = new Vector2(0, vector.y / Mathf.Abs(vector.y));
+                            if (!World.Current.CanMoveOn(this, mapCoords + move) || (mapCoords + move == tempRestrictedCase)) {
+                                move = new Vector2(-vector.x / Mathf.Abs(vector.x), 0);
+                                if (World.Current.CanMoveOn(this, mapCoords + move) && !(mapCoords + move == tempRestrictedCase)) {
+                                    tempRestrictedCase = mapCoords;
+                                } else {
+                                    move = new Vector2(0, -vector.y / Mathf.Abs(vector.y));
+                                    if (World.Current.CanMoveOn(this, mapCoords + move) && !(mapCoords + move == tempRestrictedCase)) {
+                                        tempRestrictedCase = mapCoords;
+                                    } else {
+                                        tempRestrictedCase = new Vector2(-1, -1);
+                                        move = Vector2.zero;
+                                        orientation = GetOrientation(vector);
+                                    }
+                                }
                             }
                         } else {
-                            move = new Vector2(0, this.orientation == Orientation.Down ? 1 : this.orientation == Orientation.Up ? -1 : MathUtility.Alea(new float[]{-1,1}));
-                            if (!World.Current.CanMoveOn(this, mapCoords + move)) {
-                                move = -move;
+                            move = new Vector2(-vector.x / Mathf.Abs(vector.x), 0);
+                            if (World.Current.CanMoveOn(this, mapCoords + move) && !(mapCoords + move == tempRestrictedCase)) {
+                                tempRestrictedCase = mapCoords;
+                            } else {
+                                move = new Vector2(0, this.orientation == Orientation.Down ? 1 : this.orientation == Orientation.Up ? -1 : MathUtility.Alea(new float[] { -1, 1 }));
+                                if (World.Current.CanMoveOn(this, mapCoords + move) && !(mapCoords + move == tempRestrictedCase)) {
+                                    tempRestrictedCase = mapCoords;
+                                } else {
+                                    move = new Vector2(0, -move.y);
+                                    if (World.Current.CanMoveOn(this, mapCoords + move) && !(mapCoords + move == tempRestrictedCase)) {
+                                        tempRestrictedCase = mapCoords;
+                                    } else {
+                                        tempRestrictedCase = new Vector2(-1, -1);
+                                        move = Vector2.zero;
+                                        orientation = GetOrientation(vector);
+                                    }
+                                }
                             }
                         }
                     }
                 } else {
-                    move = new Vector2(0 , vector.y / Mathf.Abs(vector.y));
-                    if (!World.Current.CanMoveOn(this, mapCoords + move)) {
+                    move = new Vector2(0, vector.y / Mathf.Abs(vector.y));
+                    if (!World.Current.CanMoveOn(this, mapCoords + move) || (mapCoords + move == tempRestrictedCase)) {
                         if (vector.x != 0) {
-                            move = new Vector2(this.orientation == Orientation.Right ? 1 : this.orientation == Orientation.Left ? -1 : vector.x / Mathf.Abs(vector.x) , 0);
-                            if (!World.Current.CanMoveOn(this, mapCoords + move)) {
-                                move = -move;
+                            move = new Vector2(vector.x / Mathf.Abs(vector.x), 0);
+                            if (!World.Current.CanMoveOn(this, mapCoords + move) || (mapCoords + move == tempRestrictedCase)) {
+                                move = new Vector2(0, -vector.y / Mathf.Abs(vector.y));
+                                if (World.Current.CanMoveOn(this, mapCoords + move) && !(mapCoords + move == tempRestrictedCase)) {
+                                    tempRestrictedCase = mapCoords;
+                                } else {
+                                    move = new Vector2(-vector.x / Mathf.Abs(vector.x) ,0);
+                                    if (World.Current.CanMoveOn(this, mapCoords + move) && !(mapCoords + move == tempRestrictedCase)) {
+                                        tempRestrictedCase = mapCoords;
+                                    } else {
+                                        tempRestrictedCase = new Vector2(-1, -1);
+                                        move = Vector2.zero;
+                                        orientation = GetOrientation(vector);
+                                    }
+                                }
                             }
                         } else {
-                            move = new Vector2(this.orientation == Orientation.Right ? 1 : this.orientation == Orientation.Left ? -1 : MathUtility.Alea(new float[] { -1, 1 }) , 0);
-                            if (!World.Current.CanMoveOn(this, mapCoords + move)) {
-                                move = -move;
+                            move = new Vector2(0, -vector.y / Mathf.Abs(vector.y));
+                            if (World.Current.CanMoveOn(this, mapCoords + move) && !(mapCoords + move == tempRestrictedCase)) {
+                                tempRestrictedCase = mapCoords;
+                            } else {
+                                move = new Vector2(this.orientation == Orientation.Right ? 1 : this.orientation == Orientation.Left ? -1 : MathUtility.Alea(new float[] { -1, 1 }), 0);
+                                if (World.Current.CanMoveOn(this, mapCoords + move) && !(mapCoords + move == tempRestrictedCase)) {
+                                    tempRestrictedCase = mapCoords;
+                                } else {
+                                    move = new Vector2(-move.x, 0);
+                                    if (World.Current.CanMoveOn(this, mapCoords + move) && !(mapCoords + move == tempRestrictedCase)) {
+                                        tempRestrictedCase = mapCoords;
+                                    } else {
+                                        tempRestrictedCase = new Vector2(-1, -1);
+                                        move = Vector2.zero;
+                                        orientation = GetOrientation(vector);
+                                    }
+                                }
                             }
                         }
                     }
                 }
+
+                //if (vector.magnitude == 1) { orientation = GetOrientation(vector); break; }
+                //if(Mathf.Abs(vector.x) >= Mathf.Abs(vector.y)){
+                //    move = new Vector2(vector.x/Mathf.Abs(vector.x) , 0);
+                //    if (!World.Current.CanMoveOn(this, mapCoords + move)) {
+                //        if (vector.y != 0) { 
+                //            move = new Vector2(0, this.orientation == Orientation.Down ? 1 : this.orientation == Orientation.Up ? -1 : vector.y/Mathf.Abs(vector.y));
+                //            if (!World.Current.CanMoveOn(this, mapCoords + move)) {
+                //                move = -move;
+                //            }
+                //        } else {
+                //            move = new Vector2(0, this.orientation == Orientation.Down ? 1 : this.orientation == Orientation.Up ? -1 : MathUtility.Alea(new float[]{-1,1}));
+                //            if (!World.Current.CanMoveOn(this, mapCoords + move)) {
+                //                move = -move;
+                //            }
+                //        }
+                //    }
+                //} else {
+                //    move = new Vector2(0 , vector.y / Mathf.Abs(vector.y));
+                //    if (!World.Current.CanMoveOn(this, mapCoords + move)) {
+                //        if (vector.x != 0) {
+                //            move = new Vector2(this.orientation == Orientation.Right ? 1 : this.orientation == Orientation.Left ? -1 : vector.x / Mathf.Abs(vector.x) , 0);
+                //            if (!World.Current.CanMoveOn(this, mapCoords + move)) {
+                //                move = -move;
+                //            }
+                //        } else {
+                //            move = new Vector2(this.orientation == Orientation.Right ? 1 : this.orientation == Orientation.Left ? -1 : MathUtility.Alea(new float[] { -1, 1 }) , 0);
+                //            if (!World.Current.CanMoveOn(this, mapCoords + move)) {
+                //                move = -move;
+                //            }
+                //        }
+                //    }
+                //}
                 orientation = GetOrientation(move);
                 break;
             case PossibleMovement.FleePlayer:
@@ -276,7 +363,7 @@ public class MapObject : MonoBehaviour {
 
     public virtual void ExecuteActions() {
         isRunning = true;
-        Player.Lock();
+        //Player.Lock(); TEMP TODO: add bool
         
         StartCoroutine(ExecuteActionAsync());
     }
@@ -287,7 +374,7 @@ public class MapObject : MonoBehaviour {
             while (!action.Done())
                 yield return new WaitForEndOfFrame();
         }
-        Player.Unlock();
+        //Player.Unlock(); TEMP TODO: add bool
         foreach (MapObjectAction action in actions)
             action.Init();
         isRunning = false;

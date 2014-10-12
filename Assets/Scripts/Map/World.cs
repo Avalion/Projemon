@@ -97,12 +97,18 @@ public class World : MonoBehaviour {
             return false;
 
         // If there is already an Event on this -- TODO : Check and Add layers on MapObjects
-        foreach (MapObject mo in mapObjects)
+        foreach (MapObject mo in mapObjects) {
             if (mo.mapCoords == _destination) {
                 o.OnCollision();
                 mo.OnCollision();
                 return false;
             }
+            if (mo.mapCoords + mo.currentMovement == _destination) {
+                o.OnCollision();
+                mo.OnCollision();
+                return false;
+            }
+        }
 
         return true;
     }

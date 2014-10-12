@@ -24,6 +24,6 @@ public class ActionAddItem : MapObjectAction {
     }
 
     public override string InLine() {
-        return "Add Item " + item.name + " to " + target.name+".";
+        return "Add Item " + item.name + " to " + target.name + ".";
     }
 }

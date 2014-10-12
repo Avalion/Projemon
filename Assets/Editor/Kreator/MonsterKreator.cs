@@ -200,11 +200,13 @@ public class MonsterKreator : EditorWindow {
 
                 foreach (DBMonsterPattern.AttackLevelUp a in mp.attackLevelUp) {
                     GUILayout.BeginHorizontal();
-                    a.lvl = EditorGUILayout.IntField(a.lvl);
-                    int k = EditorGUILayout.Popup(attackList.IndexOf(a.attack), attackListString.ToArray());
-                    a.attack = attackList[k];
+                    GUILayout.Label("Lvl :", GUILayout.Width(50));
+                    a.lvl = EditorGUILayout.IntField(a.lvl, GUILayout.Width(50));
+                    int k = EditorGUILayout.Popup(attackList.FindIndex(A => A.ID == a.attack.ID), attackListString.ToArray());
+                    if (k > 0)
+                        a.attack = attackList[k];
 
-                    if (GUILayout.Button("X")) {
+                    if (GUILayout.Button("X", GUILayout.Width(30))) {
                         mp.attackLevelUp.RemoveAt(mp.attackLevelUp.IndexOf(a));
                         GUIUtility.ExitGUI();
                         return;

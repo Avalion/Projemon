@@ -14,16 +14,13 @@ public class MapKreator : EditorWindow {
     private static int selectedPattern = -1;
     private static Texture2D[,] currentPattern;
 
-    private Vector2 currentTileCoords;
     // Design
-    private GUIStyle tileStyle = new GUIStyle();
-    private static GUIStyle selectedTileStyle = new GUIStyle();
     private Vector2 scrollPosList = Vector2.zero;
     
     // Canvas
     private Rect canvasRect;
-    private Vector2 scrollpos = new Vector2();
     private Vector2 currentMapCoords;
+    private Vector2 pointedMapCoords;
 
     private int currentLayer;
 
@@ -55,7 +52,7 @@ public class MapKreator : EditorWindow {
     }
 
     public static void InitStyles() {
-        selectedTileStyle.normal.background = InterfaceUtility.HexaToTexture("#6644FF66");
+        
     }
 
     // Display
@@ -146,7 +143,7 @@ public class MapKreator : EditorWindow {
         }
         GUILayout.FlexibleSpace();
         if (GUILayout.Button("Erase")) {
-            currentTileCoords = new Vector2(-1, -1);
+            selectedPattern = -1;
         }
 
         GUILayout.BeginHorizontal();
@@ -181,7 +178,6 @@ public class MapKreator : EditorWindow {
         /** Display
          */
         GUI.BeginGroup(canvasRect);
-        
         if (elements.Count > 0 && selectedElement >= 0) {
             // Map
             for (int layer = 0; layer < 3; layer++) {
@@ -215,16 +211,24 @@ public class MapKreator : EditorWindow {
                             
                         }
             }
-            // EVents
+            // Events
             if (currentLayer == 4) {
 
             }
         }
+
         GUI.EndGroup();
+        
+        if (pointedMapCoords != new Vector2(-1, -1))
+            GUI.Label(new Rect(canvasRect.x + 2, canvasRect.y + 2, 70, 20), "X: " + pointedMapCoords.x + " Y: " + pointedMapCoords.y, InterfaceUtility.EmptyStyle);
     }
     private void CanvasEvents(Rect _rect) {
+        Repaint();
+
         if (!_rect.Contains(Event.current.mousePosition)) {
             isDragging = false;
+            Debug.Log(Event.current.mousePosition + " + " + Event.current.type);
+            pointedMapCoords = new Vector2(-1, -1);
             return;
         }
         /** Mouse Events
@@ -234,6 +238,8 @@ public class MapKreator : EditorWindow {
         int x = (int)((Event.current.mousePosition.x - _rect.x) / resolution.x);
         int y = (int)((Event.current.mousePosition.y - _rect.y) / resolution.y);
 
+        pointedMapCoords = new Vector2(x, y);
+        
         if (currentLayer < 3) {
             if (Event.current.type == EventType.MouseDown && Event.current.button == 0) {
                 isDragging = true;
@@ -247,7 +253,10 @@ public class MapKreator : EditorWindow {
                     int starty = (int)((startDragMousePosition.y - _rect.y) / resolution.y);
                     for (int i = (int)Mathf.Min(x, startx); i <= Mathf.Max(x, startx); i++) {
                         for (int j = (int)Mathf.Min(y, starty); j <= Mathf.Max(y, starty); j++) {
-                            SetTile(currentLayer, i, j, patterns[selectedPattern]);
+                            if (selectedPattern == -1) {
+                                DeleteTile(currentLayer, i, j);
+                            } else
+                                SetTile(currentLayer, i, j, patterns[selectedPattern]);
                         }
                     }
                 }
@@ -257,7 +266,10 @@ public class MapKreator : EditorWindow {
                 if (drawRectMode) {
                     EditorGUI.DrawRect(new Rect(startDragMousePosition.x, startDragMousePosition.y, Event.current.mousePosition.x - startDragMousePosition.x, Event.current.mousePosition.y - startDragMousePosition.y), InterfaceUtility.HexaToColor("#00CC0044"));
                 } else {
-                    SetTile(currentLayer, x, y, patterns[selectedPattern]);
+                    if (selectedPattern == -1) {
+                        DeleteTile(currentLayer, x, y);
+                    } else
+                        SetTile(currentLayer, x, y, patterns[selectedPattern]);
                 }
             }
         
@@ -266,7 +278,6 @@ public class MapKreator : EditorWindow {
                 if (current.GetTile(currentLayer, x, y) != null) {
                     Map.Tile t = current.GetTile(currentLayer, x, y);
                     selectedPattern = patterns.IndexOf(t.originTile);
-                    currentTileCoords = t.originTileCoords;
                     UpdateImages();
                 }
             }
@@ -438,12 +449,6 @@ public class MapKreator : EditorWindow {
     public void SetTile(int layer, int x, int y, string pattern, bool contagious = true) {//, Vector2 tileCoords) {
         Vector2 tileCoords = CalcMapCoords(layer, x, y, pattern);
 
-        if (tileCoords.x < 0 || tileCoords.y < 0) {
-            if (current.GetTile(currentLayer, x, y) != null) {
-                current.tiles.Remove(current.GetTile(currentLayer, x, y));
-            }
-        }
-        
         if (current.GetTile(layer, x, y) == null) {
             Map.Tile t = new Map.Tile();
             t.layer = layer;
@@ -474,6 +479,23 @@ public class MapKreator : EditorWindow {
                 }
         }
     }
+    public void DeleteTile(int layer, int x, int y, bool contagious = true) {
+        if (current.GetTile(currentLayer, x, y) != null)
+            current.tiles.Remove(current.GetTile(currentLayer, x, y));
+
+        if (contagious) {
+            for (int i = 1; i >= -1; --i)
+                for (int j = -1; j <= 1; ++j) {
+                    if ((i == 0 && j == 0) || x + j < 0 || y + i < 0 || x + j >= current.size.x || y + i >= current.size.y)
+                        continue;
+
+                    Map.Tile tile = current.GetTile(layer, x + j, y + i);
+                    if (tile != null)
+                        SetTile(tile.layer, (int)tile.mapCoords.x, (int)tile.mapCoords.y, tile.originTile, false);
+                }
+        }
+    }
+
 
     public static void UpdateImages() {
         Texture2D pattern = Resources.LoadAssetAtPath(Config.GetResourcePath(Map.IMAGE_FOLDER) + patterns[selectedPattern], typeof(Texture2D)) as Texture2D;

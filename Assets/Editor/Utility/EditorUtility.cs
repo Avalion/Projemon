@@ -17,7 +17,7 @@ public class EditorUtility {
         int value = -1;
         _scrollPos = GUILayout.BeginScrollView(_scrollPos, _options);
         for (int i = 0; i < _elements.Count; i++) {
-            if (GUILayout.Button(InterfaceUtility.IntString(i + 1, 3) + ": " + _elements[i].ToString(), i == _selected ? InterfaceUtility.SelectedStyle : InterfaceUtility.EmptyStyle))
+            if (GUILayout.Button(InterfaceUtility.IntString(i + 1, 3) + ": " + _elements[i].ToString(), i == _selected ? InterfaceUtility.SelectedStyle : InterfaceUtility.LabelStyle))
                 value = i;
         };
         GUILayout.EndScrollView();

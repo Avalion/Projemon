@@ -179,7 +179,7 @@ public class BattleAnimationKreator : EditorWindow {
                 GUILayout.Label(new GUIContent(" " + t.name, t), selectedImageStyle, GUILayout.Height(40));
             }
         }
-        if (GUILayout.Button("", InterfaceUtility.EmptyStyle, GUILayout.MaxHeight(Screen.height)))
+        if (GUILayout.Button("", InterfaceUtility.LabelStyle, GUILayout.MaxHeight(Screen.height)))
             selectedImage = null;
         GUILayout.EndScrollView();
         

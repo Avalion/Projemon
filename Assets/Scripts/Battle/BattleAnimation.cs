@@ -52,7 +52,7 @@ public class BattleAnimation {
         public void Display(Rect rect, float _alpha) {
             Color c = GUI.color;
             GUI.color = new Color(c.r, c.g, c.b, _alpha);
-            GUI.Label(rect, image, InterfaceUtility.EmptyStyle);
+            GUI.Label(rect, image, InterfaceUtility.LabelStyle);
             GUI.color = c;
         }
     }

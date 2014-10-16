@@ -42,7 +42,7 @@ public abstract class Item {
         Effect(caster, target);
 
         if (usability == Usability.Once) {
-           
+           // TODO : remove from inventory
         }
     }
 

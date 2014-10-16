@@ -12,7 +12,7 @@ public class MapKreator : EditorWindow {
     // Images
     private static List<string> patterns = new List<string>();
     private static int selectedPattern = -1;
-    private static Texture2D[,] currentPattern;
+    private static Texture2D currentPattern;
 
     // Design
     private Vector2 scrollPosList = Vector2.zero;
@@ -20,8 +20,7 @@ public class MapKreator : EditorWindow {
     // Canvas
     private Rect canvasRect;
     private Vector2 currentMapCoords;
-    private Vector2 pointedMapCoords;
-
+    
     private int currentLayer;
 
     // Display
@@ -122,24 +121,10 @@ public class MapKreator : EditorWindow {
                 UpdateImages();
             }
 
-            // Display pattern
-            //scrollpos = GUILayout.BeginScrollView(scrollpos);
-            //for (int y = 0; y < currentPattern.GetLength(1); y++) {
-            //    GUILayout.Space(2);
-            //    GUILayout.BeginHorizontal();
-            //    for (int x = 0; x < currentPattern.GetLength(0); x++) {
-            //        GUILayout.Space(2);
-            //        tileStyle.normal.background = currentPattern[x,y];
-            //        if (GUILayout.Button("", tileStyle, GUILayout.Width(Map.Tile.TILE_RESOLUTION), GUILayout.Height(Map.Tile.TILE_RESOLUTION)))
-            //            currentTileCoords = new Vector2(x, y);
-            //        if (x == currentTileCoords.x && y == currentTileCoords.y) {
-            //            GUILayout.Space(-Map.Tile.TILE_RESOLUTION);
-            //            GUILayout.Label("", selectedTileStyle, GUILayout.Width(Map.Tile.TILE_RESOLUTION), GUILayout.Height(Map.Tile.TILE_RESOLUTION));
-            //        }
-            //    }
-            //    GUILayout.EndHorizontal();
-            //}
-            //GUILayout.EndScrollView();
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            GUILayout.Label(currentPattern, InterfaceUtility.EmptyStyle, GUILayout.Width(Map.Tile.TILE_RESOLUTION), GUILayout.Height(Map.Tile.TILE_RESOLUTION));
+            GUILayout.EndHorizontal();
         }
         GUILayout.FlexibleSpace();
         if (GUILayout.Button("Erase")) {
@@ -208,27 +193,29 @@ public class MapKreator : EditorWindow {
                                 }
                             }
                             current.collisions[i, j] = !current.collisions[i, j];
-                            
                         }
             }
             // Events
             if (currentLayer == 4) {
-
+                // TODO !
+            }
+            // Combat Zones
+            if (currentLayer == 5) {
+                // TODO !
             }
         }
 
-        GUI.EndGroup();
+
+        int x = Mathf.Clamp((int)((Event.current.mousePosition.x) / resolution.x), 0, (int)current.size.x);
+        int y = Mathf.Clamp((int)((Event.current.mousePosition.y) / resolution.y), 0, (int)current.size.y);
+            
+        GUI.Label(new Rect(2, 2, 70, 20), "X: " + x + " Y: " + y, InterfaceUtility.LabelStyle);
         
-        if (pointedMapCoords != new Vector2(-1, -1))
-            GUI.Label(new Rect(canvasRect.x + 2, canvasRect.y + 2, 70, 20), "X: " + pointedMapCoords.x + " Y: " + pointedMapCoords.y, InterfaceUtility.EmptyStyle);
+        GUI.EndGroup();
     }
     private void CanvasEvents(Rect _rect) {
-        Repaint();
-
         if (!_rect.Contains(Event.current.mousePosition)) {
             isDragging = false;
-            Debug.Log(Event.current.mousePosition + " + " + Event.current.type);
-            pointedMapCoords = new Vector2(-1, -1);
             return;
         }
         /** Mouse Events
@@ -238,8 +225,6 @@ public class MapKreator : EditorWindow {
         int x = (int)((Event.current.mousePosition.x - _rect.x) / resolution.x);
         int y = (int)((Event.current.mousePosition.y - _rect.y) / resolution.y);
 
-        pointedMapCoords = new Vector2(x, y);
-        
         if (currentLayer < 3) {
             if (Event.current.type == EventType.MouseDown && Event.current.button == 0) {
                 isDragging = true;
@@ -485,14 +470,14 @@ public class MapKreator : EditorWindow {
 
         if (contagious) {
             for (int i = 1; i >= -1; --i)
-                for (int j = -1; j <= 1; ++j) {
-                    if ((i == 0 && j == 0) || x + j < 0 || y + i < 0 || x + j >= current.size.x || y + i >= current.size.y)
-                        continue;
+            for (int j = -1; j <= 1; ++j) {
+                if ((i == 0 && j == 0) || x + j < 0 || y + i < 0 || x + j >= current.size.x || y + i >= current.size.y)
+                    continue;
 
-                    Map.Tile tile = current.GetTile(layer, x + j, y + i);
-                    if (tile != null)
-                        SetTile(tile.layer, (int)tile.mapCoords.x, (int)tile.mapCoords.y, tile.originTile, false);
-                }
+                Map.Tile tile = current.GetTile(layer, x + j, y + i);
+                if (tile != null)
+                    SetTile(tile.layer, (int)tile.mapCoords.x, (int)tile.mapCoords.y, tile.originTile, false);
+            }
         }
     }
 
@@ -500,12 +485,6 @@ public class MapKreator : EditorWindow {
     public static void UpdateImages() {
         Texture2D pattern = Resources.LoadAssetAtPath(Config.GetResourcePath(Map.IMAGE_FOLDER) + patterns[selectedPattern], typeof(Texture2D)) as Texture2D;
 
-        currentPattern = new Texture2D[pattern.width / Map.Tile.TILE_RESOLUTION, pattern.height / Map.Tile.TILE_RESOLUTION];
-
-        for (int y = 0; y < currentPattern.GetLength(1); y++) {
-            for (int x = 0; x < currentPattern.GetLength(0); x++) {
-                currentPattern[x, y] = InterfaceUtility.SeparateTexture(pattern, x, y, Map.Tile.TILE_RESOLUTION, Map.Tile.TILE_RESOLUTION);
-            }
-        }
+        currentPattern = InterfaceUtility.SeparateTexture(pattern, 0, 0, Map.Tile.TILE_RESOLUTION, Map.Tile.TILE_RESOLUTION);
     }
 }

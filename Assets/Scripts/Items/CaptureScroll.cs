@@ -4,7 +4,7 @@ using System.Collections.Generic;
 /**
  * This item capture a wild monster
  */
-public class CaptureScroll : Item {
+public class CaptureItem : Item {
     public enum Quality { Normal, Superior, Hyperior, Master };
     public Quality quality;
 
@@ -46,13 +46,11 @@ public class CaptureScroll : Item {
     }
 
     protected override void Effect(Battler caster, List<Monster> target) {
-        float captureRate = CalculCaptureRate(caster.monsters, target);
-        float random = Random.Range(0, 1f);
-
         System.Diagnostics.Debug.Assert(target.Count > 0);
 
-        //Debug.Log(captureRate + "#" + random);
-        if (random <= captureRate) {
+        float captureRate = CalculCaptureRate(caster.monsters, target);
+        
+        if (MathUtility.TestProbability(captureRate)) {
             // SUCCESS
             Battle.Current.Message = target[0].monsterName + " est capturé !";
 

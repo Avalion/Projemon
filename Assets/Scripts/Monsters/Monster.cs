@@ -78,7 +78,7 @@ public class Monster {
         }
         return "";
     }
-    
+    // TODO : a monster can suffer from several state alterations... Add a function to add or remove a state
     public State state;
     #endregion
 
@@ -181,6 +181,16 @@ public class Monster {
                     Exp(target.CalcExpGiven());
                 target.Death();
             }
+        }
+    }
+    public void UseStamina(Monster target, int value) {
+        // Inflict damages
+        if (value < 0) {
+            target.stamina = Mathf.Min(target.stamina - value, target.maxStamina);
+        } else {
+            target.stamina -= value;
+            if (target.stamina <= 0)
+                target.stamina = 0;
         }
     }
 

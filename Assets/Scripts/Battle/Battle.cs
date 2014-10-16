@@ -179,7 +179,7 @@ public class Battle : MonoBehaviour {
         GUI.enabled = true;
         InterfaceUtility.BeginBox(GUILayout.Height(menuHeight));
         GUILayout.BeginHorizontal();
-        GUILayout.Label(Monster.GetTypeIcon(Player.Current.monsters[Player.Current.activeMonster].type), InterfaceUtility.EmptyStyle);
+        GUILayout.Label(Monster.GetTypeIcon(Player.Current.monsters[Player.Current.activeMonster].type), InterfaceUtility.LabelStyle);
         GUILayout.Label(Player.Current.monsters[Player.Current.activeMonster].monsterName, messageStyle);
         GUILayout.FlexibleSpace();
 
@@ -213,7 +213,7 @@ public class Battle : MonoBehaviour {
         GUI.enabled = true;
         InterfaceUtility.BeginBox(GUILayout.Height(menuHeight));
         GUILayout.BeginHorizontal();
-        GUILayout.Label(Monster.GetTypeIcon(Player.Current.monsters[Player.Current.activeMonster].type), InterfaceUtility.EmptyStyle);
+        GUILayout.Label(Monster.GetTypeIcon(Player.Current.monsters[Player.Current.activeMonster].type), InterfaceUtility.LabelStyle);
         GUILayout.Label(Player.Current.monsters[Player.Current.activeMonster].monsterName, messageStyle);
         GUILayout.FlexibleSpace();
 
@@ -244,7 +244,7 @@ public class Battle : MonoBehaviour {
         GUI.enabled = true;
         InterfaceUtility.BeginBox(GUILayout.Height(menuHeight));
         GUILayout.BeginHorizontal();
-        GUILayout.Label(Monster.GetTypeIcon(Player.Current.monsters[Player.Current.activeMonster].type), InterfaceUtility.EmptyStyle);
+        GUILayout.Label(Monster.GetTypeIcon(Player.Current.monsters[Player.Current.activeMonster].type), InterfaceUtility.LabelStyle);
         GUILayout.Label(Player.Current.monsters[Player.Current.activeMonster].monsterName, messageStyle);
         GUILayout.FlexibleSpace();
 

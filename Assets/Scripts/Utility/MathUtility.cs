@@ -34,4 +34,18 @@ public class MathUtility {
     public static bool IsPair(int _value) { 
         return _value % 2 == 0; 
     }
+
+    public static bool TestProbability(float value) {
+        if (value == 1)
+            return true;
+
+        float random = Random.Range(0, 1f);
+
+        return (random <= value);
+    }
+
+    public static bool TestProbability100(float value) {
+        return TestProbability(value / 100f);
+    }
+
 }

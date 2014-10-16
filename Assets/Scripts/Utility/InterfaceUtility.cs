@@ -11,8 +11,17 @@ public class InterfaceUtility {
     public static GUIStyle EmptyStyle {
         get {
             if (emptyStyle == null)
-                emptyStyle = new GUIStyle(GUI.skin.label);
+                emptyStyle = new GUIStyle();
             return emptyStyle;
+        }
+    }
+    
+    private static GUIStyle labelStyle = null;
+    public static GUIStyle LabelStyle {
+        get {
+            if (labelStyle == null)
+                labelStyle = new GUIStyle(GUI.skin.label);
+            return labelStyle;
         }
     }
 
@@ -23,7 +32,7 @@ public class InterfaceUtility {
                 warningStyle = new GUIStyle(GUI.skin.label);
                 warningStyle.normal.textColor = Color.yellow;
             }
-            return emptyStyle;
+            return labelStyle;
         }
     }
 
@@ -34,7 +43,7 @@ public class InterfaceUtility {
                 errorStyle = new GUIStyle(GUI.skin.label);
                 errorStyle.normal.textColor = Color.red;
             }
-            return emptyStyle;
+            return labelStyle;
         }
     }
 

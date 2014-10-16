@@ -40,7 +40,7 @@ public class Player : Battler {
 
     // TEMPORARY !
     public new void Start() {
-        CaptureScroll scroll = new CaptureScroll();
+        CaptureItem scroll = new CaptureItem();
         scroll.name = "Capture Scroll";
         actions.Add(new ActionAddItem(scroll, Player.Current));
         

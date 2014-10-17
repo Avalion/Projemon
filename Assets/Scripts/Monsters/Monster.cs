@@ -4,6 +4,7 @@ using System.Collections.Generic;
 /**
  * This class design a Monster type. 
  */
+// TODO : Merge with DBMonster ?
 public class Monster {
     public const string IMAGE_FOLDER = "Battlers";
     public static bool REFILL_LIFE_LVL_UP = true;
@@ -229,6 +230,46 @@ public class Monster {
             m.LevelUp(true);
         }
         
+        return m;
+    }
+    public static Monster Generate(DBMonster _source) {
+        Monster m = new Monster();
+
+        m.monsterPattern = DataBase.SelectById<DBMonsterPattern>(_source.patternId);
+        m.monsterName = _source.nickName;
+
+        m.type = _source.type;
+        m.state = _source.state;
+
+        m.lvl = _source.lvl;
+        m.exp = _source.exp;
+
+        m.expMultiplier1 = _source.expMultiplier1;
+        m.expMultiplier2 = _source.expMultiplier2;
+        m.expMultiplier3 = _source.expMultiplier3;
+        m.CalcExpRequired();
+
+        m.stat_might = _source.stat_might;
+        m.stat_resistance = _source.stat_resistance;
+        m.stat_luck = _source.stat_luck;
+        m.stat_speed = _source.stat_speed;
+        m.maxLife = _source.maxLife;
+        m.maxStamina = _source.maxStamina;
+        m.life = _source.life;
+        m.stamina = _source.stamina;
+
+        m.battleSprite = Resources.LoadAssetAtPath(Config.GetResourcePath(IMAGE_FOLDER) + m.monsterPattern.battleSprite, typeof(Texture2D)) as Texture2D;
+        m.miniSprite = Resources.LoadAssetAtPath(Config.GetResourcePath(IMAGE_FOLDER) + m.monsterPattern.miniSprite, typeof(Texture2D)) as Texture2D;
+
+        m.capture_rate = _source.capture_rate;
+        
+        try {
+            m.attacks.Add(DataBase.SelectById<DBAttack>(_source.attack1));
+            m.attacks.Add(DataBase.SelectById<DBAttack>(_source.attack2));
+            m.attacks.Add(DataBase.SelectById<DBAttack>(_source.attack3));
+            m.attacks.Add(DataBase.SelectById<DBAttack>(_source.attack4));
+        } catch { }
+
         return m;
     }
 }

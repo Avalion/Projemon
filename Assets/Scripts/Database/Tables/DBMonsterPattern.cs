@@ -24,6 +24,7 @@ public class DBMonsterPattern : SQLTable {
     public string battleSprite;
     public string miniSprite;
 
+    public bool encountered;
 
     public class AttackLevelUp {
         public int lvl;
@@ -65,6 +66,8 @@ public class DBMonsterPattern : SQLTable {
             string[] values = attack.Split(';');
             attackLevelUp.Add(new AttackLevelUp() { lvl = int.Parse(values[0]), attack = DataBase.SelectById<DBAttack>(int.Parse(values[1])) });
         }
+
+        encountered = reader.GetBoolean(pos++);
     }
     public override string Fields() {
         return "name, type, " + 
@@ -75,7 +78,8 @@ public class DBMonsterPattern : SQLTable {
             "start_luck, luckUpX, luckUpY, " +
             "start_speed, speedUpX, speedUpY, " + 
             "capture_rate, battleSprite, miniSprite, " + 
-            "attackLeveled";
+            "attackLeveled, " + 
+            "encountered";
     }
     public override string TypedFields() {
         return "name text NOT NULL, type integer, " +
@@ -86,7 +90,8 @@ public class DBMonsterPattern : SQLTable {
             "start_luck integer, luckUpX integer, luckUpY integer, " +
             "start_speed integer, speedUpX integer, speedUpY integer, " + 
             "capture_rate integer, battleSprite text, miniSprite text, " + 
-            "attackLeveled text";
+            "attackLeveled text, " + 
+            "encountered bool";
     }
     public override string TableName() {
         return "T_MonsterPattern";
@@ -118,8 +123,10 @@ public class DBMonsterPattern : SQLTable {
 
             Stringize(battleSprite) + ", " + 
             Stringize(miniSprite) + ", " + 
-            Stringize(attacks);
+            
+            Stringize(attacks) + ", " + 
 
+            Stringize(encountered);
     }
 
     public override string ToString() {

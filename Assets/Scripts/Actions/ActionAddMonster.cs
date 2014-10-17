@@ -21,6 +21,11 @@ public class ActionAddMonster : MapObjectAction {
 
     public override void Execute() {
         MonsterCollection.AddToCollection(m);
+        
+        if (Player.Current.monsters.Count < Player.MAX_TEAM_NUMBER) {
+            Player.Current.monsters.Add(m);
+        }
+        
         Terminate();
     }
 

@@ -66,4 +66,16 @@ public class SystemDatas {
         foreach (Map m in _elements)
             m.Export();
     }
+
+    /* Write all DataBase infos;
+     */ 
+    public static void Save() {
+        // Write Player position, infos and current map
+
+
+        // Write monster collection
+
+
+        // Write Event list and variables values
+    }
 }

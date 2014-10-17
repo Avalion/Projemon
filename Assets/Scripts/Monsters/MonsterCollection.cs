@@ -6,16 +6,16 @@ public class MonsterCollection {
     public static List<Monster> capturedMonsters = new List<Monster>();
 
     // Register
-    public static void Encounter(Monster m) {
-        if (!encounteredMonsters.Contains(m.monsterPattern.ID))
-            encounteredMonsters.Add(m.monsterPattern.ID);
+    public static void Encounter(DBMonsterPattern m) {
+        if (!encounteredMonsters.Contains(m.ID))
+            encounteredMonsters.Add(m.ID);
+
+        m.encountered = true;
+        DataBase.Update<DBMonsterPattern>("encoutered", true, "id=" + m.ID);
     }
     public static void AddToCollection(Monster m) {
-        Encounter(m);
-        if (Player.Current.monsters.Count < Player.MAX_TEAM_NUMBER)
-            Player.Current.monsters.Add(m);
-        else
-            capturedMonsters.Add(m);
+        Encounter(m.monsterPattern);
+        capturedMonsters.Add(m);
     }
     public static void Release(Monster m) {
         capturedMonsters.Remove(m);
@@ -33,5 +33,29 @@ public class MonsterCollection {
             if (m.monsterPattern.ID == monster.monsterPattern.ID)
                 return true;
         return false;
+    }
+
+    // Get Lists from DB
+    public static void Load() {
+        encounteredMonsters = new List<int>();
+        capturedMonsters = new List<Monster>();
+        Player.Current.monsters = new List<Monster>();
+        
+        List<DBMonsterPattern> patterns = DataBase.Select<DBMonsterPattern>("encountered=1");
+        foreach (DBMonsterPattern m in patterns) {
+            Encounter(m);
+        }
+
+        List<DBMonster> collection = DataBase.Select<DBMonster>();
+        foreach (DBMonster m in collection) {
+            Monster monster = Monster.Generate(m);
+            AddToCollection(monster);
+
+            if (m.inTeam) {
+                if (Player.Current.monsters.Count < Player.MAX_TEAM_NUMBER) {
+                    Player.Current.monsters.Add(monster);
+                }
+            }
+        }
     }
 }

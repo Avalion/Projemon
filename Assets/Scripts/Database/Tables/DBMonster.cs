@@ -4,7 +4,6 @@
  * this table manage captured monsters
  */
 public class DBMonster : SQLTable {
-    public string name;
     public int patternId;
 
     public Monster.Type type;
@@ -29,24 +28,25 @@ public class DBMonster : SQLTable {
     public int stat_luck;
     public int stat_speed;
 
-    // Capture
+    // Capture - TODO : PASS TO MONSTERPATTERN
     public float capture_rate;
 
-    // LevelUp
+    // LevelUp - TODO : PASS TO MONSTERPATTERN
     public int expMultiplier1;
     public int expMultiplier2;
     public int expMultiplier3;
     
-    public int attack1;
-    public int attack2;
-    public int attack3;
-    public int attack4;
+    public int attack1 = -1;
+    public int attack2 = -1;
+    public int attack3 = -1;
+    public int attack4 = -1;
+
+    public bool inTeam;
 
     public override void FromRow(SqliteDataReader reader) {
         int pos = 0;
         ID = reader.GetInt32(pos++);
 
-        name = reader.GetString(pos++);
         patternId = reader.GetInt32(pos++);
 
         type = (Monster.Type)reader.GetInt32(pos++);
@@ -74,13 +74,14 @@ public class DBMonster : SQLTable {
         attack2 = reader.GetInt32(pos++);
         attack3 = reader.GetInt32(pos++);
         attack4 = reader.GetInt32(pos++);
+
+        inTeam = reader.GetBoolean(pos++);
     }
     public override string Fields() {
-        return "name, patternId, type, state, nickName, level, exp, maxLife, life, maxStamina, stamina, stat_might, stat_resistance, stat_luck, stat_speed, capture rate, expM1, expM2, expM3, attackId1, attackId2, attackId3, attackId4";
+        return "patternId, type, state, nickName, level, exp, maxLife, life, maxStamina, stamina, stat_might, stat_resistance, stat_luck, stat_speed, capture rate, expM1, expM2, expM3, attackId1, attackId2, attackId3, attackId4, inTeam";
     }
     public override string TypedFields() {
-        return "name text NOT NULL, " +
-               "patternId integer, " + 
+        return "patternId integer, " + 
                "type integer, " +
                "state integer DEFAULT 0, " +
                "nickName text, " +
@@ -101,14 +102,14 @@ public class DBMonster : SQLTable {
                "attackId1 integer DEFAULT -1, " +
                "attackId2 integer DEFAULT -1, " +
                "attackId3 integer DEFAULT -1, " +
-               "attackId4 integer DEFAULT -1";
+               "attackId4 integer DEFAULT -1, " + 
+               "inTeam boolean";
     }
     public override string TableName() {
         return "T_Monster";
     }
     public override string ToRow() {
         return
-            Stringize(name) + ", " + 
             Stringize(patternId) + ", " + 
             Stringize((int)type) + ", " + 
             Stringize((int)state) + ", " +
@@ -130,6 +131,56 @@ public class DBMonster : SQLTable {
             Stringize(attack1) + ", " +
             Stringize(attack2) + ", " +
             Stringize(attack3) + ", " +
-            Stringize(attack4);
+            Stringize(attack4) + ", " + 
+            Stringize(inTeam);
     }
+
+    public static DBMonster ConvertFrom(Monster _source) {
+        DBMonster m = new DBMonster();
+        m.patternId = _source.monsterPattern.ID;
+
+        m.type = _source.type;
+        m.state = _source.state;
+        m.nickName = _source.monsterName;
+
+        m.lvl = _source.lvl;
+        m.exp = _source.exp;
+
+        m.maxLife = _source.maxLife;
+        m.life = _source.life;
+        m.maxStamina = _source.maxStamina;
+        m.stamina = _source.stamina;
+
+        // Stats
+        m.stat_might = _source.stat_might;
+        m.stat_resistance = _source.stat_resistance;
+        m.stat_luck = _source.stat_luck;
+        m.stat_speed = _source.stat_speed;
+
+        // Capture
+        m.capture_rate = _source.capture_rate;
+
+        // LevelUp
+        m.expMultiplier1 = _source.expMultiplier1;
+        m.expMultiplier2 = _source.expMultiplier2;
+        m.expMultiplier3 = _source.expMultiplier3;
+
+        try {
+            m.attack1 = _source.attacks[0].ID;
+        } catch { m.attack1 = -1; }
+        try {
+            m.attack2 = _source.attacks[1].ID;
+        } catch { m.attack2 = -1; }
+        try {
+            m.attack3 = _source.attacks[2].ID;
+        } catch { m.attack3 = -1; }
+        try {
+            m.attack4 = _source.attacks[3].ID;
+        } catch { m.attack4 = -1; }
+
+        m.inTeam = Player.Current.monsters.Contains(_source);
+
+        return m;
+    }
+
 }

@@ -19,7 +19,7 @@ public class MapKreator : EditorWindow {
     private Vector2 currentTileCoords;
     // Design
     private GUIStyle tileStyle = new GUIStyle();
-    private static GUIStyle selectedTileStyle = new GUIStyle();
+    private GUIStyle selectedTileStyle = new GUIStyle();
     private Vector2 scrollPosList = Vector2.zero;
     private Vector2 scrollpos = new Vector2();
     
@@ -34,7 +34,8 @@ public class MapKreator : EditorWindow {
     public bool isDragging = false;
     public Vector2 startDragMousePosition;
     public bool drawRectMode = true;
-
+    public GUIStyle posDisplayStyle = new GUIStyle();
+    
     bool forceMode = false;
 
     // Launch
@@ -55,13 +56,21 @@ public class MapKreator : EditorWindow {
             UpdateImages();
         }
 
-        InitStyles();
+        window.InitStyles();
     }
 
-    public static void InitStyles() {
+    public void InitStyles() {
+        posDisplayStyle = new GUIStyle();
+        posDisplayStyle.normal.background = InterfaceUtility.HexaToTexture("#00000055");
+        posDisplayStyle.normal.textColor = Color.white;
+        posDisplayStyle.alignment = TextAnchor.MiddleCenter;
+        
         selectedTileStyle.normal.background = InterfaceUtility.HexaToTexture("#6644FF66");
     }
 
+    public void Update() {
+        Repaint();
+    }
     // Display
     public void OnGUI() {
         if (patterns.Count == 0) {
@@ -114,13 +123,15 @@ public class MapKreator : EditorWindow {
             current.name = EditorGUILayout.TextField("Name", current.name);
 
             GUILayout.BeginHorizontal();
-            currentLayer = EditorGUILayout.IntSlider(currentLayer, 0, 4);
+            currentLayer = EditorGUILayout.IntSlider(currentLayer, 0, 5);
             if (currentLayer < 3)
                 GUILayout.Label("Layer " + currentLayer, GUILayout.Width(80));
             if (currentLayer == 3)
                 GUILayout.Label("Collisions", GUILayout.Width(80));
             if (currentLayer == 4)
                 GUILayout.Label("Events", GUILayout.Width(80));
+			if (currentLayer == 4)
+				GUILayout.Label("Combat Zones", GUILayout.Width(80));
             GUILayout.EndHorizontal();
 
             int value = EditorGUILayout.Popup(selectedPattern, patterns.ToArray());
@@ -150,7 +161,7 @@ public class MapKreator : EditorWindow {
                 GUILayout.EndScrollView();
             } else {
                 GUILayout.BeginHorizontal();
-                GUILayout.FlexibleSpace();
+                GUILayout.Space(5);
                 GUILayout.Label(currentPattern[0,0], InterfaceUtility.EmptyStyle, GUILayout.Width(Map.Tile.TILE_RESOLUTION), GUILayout.Height(Map.Tile.TILE_RESOLUTION));
                 GUILayout.EndHorizontal();
             }
@@ -239,7 +250,7 @@ public class MapKreator : EditorWindow {
         int x = Mathf.Clamp((int)((Event.current.mousePosition.x) / resolution.x), 0, (int)current.size.x);
         int y = Mathf.Clamp((int)((Event.current.mousePosition.y) / resolution.y), 0, (int)current.size.y);
             
-        GUI.Label(new Rect(2, 2, 70, 20), "X: " + x + " Y: " + y, InterfaceUtility.LabelStyle);
+        GUI.Label(new Rect(0, 0, 70, 20), "X: " + x + " Y: " + y, posDisplayStyle);
         
         GUI.EndGroup();
     }
@@ -281,7 +292,6 @@ public class MapKreator : EditorWindow {
                     SetTile(currentLayer, x, y);
                 }
             }
-        
 
             if (Event.current.type == EventType.MouseDown && Event.current.button == 1) {
                 if (current.GetTile(currentLayer, x, y) != null) {

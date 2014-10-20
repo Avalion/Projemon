@@ -28,7 +28,8 @@ public class MapKreator : EditorWindow {
     public bool isDragging = false;
     public Vector2 startDragMousePosition;
     public bool drawRectMode = true;
-
+    public GUIStyle posDisplayStyle = new GUIStyle();
+    
     // Launch
     [MenuItem("Creation/Maps &L")]
     public static void Init() {
@@ -47,13 +48,18 @@ public class MapKreator : EditorWindow {
             UpdateImages();
         }
 
-        InitStyles();
+        window.InitStyles();
     }
 
-    public static void InitStyles() {
-        
+    public void InitStyles() {
+        posDisplayStyle = new GUIStyle();
+        posDisplayStyle.normal.background = InterfaceUtility.HexaToTexture("#00000055");
+        posDisplayStyle.normal.textColor = Color.white;
     }
 
+    public void Update() {
+        Repaint();
+    }
     // Display
     public void OnGUI() {
         if (patterns.Count == 0) {
@@ -106,13 +112,15 @@ public class MapKreator : EditorWindow {
             current.name = EditorGUILayout.TextField("Name", current.name);
 
             GUILayout.BeginHorizontal();
-            currentLayer = EditorGUILayout.IntSlider(currentLayer, 0, 4);
+            currentLayer = EditorGUILayout.IntSlider(currentLayer, 0, 5);
             if (currentLayer < 3)
                 GUILayout.Label("Layer " + currentLayer, GUILayout.Width(80));
             if (currentLayer == 3)
                 GUILayout.Label("Collisions", GUILayout.Width(80));
             if (currentLayer == 4)
                 GUILayout.Label("Events", GUILayout.Width(80));
+			if (currentLayer == 4)
+				GUILayout.Label("Combat Zones", GUILayout.Width(80));
             GUILayout.EndHorizontal();
 
             int value = EditorGUILayout.Popup(selectedPattern, patterns.ToArray());
@@ -122,7 +130,7 @@ public class MapKreator : EditorWindow {
             }
 
             GUILayout.BeginHorizontal();
-            GUILayout.FlexibleSpace();
+            GUILayout.Space(5);
             GUILayout.Label(currentPattern, InterfaceUtility.EmptyStyle, GUILayout.Width(Map.Tile.TILE_RESOLUTION), GUILayout.Height(Map.Tile.TILE_RESOLUTION));
             GUILayout.EndHorizontal();
         }
@@ -209,7 +217,7 @@ public class MapKreator : EditorWindow {
         int x = Mathf.Clamp((int)((Event.current.mousePosition.x) / resolution.x), 0, (int)current.size.x);
         int y = Mathf.Clamp((int)((Event.current.mousePosition.y) / resolution.y), 0, (int)current.size.y);
             
-        GUI.Label(new Rect(2, 2, 70, 20), "X: " + x + " Y: " + y, InterfaceUtility.LabelStyle);
+        GUI.Label(new Rect(0, 0, 70, 20), "X: " + x + " Y: " + y, posDisplayStyle);
         
         GUI.EndGroup();
     }

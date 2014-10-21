@@ -206,10 +206,12 @@ public class Battle : MonoBehaviour {
 
         GUILayout.BeginHorizontal();
         int choice = InterfaceUtility.DisplayMenu(list, GUILayout.Width(200), GUILayout.Height(menuHeight));
-     //   if (choice >= 0 && choice < list.Count - 1)
-            //A finir
-            if (choice == list.Count - 1)
-                displayMode = DisplayMode.Choice;
+        if (choice >= 0 && choice < list.Count - 1) {
+            // TODO : place Battle Animation in 2D.
+            attacks[choice].Launch(Player.Current.monsters[Player.Current.activeMonster], enemy.monsters[enemy.activeMonster], new Rect(0,0,Screen.width, Screen.height));
+        }
+        if (choice == list.Count - 1)
+            displayMode = DisplayMode.Choice;
         GUI.enabled = true;
         InterfaceUtility.BeginBox(GUILayout.Height(menuHeight));
         GUILayout.BeginHorizontal();

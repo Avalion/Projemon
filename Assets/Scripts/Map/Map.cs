@@ -55,7 +55,7 @@ public class Map {
     public Map(int _id) {
         this.ID = _id;
 
-        size = new Vector2(32, 32);
+        size = new Vector2(32, 18);
 
         collisions = new bool[(int)size.x, (int)size.y];
 

@@ -13,6 +13,8 @@ public class BattleAnimationKreator : EditorWindow {
         get { return elements[selectedElement]; }
     }
 
+    private static int numberElements = 0;
+
     // Images
     private static List<string> imagesFolders = new List<string>();
     private static string selectedFolder;
@@ -93,27 +95,40 @@ public class BattleAnimationKreator : EditorWindow {
         GUILayout.BeginVertical(GUILayout.Width(150));
         int sel = EditorUtility.DisplayList<BattleAnimation>(selectedElement, elements, ref scrollPosList);
         if (sel != selectedElement) {
-            selectedElement = sel;
+            Select(sel);
             currentFrame = 0;
         }
         GUILayout.FlexibleSpace();
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Add")) {
             elements.Add(new BattleAnimation(elements.Count));
-            selectedElement = elements.Count - 1;
+            Select(elements.Count - 1);
             current.instances.Clear();
             current.name = "";
             current.nbFrames = 20;
+            numberElements = elements.Count;
         }
         if (GUILayout.Button("Delete")) {
             if (selectedElement == elements.Count - 1 && selectedElement > 0) {
                 elements.RemoveAt(selectedElement);
-                selectedElement = elements.Count - 1;
+                Select(elements.Count - 1);
             } else {
                 current.instances.Clear();
                 current.name = "";
                 current.nbFrames = 20;
             }
+            numberElements = elements.Count;
+        }
+        GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Nb ");
+        numberElements = EditorGUILayout.IntField(numberElements);
+        if (GUILayout.Button("Apply")) {
+            while (elements.Count < numberElements)
+                elements.Add(new BattleAnimation(elements.Count));
+            while (elements.Count > numberElements)
+                elements.RemoveAt(elements.Count - 1);
+            Select(Mathf.Clamp(selectedElement, 0, numberElements - 1));
         }
         GUILayout.EndHorizontal();
         GUILayout.EndVertical();
@@ -355,5 +370,9 @@ public class BattleAnimationKreator : EditorWindow {
             } catch { }
         }
         
+    }
+
+    public void Select(int _select) {
+        selectedElement = _select;
     }
 }

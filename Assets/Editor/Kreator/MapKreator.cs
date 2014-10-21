@@ -9,6 +9,8 @@ public class MapKreator : EditorWindow {
         get { return elements[selectedElement]; }
     }
 
+    private static int numberElements = 0;
+
     // Images
     private static List<string> patterns = new List<string>();
     private static int selectedPattern = -1;
@@ -96,18 +98,29 @@ public class MapKreator : EditorWindow {
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Add")) {
             elements.Add(new Map(elements.Count));
-            selectedElement = elements.Count - 1;
+            Select(elements.Count - 1);
             current.tiles.Clear();
             current.name = "";
         }
         if (GUILayout.Button("Delete") && elements.Count > 1) {
             if (selectedElement == elements.Count - 1) {
                 elements.RemoveAt(selectedElement);
-                selectedElement = elements.Count - 1;
+                Select(elements.Count - 1);
             } else {
                 current.tiles.Clear();
                 current.name = "";
             }
+        }
+        GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Nb ");
+        numberElements = EditorGUILayout.IntField(numberElements);
+        if (GUILayout.Button("Apply")) {
+            while (elements.Count < numberElements)
+                elements.Add(new Map(elements.Count));
+            while (elements.Count > numberElements)
+                elements.RemoveAt(elements.Count - 1);
+            Select(Mathf.Clamp(selectedElement, 0, numberElements - 1));
         }
         GUILayout.EndHorizontal();
         GUILayout.EndVertical();
@@ -542,5 +555,9 @@ public class MapKreator : EditorWindow {
                 currentPattern[x, y] = InterfaceUtility.SeparateTexture(pattern, x, y, Map.Tile.TILE_RESOLUTION, Map.Tile.TILE_RESOLUTION);
             }
         }
+    }
+
+    public void Select(int _select) {
+        selectedElement = _select;
     }
 }

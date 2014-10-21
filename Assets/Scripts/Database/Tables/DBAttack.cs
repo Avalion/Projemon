@@ -11,8 +11,12 @@ public class DBAttack : SQLTable {
     public int power;
     public int accuracy; // 0 a 100
 
-    public Monster.State stateChange = Monster.State.Healthy;
-    public int stateChangeAccuracy = 0; // 0 a 100
+    public int staminaCost;
+
+    public Monster.State enemyStateChange = Monster.State.None;
+    public int enemyStateChangeAccuracy = 0; // 0 a 100
+    public Monster.State launcherStateChange = Monster.State.None;
+    public int launcherStateChangeAccuracy = 0; // 0 a 100
 
     public int battleAnimationID;
 
@@ -26,21 +30,32 @@ public class DBAttack : SQLTable {
         power = reader.GetInt32(pos++);
         accuracy = reader.GetInt32(pos++);
 
-        stateChange = (Monster.State)reader.GetInt32(pos++);
-        stateChangeAccuracy = reader.GetInt32(pos++);
+        staminaCost = reader.GetInt32(pos++);
+
+        enemyStateChange = (Monster.State)reader.GetInt32(pos++);
+        enemyStateChangeAccuracy = reader.GetInt32(pos++);
+        launcherStateChange = (Monster.State)reader.GetInt32(pos++);
+        launcherStateChangeAccuracy = reader.GetInt32(pos++);
 
         battleAnimationID = reader.GetInt32(pos++);
     }
     public override string Fields() {
-        return "name, type, power, accuracy, stateChange, stateChangeAccuracy, battleAnimationId";
+        return "name, type, power, accuracy, staminaCost, enemyStateChange, enemyStateChangeAccuracy, launcherStateChange, launcherStateChangeAccuracy, battleAnimationId";
     }
     public override string TypedFields() {
         return "name text NOT NULL, " +
                "type integer, " +
+               
                "power integer, " +
                "accuracy integer, " +
-               "stateChange integer, " +
-               "statechangeAccuracy integer, " +
+               
+               "staminaCost integer, " +
+
+               "enemyStateChange integer, " +
+               "enemyStatechangeAccuracy integer, " +
+               "launcherStateChange integer, " +
+               "launcherStatechangeAccuracy integer, " +
+               
                "battleAnimationId integer DEFAULT -1";
     }
     public override string TableName() {
@@ -52,13 +67,22 @@ public class DBAttack : SQLTable {
             Stringize((int)type) + ", " + 
             Stringize(power) + ", " +
             Stringize(accuracy) + ", " +
-            Stringize((int)stateChange) + ", " +
-            Stringize(stateChangeAccuracy) + ", " +
+
+            Stringize(staminaCost) + ", " +
+            
+            Stringize((int)enemyStateChange) + ", " +
+            Stringize(enemyStateChangeAccuracy) + ", " +
+            Stringize((int)launcherStateChange) + ", " +
+            Stringize(launcherStateChangeAccuracy) + ", " +
+
             Stringize(battleAnimationID);
     }
 
 
-    public int Launch(Monster caster, Monster target, Rect effectZone) {
+    public bool Launch(Monster caster, Monster target, Rect effectZone) {
+        if (!caster.UseStamina(caster, staminaCost))
+            return false;
+        
         int damage = 0;
         string message = "";
         if (Random.Range(0, 100) <= accuracy) {
@@ -68,19 +92,23 @@ public class DBAttack : SQLTable {
                 damage *= 3;
             }
             new BattleAnimation(battleAnimationID).Display(effectZone);
-            message += target.monsterName + " a subit " + damage + " dégats !";
+            message += target.monsterName + " a subi " + damage + " dégats !";
 
             Battle.Current.Message = message;
 
-            if (Random.Range(0, 100) <= stateChangeAccuracy) {
-                target.state = stateChange;
-                Battle.Current.Message = target.monsterName + Monster.GetStateAltName(stateChange);
+            if (enemyStateChange != Monster.State.None && MathUtility.TestProbability100(enemyStateChangeAccuracy)) {
+                target.state = enemyStateChange;
+                Battle.Current.Message = target.monsterName + Monster.GetStateAltName(enemyStateChange);
+            }
+            if (launcherStateChange != Monster.State.None && MathUtility.TestProbability100(launcherStateChangeAccuracy)) {
+                target.state = launcherStateChange;
+                Battle.Current.Message = target.monsterName + Monster.GetStateAltName(launcherStateChange);
             }
         } else {
             Battle.Current.Message = caster.monsterName + " a raté son attaque...";
         }
 
-        return damage;
+        return true;
     }
 
     public override string ToString() {

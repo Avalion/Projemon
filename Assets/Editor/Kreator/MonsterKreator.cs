@@ -65,10 +65,10 @@ public class MonsterKreator : EditorWindow {
             if (selectedElement == elements.Count - 1) {
                 elements.RemoveAt(selectedElement);
                 Select(elements.Count - 1);
-                numberElements = elements.Count;
             } else {
                 elements[selectedElement] = new DBMonsterPattern();
             }
+            numberElements = elements.Count;
         }
         GUILayout.EndHorizontal();
         GUILayout.BeginHorizontal();

@@ -47,7 +47,8 @@ public class AttackKreator : EditorWindow {
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Add")) {
             elements.Add(new DBAttack());
-            selectedElement = elements.Count - 1;
+            Select(elements.Count - 1);
+            numberElements = elements.Count;
         }
         if (GUILayout.Button("Delete") && elements.Count > 1) {
             if (selectedElement == elements.Count - 1) {
@@ -56,6 +57,7 @@ public class AttackKreator : EditorWindow {
             } else {
                 elements[selectedElement] = new DBAttack();
             }
+            numberElements = elements.Count;
         }
         GUILayout.EndHorizontal();
         GUILayout.BeginHorizontal();
@@ -80,8 +82,22 @@ public class AttackKreator : EditorWindow {
             current.power = EditorGUILayout.IntField("Power", current.power);
             current.accuracy = EditorGUILayout.IntField("Precision", current.accuracy);
 
-            current.stateChange = (Monster.State)EditorGUILayout.EnumPopup("State change", current.stateChange);
-            current.stateChangeAccuracy = EditorGUILayout.IntField("Precision", current.stateChangeAccuracy);
+            current.staminaCost = EditorGUILayout.IntField("Cost (Stamina)", current.staminaCost);
+
+            GUILayout.BeginHorizontal();
+            current.enemyStateChange = (Monster.State)EditorGUILayout.EnumPopup("Target State change", current.enemyStateChange);
+            GUI.enabled = current.enemyStateChange != Monster.State.None;
+            GUILayout.Label("Precision (%)", GUILayout.Width(100));
+            current.enemyStateChangeAccuracy = EditorGUILayout.IntField(current.enemyStateChangeAccuracy, GUILayout.Width(50));
+            GUI.enabled = true;
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            current.launcherStateChange = (Monster.State)EditorGUILayout.EnumPopup("Launcher State change", current.launcherStateChange);
+            GUI.enabled = current.launcherStateChange != Monster.State.None;
+            GUILayout.Label("Precision (%)", GUILayout.Width(100));
+            current.launcherStateChangeAccuracy = EditorGUILayout.IntField(current.launcherStateChangeAccuracy, GUILayout.Width(50));
+            GUI.enabled = true;
+            GUILayout.EndHorizontal();
 
             List<string> names = new List<string>();
             foreach (BattleAnimation ba in battleAnimations)

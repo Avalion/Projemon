@@ -66,6 +66,7 @@ public class Monster {
         Insane,
         Paralized,
         Sleepy,
+        None,
         COUNT
     }
     public static string GetStateAltName(State s) {
@@ -184,15 +185,19 @@ public class Monster {
             }
         }
     }
-    public void UseStamina(Monster target, int value) {
+    public bool UseStamina(Monster target, int value, bool force = false) {
         // Inflict damages
         if (value < 0) {
             target.stamina = Mathf.Min(target.stamina - value, target.maxStamina);
         } else {
+            if (!force && stamina < value)
+                return false;
+
             target.stamina -= value;
             if (target.stamina <= 0)
                 target.stamina = 0;
         }
+        return true;
     }
 
     public void Death() {

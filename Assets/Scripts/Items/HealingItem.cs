@@ -6,7 +6,7 @@ public class HealingItem : Item {
         public enum TargetMode { Life, Stamina, State, Exp };
         public TargetMode mode;
 
-        public Monster.State state;
+        public Monster.State state = Monster.State.None;
         
         public int value;
         public int randomValue;
@@ -27,13 +27,17 @@ public class HealingItem : Item {
                         break;
                     case TargetStat.TargetMode.Stamina:
                         foreach (Monster m in target)
-                            m.UseStamina(m, -(heal.value + Random.Range(0, heal.randomValue)));
+                            m.UseStamina(m, -(heal.value + Random.Range(0, heal.randomValue)), true);
                         break;
                     case TargetStat.TargetMode.State:
+                        if (heal.state == Monster.State.None) {
+                            Debug.LogWarning("Applying a state modification to State.None value !");
+                            break;
+                        }
                         foreach (Monster m in target) {
-                            if (heal.value == 0)
+                            if (heal.value == 0) // apply state
                                 m.state = heal.state;
-                            else if (m.state == heal.state)
+                            else if (m.state == heal.state) // cure state
                                 m.state = Monster.State.Healthy;
                         }
                         break;

@@ -28,14 +28,6 @@ public class DBMonster : SQLTable {
     public int stat_luck;
     public int stat_speed;
 
-    // Capture - TODO : PASS TO MONSTERPATTERN
-    public float capture_rate;
-
-    // LevelUp - TODO : PASS TO MONSTERPATTERN
-    public int expMultiplier1;
-    public int expMultiplier2;
-    public int expMultiplier3;
-    
     public int attack1 = -1;
     public int attack2 = -1;
     public int attack3 = -1;
@@ -64,12 +56,6 @@ public class DBMonster : SQLTable {
         stat_luck = reader.GetInt32(pos++);
         stat_speed = reader.GetInt32(pos++);
 
-        capture_rate = reader.GetInt32(pos++);
-
-        expMultiplier1 = reader.GetInt32(pos++);
-        expMultiplier2 = reader.GetInt32(pos++);
-        expMultiplier3 = reader.GetInt32(pos++);
-
         attack1 = reader.GetInt32(pos++);
         attack2 = reader.GetInt32(pos++);
         attack3 = reader.GetInt32(pos++);
@@ -78,7 +64,7 @@ public class DBMonster : SQLTable {
         inTeam = reader.GetBoolean(pos++);
     }
     public override string Fields() {
-        return "patternId, type, state, nickName, level, exp, maxLife, life, maxStamina, stamina, stat_might, stat_resistance, stat_luck, stat_speed, capture rate, expM1, expM2, expM3, attackId1, attackId2, attackId3, attackId4, inTeam";
+        return "patternId, type, state, nickName, level, exp, maxLife, life, maxStamina, stamina, stat_might, stat_resistance, stat_luck, stat_speed, attackId1, attackId2, attackId3, attackId4, inTeam";
     }
     public override string TypedFields() {
         return "patternId integer, " + 
@@ -95,10 +81,6 @@ public class DBMonster : SQLTable {
                "stat_resistance integer, " +
                "stat_luck integer, " +
                "stat_speed integer, " +
-               "capture rate integer, " +
-               "expM1 integer, " +
-               "expM2 integer, " +
-               "expM3 integer, " +
                "attackId1 integer DEFAULT -1, " +
                "attackId2 integer DEFAULT -1, " +
                "attackId3 integer DEFAULT -1, " +
@@ -124,10 +106,6 @@ public class DBMonster : SQLTable {
             Stringize(stat_resistance) + ", " +
             Stringize(stat_luck) + ", " +
             Stringize(stat_speed) + ", " +
-            Stringize(capture_rate) + ", " +
-            Stringize(expMultiplier1) + ", " +
-            Stringize(expMultiplier2) + ", " +
-            Stringize(expMultiplier3) + ", " +
             Stringize(attack1) + ", " +
             Stringize(attack2) + ", " +
             Stringize(attack3) + ", " +
@@ -156,14 +134,6 @@ public class DBMonster : SQLTable {
         m.stat_resistance = _source.stat_resistance;
         m.stat_luck = _source.stat_luck;
         m.stat_speed = _source.stat_speed;
-
-        // Capture
-        m.capture_rate = _source.capture_rate;
-
-        // LevelUp
-        m.expMultiplier1 = _source.expMultiplier1;
-        m.expMultiplier2 = _source.expMultiplier2;
-        m.expMultiplier3 = _source.expMultiplier3;
 
         try {
             m.attack1 = _source.attacks[0].ID;

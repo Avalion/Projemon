@@ -5,6 +5,7 @@ using System.Collections.Generic;
  * This item capture a wild monster
  */
 public class CaptureItem : Item {
+    // TODO : Suppr Quality and add as variables the min, and middle lvl limits
     public enum Quality { Normal, Superior, Hyperior, Master };
     public Quality quality;
 
@@ -40,7 +41,7 @@ public class CaptureItem : Item {
             else
                 qualityFactor = 0.25f;
 
-            captureRate = Mathf.Min((1 - (target[0].life / (float)target[0].maxLife) + caster[0].stat_luck * 0.01f - target[0].stat_luck * 0.1f + 0.2f * caster[0].lvl / (float)target[0].lvl + Random.Range(0, 0.1f)) * target[0].capture_rate * stateFactor * qualityFactor, 95);
+            captureRate = Mathf.Min((1 - (target[0].life / (float)target[0].maxLife) + caster[0].stat_luck * 0.01f - target[0].stat_luck * 0.1f + 0.2f * caster[0].lvl / (float)target[0].lvl + Random.Range(0, 0.1f)) * target[0].monsterPattern.capture_rate * stateFactor * qualityFactor, 95);
         }
         return captureRate;
     }

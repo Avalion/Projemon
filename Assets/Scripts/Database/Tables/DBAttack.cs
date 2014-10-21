@@ -87,7 +87,7 @@ public class DBAttack : SQLTable {
         string message = "";
         if (Random.Range(0, 100) <= accuracy) {
             damage = Mathf.RoundToInt(caster.stat_might + power);
-            if (Random.Range(0, 100) <= caster.stat_luck/10) {
+            if (Random.Range(0, 100) <= caster.stat_luck / 10) {
                 message = "Coup Critique ! ";
                 damage *= 3;
             }

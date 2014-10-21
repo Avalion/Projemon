@@ -73,14 +73,14 @@ public class Monster {
         switch (s) {
             case State.Healthy: return " est en pleine forme !";
             case State.Dead: return " est mort !";
-            case State.Poisoned: return " est empoisonné";
+            case State.Poisoned: return " est empoisonné !";
             case State.Insane: return " devient fou !";
             case State.Paralized: return " est paralysé !";
             case State.Sleepy: return " s'endors...";
         }
         return "";
     }
-    // TODO : a monster can suffer from several state alterations... Add a function to add or remove a state
+    // TODO : a monster can suffer from several state alterations... Add a function to add or remove a state and transform state variable into a flag !
     public State state;
     #endregion
 
@@ -105,13 +105,7 @@ public class Monster {
     public int stat_luck = 0;
     public int stat_speed = 0;
 
-    // Capture
-    public float capture_rate = 1;
-
     // LevelUp
-    public int expMultiplier1 = 30;
-    public int expMultiplier2 = 10;
-    public int expMultiplier3 = 5;
     public int[] expRequired = new int[99];
     
     // Design
@@ -160,9 +154,9 @@ public class Monster {
 
     public void CalcExpRequired() {
         expRequired = new int[99];
-        expRequired[0] = expMultiplier1;
+        expRequired[0] = monsterPattern.expMultiplier1;
         for (int i = 1; i < 99; i++) {
-            expRequired[i] = expRequired[i - 1] + expMultiplier1 + 2 * i * expMultiplier2 + (3 * (i - 1)) * expMultiplier3;
+            expRequired[i] = expRequired[i - 1] + monsterPattern.expMultiplier1 + 2 * i * monsterPattern.expMultiplier2 + (3 * (i - 1)) * monsterPattern.expMultiplier3;
         }
     }
 
@@ -249,9 +243,6 @@ public class Monster {
         m.lvl = _source.lvl;
         m.exp = _source.exp;
 
-        m.expMultiplier1 = _source.expMultiplier1;
-        m.expMultiplier2 = _source.expMultiplier2;
-        m.expMultiplier3 = _source.expMultiplier3;
         m.CalcExpRequired();
 
         m.stat_might = _source.stat_might;
@@ -266,8 +257,6 @@ public class Monster {
         m.battleSprite = Resources.LoadAssetAtPath(Config.GetResourcePath(IMAGE_FOLDER) + m.monsterPattern.battleSprite, typeof(Texture2D)) as Texture2D;
         m.miniSprite = Resources.LoadAssetAtPath(Config.GetResourcePath(IMAGE_FOLDER) + m.monsterPattern.miniSprite, typeof(Texture2D)) as Texture2D;
 
-        m.capture_rate = _source.capture_rate;
-        
         try {
             m.attacks.Add(DataBase.SelectById<DBAttack>(_source.attack1));
             m.attacks.Add(DataBase.SelectById<DBAttack>(_source.attack2));

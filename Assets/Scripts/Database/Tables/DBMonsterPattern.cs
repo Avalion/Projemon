@@ -21,6 +21,10 @@ public class DBMonsterPattern : SQLTable {
 
     public float capture_rate = 1;
 
+    public int expMultiplier1;
+    public int expMultiplier2;
+    public int expMultiplier3;
+
     public string battleSprite;
     public string miniSprite;
 
@@ -51,9 +55,13 @@ public class DBMonsterPattern : SQLTable {
         start_luck = reader.GetInt32(pos++); 
         luckUp = new Vector2(reader.GetInt32(pos++), reader.GetInt32(pos++)); 
         start_speed = reader.GetInt32(pos++); 
-        speedUp = new Vector2(reader.GetInt32(pos++), reader.GetInt32(pos++)); 
+        speedUp = new Vector2(reader.GetInt32(pos++), reader.GetInt32(pos++));
 
-        capture_rate = reader.GetInt32(pos++); 
+        capture_rate = reader.GetInt32(pos++);
+
+        expMultiplier1 = reader.GetInt32(pos++);
+        expMultiplier2 = reader.GetInt32(pos++);
+        expMultiplier3 = reader.GetInt32(pos++);
 
         battleSprite = reader.GetString(pos++); 
         miniSprite = reader.GetString(pos++);
@@ -77,7 +85,9 @@ public class DBMonsterPattern : SQLTable {
             "start_resistance, resistanceUpX, resistanceUpY, " +
             "start_luck, luckUpX, luckUpY, " +
             "start_speed, speedUpX, speedUpY, " + 
-            "capture_rate, battleSprite, miniSprite, " + 
+            "capture_rate, " + 
+            "expM1, expM2, expM3, " +   
+            "battleSprite, miniSprite, " + 
             "attackLeveled, " + 
             "encountered";
     }
@@ -89,7 +99,10 @@ public class DBMonsterPattern : SQLTable {
             "start_resistance integer, resistanceUpX integer, resistanceUpY integer, " +
             "start_luck integer, luckUpX integer, luckUpY integer, " +
             "start_speed integer, speedUpX integer, speedUpY integer, " + 
-            "capture_rate integer, battleSprite text, miniSprite text, " + 
+            "capture_rate integer, " + 
+            "expM1 integer, expM2 integer, expM3 integer, " +   
+            
+            "battleSprite text, miniSprite text, " + 
             "attackLeveled text, " + 
             "encountered bool";
     }
@@ -120,6 +133,10 @@ public class DBMonsterPattern : SQLTable {
             Stringize(speedUp.x) + ", " + Stringize(speedUp.y) + ", " +
 
             Stringize(capture_rate) + ", " + 
+
+            Stringize(expMultiplier1) + ", " +
+            Stringize(expMultiplier2) + ", " +
+            Stringize(expMultiplier3) + ", " +
 
             Stringize(battleSprite) + ", " + 
             Stringize(miniSprite) + ", " + 

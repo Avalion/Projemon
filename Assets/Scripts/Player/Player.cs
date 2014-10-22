@@ -71,4 +71,7 @@ public class Player : Battler {
     public void OnDestroy() {
         DataBase.Close();
     }
+    public void OnApplicationQuit() {
+        DataBase.Close();
+    }
 }

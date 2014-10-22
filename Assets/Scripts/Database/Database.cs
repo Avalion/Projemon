@@ -63,7 +63,7 @@ public class DataBase {
 
     // Commands
     public static int ExecCommand(string _command) {
-        if (m_dbConnection == null) throw new System.Exception("Database is not open.");
+        if (m_dbConnection == null) throw new System.Exception("DataBaseException : Database is not open.");
         try {
             SqliteCommand cmd = m_dbConnection.CreateCommand();
             cmd.CommandText = _command;
@@ -76,7 +76,7 @@ public class DataBase {
 
     // SQL
     public static List<T> Select<T>(string where = "", int limit = -1, int limitCount = 0, string orderBy = "") where T : SQLTable, new() {
-        if (m_dbConnection == null) throw new System.Exception("Database is not open.");
+        if (m_dbConnection == null) throw new System.Exception("DataBaseException : Database is not open.");
 
         string q = "SELECT * FROM " + new T().TableName();
         if (where.Length > 0) q += " WHERE " + where;
@@ -105,8 +105,8 @@ public class DataBase {
     }
     public static T SelectUnique<T>(string where = "") where T : SQLTable, new() {
         List<T> r = Select<T>(where, 2);		// 2 is intended here (to find if more that one)
-        if (r.Count == 0) throw new System.Exception("SelectUnique<>() found no entry.");
-        if (r.Count > 1) throw new System.Exception("SelectUnique<>() found more than one entry.");
+        if (r.Count == 0) throw new System.Exception("DataBaseException : SelectUnique found no entry in " + typeof(T) + " with " + where + ".");
+        if (r.Count > 1) throw new System.Exception("DataBaseException : SelectUnique found more than one entry in " + typeof(T) + " with " + where + ".");
         return r[0];
     }
     public static T SelectById<T>(int id) where T : SQLTable, new() {
@@ -114,8 +114,7 @@ public class DataBase {
     }
 
     public static int Count<T>(string where = "", int limit = -1) where T : SQLTable, new() {
-        if (m_dbConnection == null)
-            throw new System.Exception("Database is not open.");
+        if (m_dbConnection == null) throw new System.Exception("DataBaseException : Database is not open.");
 
         string q = "SELECT COUNT(*) FROM (SELECT 1 FROM " + new T().TableName();
         if (where.Length > 0) q += " WHERE " + where;
@@ -145,8 +144,7 @@ public class DataBase {
     }
 
     public static void Update<T>(string column, object value, string where = "") where T : SQLTable, new() {
-        if (m_dbConnection == null)
-            throw new System.Exception("Database is not open.");
+        if (m_dbConnection == null) throw new System.Exception("DataBaseException : Database is not open.");
 
         if (!new T().Fields().Contains(column))
             return;
@@ -160,7 +158,7 @@ public class DataBase {
 
     // Utils
     private int GetLastInsertId() {
-        if (m_dbConnection == null) throw new System.Exception("Database is not open.");
+        if (m_dbConnection == null) throw new System.Exception("DataBaseException : Database is not open.");
         try {
             SqliteCommand cmd = m_dbConnection.CreateCommand();
             cmd.CommandText = "SELECT last_insert_rowid();";

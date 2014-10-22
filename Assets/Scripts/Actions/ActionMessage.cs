@@ -10,6 +10,9 @@ public class ActionMessage : MapObjectAction {
     public bool faceOnRight = false;
     public float maxDuration = -1;
 
+    public enum Placement { Top, Middle, Bottom }
+    public Placement placement = Placement.Bottom;
+
     public ActionMessage() {}
     public ActionMessage(string _message, bool _waitForEnd = true) {
         waitForEnd = _waitForEnd;
@@ -28,7 +31,7 @@ public class ActionMessage : MapObjectAction {
         faceOnRight = _right;
         maxDuration = _duration;
     }
-
+    
     public override void Execute() {
         ActionMessageDisplay display = new GameObject("action_Message").AddComponent<ActionMessageDisplay>();
         display.action = this;
@@ -92,7 +95,15 @@ public class ActionMessageDisplay : IDisplayable {
     }
 
     public override void Display() {
-        GUILayout.BeginArea(new Rect(0, Screen.height - 200, Screen.width, 200));
+        Rect area = new Rect(0, 0, Screen.width, 200);
+        if (action.placement == ActionMessage.Placement.Top)
+            area.y = 0;
+        else if (action.placement == ActionMessage.Placement.Middle)
+            area.y = Screen.height / 2 - 100;
+        else if (action.placement == ActionMessage.Placement.Bottom)
+            area.y = Screen.height - 200;
+
+        GUILayout.BeginArea(area);
         InterfaceUtility.BeginBox();
         GUILayout.BeginHorizontal(GUILayout.MaxWidth(Screen.width));
         if (action.face != null && !action.faceOnRight) {

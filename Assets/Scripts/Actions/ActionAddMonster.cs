@@ -9,9 +9,9 @@ public class ActionAddMonster : MapObjectAction {
 
     private Monster m;
 
-    public ActionAddMonster() {
-        throw new System.Exception("ActionAddMonster have to be initialized");
-    }
+    //public ActionAddMonster() {
+    //    throw new System.Exception("ActionAddMonster have to be initialized");
+    //}
     public ActionAddMonster(int _patternId, int _lvl) {
         lvl = _lvl;
 

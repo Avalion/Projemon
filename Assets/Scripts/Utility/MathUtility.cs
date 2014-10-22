@@ -28,6 +28,8 @@ public class MathUtility {
     }
 
     public static float Alea(float[] _float) {
+        if (_float.Length == 0)
+            throw new System.Exception("MathException : Trying to get values from an empty table.");
         return _float[Random.Range(0, _float.Length - 1)];
     }
 
@@ -36,6 +38,8 @@ public class MathUtility {
     }
 
     public static bool TestProbability(float value) {
+        if (value < 0 || value > 1)
+            throw new System.Exception("MathException : Invalid value to calc probabilities !");
         if (value == 1)
             return true;
 
@@ -43,7 +47,6 @@ public class MathUtility {
 
         return (random <= value);
     }
-
     public static bool TestProbability100(float value) {
         return TestProbability(value / 100f);
     }

@@ -5,7 +5,7 @@ using System.Collections.Generic;
  * This class provides some useful GUI relative functions
  */
 public class InterfaceUtility {
-    /** Useful constant Variables
+    /** Default designs
      */
     private static GUIStyle emptyStyle = null;
     public static GUIStyle EmptyStyle {
@@ -182,8 +182,7 @@ public class InterfaceUtility {
         GUILayout.EndHorizontal();
     }
 
-    /**
-     * Rect
+    /** Rect
      */
     public static Rect GetScreenRelativeRect(Rect r, bool sizeRelative = false) {
         float width = sizeRelative ? r.width * Screen.width : r.width;

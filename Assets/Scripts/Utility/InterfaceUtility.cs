@@ -170,7 +170,7 @@ public class InterfaceUtility {
      */
     private static GUIStyle ProgressBarBackground = new GUIStyle() { margin = new RectOffset(6,6,4,4) };
     public static void ProgressBar(float _width, float _height, int _value, int _max, Texture2D _color, Texture2D _background, params GUILayoutOption[] _options) {
-        if (_value < 0) _value = 0;
+        _value = Mathf.Clamp(_value, 0, _max);
         GUILayout.BeginHorizontal(_options);
         ProgressBarBackground.fixedHeight = _height;
         ProgressBarBackground.normal.background = _background;

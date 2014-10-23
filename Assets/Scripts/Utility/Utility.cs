@@ -18,6 +18,8 @@ public class Utility {
     /** Log
      */
     public static void Log(object o) {
+        Debug.Log(o);
+
         StreamWriter sw = new StreamWriter("log.txt", true);
         sw.WriteLine(o.ToString());
         sw.Close();
@@ -30,12 +32,7 @@ public class Utility {
         foreach (Transform child in _parent)
             SetLayerRecursively(child, _layer);
     }
-    public static void SetActiveRecursively(Transform _parent, bool _active) {
-        _parent.gameObject.SetActive(_active);
-        foreach (Transform child in _parent)
-            SetActiveRecursively(child, _active);
-    }
-	
+    
     /** Shaders
 	*/
 	static string[] commonPropertyFloatNames = new string[] { "_AO", "_BaseLight", "_BumpAmt", "_BumpReflectionStr", "_ChromaticDispersion", "_Cutoff", "_EmissionLM", "_InvFade", "_Occlusion", "_Parallax", "_ReflDistort", "_ReflectStrength", "_ReflToRefrExponent", "_Refraction", "_RefrDistort", "_ShadowStrength", "_Shininess", "_SquashAmount", "_TranslucencyViewDependency", "_WaveScale" };

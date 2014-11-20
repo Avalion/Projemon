@@ -5,9 +5,10 @@ using System.Collections.Generic;
  * This item capture a wild monster
  */
 public class CaptureItem : Item {
-    // TODO : Suppr Quality and add as variables the min, and middle lvl limits
-    public enum Quality { Normal, Superior, Hyperior, Master };
-    public Quality quality;
+    public bool sureToCatch;
+    
+    public int middleLvlLimit;
+    public int maxLvlLimit;
 
     public float CalculCaptureRate(List<Monster> caster, List<Monster> target) {
         float captureRate = 0;
@@ -16,10 +17,9 @@ public class CaptureItem : Item {
 
 
 
-        if (quality == Quality.Master)
+        if (sureToCatch)
             captureRate = 1;
         else {
-
             switch (target[0].state) {
                 case Monster.State.Insane:
                 case Monster.State.Poisoned:
@@ -34,9 +34,9 @@ public class CaptureItem : Item {
                     break;
             }
 
-            if ((quality == Quality.Normal && target[0].lvl <= 15) || (quality == Quality.Superior && target[0].lvl <= 30) || (quality == Quality.Hyperior && target[0].lvl <= 45))
+            if (target[0].lvl <= middleLvlLimit)
                 qualityFactor = 1;
-            else if ((quality == Quality.Normal && target[0].lvl <= 25) || (quality == Quality.Superior && target[0].lvl <= 40) || (quality == Quality.Hyperior && target[0].lvl <= 55))
+            else if (target[0].lvl <= maxLvlLimit)
                 qualityFactor = 0.5f;
             else
                 qualityFactor = 0.25f;

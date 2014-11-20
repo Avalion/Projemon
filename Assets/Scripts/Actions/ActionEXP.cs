@@ -5,7 +5,7 @@
  */
 [System.Serializable]
 public class ActionEXP : MapObjectAction {
-    public int targetMonster;//-1 to add exp for all the group
+    public int targetMonster; //-1 to add exp for all the group
     public Battler target;
     public int expValue;
 
@@ -31,5 +31,19 @@ public class ActionEXP : MapObjectAction {
 
     public override string InLine() {
         return "Add "+ expValue + " exp to " + (targetMonster == -1 ? "all the group " : target.monsters[targetMonster].monsterName) + ".";
+    }
+
+    public override string Serialize() {
+        // TODO : Add MapObjectID when MapObject are into DB
+        return GetType().ToString() + "|" + targetMonster + "|" + expValue;
+    }
+    public override void Deserialize(string s) {
+        string[] values = s.Split('|');
+        if (values.Length != 3)
+            throw new System.Exception("SerializationError : elements count doesn't match... " + s);
+
+        // TODO : Read and find MapObjectID when MapObject are into DB
+        targetMonster = int.Parse(values[1]);
+        expValue = int.Parse(values[2]);
     }
 }

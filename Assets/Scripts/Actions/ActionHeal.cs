@@ -32,4 +32,18 @@ public class ActionHeal : MapObjectAction {
     public override string InLine() {
         return "Heal " + (targetMonster == -1 ? "all the group " : target.monsters[targetMonster].monsterName) + " of " + healValue + " pv.";
     }
+
+    public override string Serialize() {
+        // TODO : Add MapObjectID when MapObject are into DB
+        return GetType().ToString() + "|" + targetMonster + "|" + healValue;
+    }
+    public override void Deserialize(string s) {
+        string[] values = s.Split('|');
+        if (values.Length != 3)
+            throw new System.Exception("SerializationError : elements count doesn't match... " + s);
+
+        // TODO : Read and find MapObjectID when MapObject are into DB
+        targetMonster = int.Parse(values[1]);
+        healValue = int.Parse(values[2]);
+    }
 }

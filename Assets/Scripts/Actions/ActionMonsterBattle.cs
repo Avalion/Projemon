@@ -40,4 +40,15 @@ public class ActionMonsterBattle : MapObjectAction {
     public override string InLine() {
         return "Battle wild monsters : " + (monsters.Count > 0 ? monsters[0].pattern.name : "") + (monsters.Count > 1 ? "(...)" : "") + ".";
     }
+    public override string Serialize() {
+        // TODO : Serialize list of EncounterMonster
+        return GetType().ToString();
+    }
+    public override void Deserialize(string s) {
+        string[] values = s.Split('|');
+        if (values.Length != 1)
+            throw new System.Exception("SerializationError : elements count doesn't match... " + s);
+
+        // TODO : Deserialize list of EncounterMonster
+    }
 }

@@ -33,4 +33,17 @@ public class ActionAddMonster : MapObjectAction {
     public override string InLine() {
         return "Add Monster " + m.monsterPattern.name + " at level " + lvl + ".";
     }
+
+    public override string Serialize() {
+        // TODO : Serialize Monster class
+        return GetType().ToString() + "|" + lvl;
+    }
+    public override void Deserialize(string s) {
+        string[] values = s.Split('|');
+        if (values.Length != 2)
+            throw new System.Exception("SerializationError : elements count doesn't match... " + s);
+
+        // TODO : Serialize Monster class
+        lvl = int.Parse(values[1]);
+    }
 }

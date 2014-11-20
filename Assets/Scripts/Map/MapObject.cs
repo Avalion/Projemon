@@ -79,7 +79,7 @@ public class MapObject : MonoBehaviour {
             isMoving = false;
         }
 
-        if (HaveToExecute(execCondition))
+        if (HaveToExecute())
             ExecuteActions();
 
         OnUpdate();
@@ -339,11 +339,11 @@ public class MapObject : MonoBehaviour {
             ExecuteActions();
     }
 
-    protected bool HaveToExecute(ExecutionCondition cond) {
+    protected bool HaveToExecute() {
         if (isRunning)
             return false;
         
-        switch (cond) {
+        switch (execCondition) {
             case ExecutionCondition.Action:
                 return (InputManager.Current.GetKeyDown(KeyCode.Return) || InputManager.Current.GetKeyDown(KeyCode.Space)) && (
                     Player.Current.orientation == Orientation.Down  && Player.Current.mapCoords == mapCoords + new Vector2 (0,-1) ||

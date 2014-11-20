@@ -44,7 +44,7 @@ public class World : MonoBehaviour {
         if (currentBGM.clip != null)
             currentBGM.Play();
 
-        // TMP
+        // TMP - TODO : Store MapObject in DB and generate them
         mapObjects = new List<MapObject>(GameObject.FindObjectsOfType<MapObject>());
     }
 
@@ -82,18 +82,20 @@ public class World : MonoBehaviour {
     public void LoadMap(int mapId) {
         currentMap.Dispose();
 
-        currentMap = new Map(mapId); 
+        currentMap = new Map(mapId);
+
+        // TMP - TODO : Store MapObject in DB and generate them
+        mapObjects = new List<MapObject>(GameObject.FindObjectsOfType<MapObject>());
     }
 
     /* Utils
      */
     //TODO: Modifier pour éviter d'être à deux sur une case pendant un mouvement
     public bool CanMoveOn(MapObject o, Vector2 _destination) {
-        // If no tile -- TODO : Check and Add permissivity on Tiles
-        if (currentMap.GetTile(0, (int)_destination.x, (int)_destination.y) == null)
+        if (!currentMap.collisions[(int)_destination.x, (int)_destination.y])
             return false;
 
-        if (!currentMap.collisions[(int)_destination.x, (int)_destination.y])
+        if (currentMap.GetTile(0, (int)_destination.x, (int)_destination.y) == null)
             return false;
 
         // If there is already an Event on this -- TODO : Check and Add layers on MapObjects

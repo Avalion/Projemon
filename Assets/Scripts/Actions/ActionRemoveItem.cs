@@ -26,4 +26,16 @@ public class ActionRemoveItem : MapObjectAction {
     public override string InLine() {
         return "Remove Item " + item.name + " to " + target.name+".";
     }
+    public override string Serialize() {
+        // TODO : Serialize Items class
+        // TODO : Add MapObjectID when MapObject are into DB
+        return GetType().ToString();
+    }
+    public override void Deserialize(string s) {
+        string[] values = s.Split('|');
+        if (values.Length != 1)
+            throw new System.Exception("SerializationError : elements count doesn't match... " + s);
+        // TODO : Deserialize Item class
+        // TODO : Read and find MapObjectID when MapObject are into DB
+    }
 }

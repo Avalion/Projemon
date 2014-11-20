@@ -28,6 +28,20 @@ public class ActionMove : MapObjectAction {
     public override string InLine() {
         return target.name + " move : " + movements[0].ToString() + (movements.Count > 1 ? "(...)" : "")+".";
     }
+
+    public override string Serialize() {
+        // TODO : Add MapObjectID when MapObject are into DB
+        // TODO : Serialize list of movements
+        return GetType().ToString();
+    }
+    public override void Deserialize(string s) {
+        string[] values = s.Split('|');
+        if (values.Length != 1)
+            throw new System.Exception("SerializationError : elements count doesn't match... " + s);
+
+        // TODO : Read and find MapObjectID when MapObject are into DB
+        // TODO : Deserialize list of movements
+    }
 }
 
 public class ActionMoveDisplay : MonoBehaviour {

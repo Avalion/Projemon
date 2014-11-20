@@ -7,6 +7,9 @@
 public class ActionPlaySound : MapObjectAction {
     public AudioClip sound;
 
+    // Todo : store only a relative Path to songs
+    public string soundPath;
+
     public bool bgm = false;
 
     public ActionPlaySound() {}
@@ -31,6 +34,18 @@ public class ActionPlaySound : MapObjectAction {
 
     public override string InLine() {
         return "Play " + (bgm ? "BGM : " : "BGS : ") + sound.name+".";
+    }
+
+    public override string Serialize() {
+        return GetType().ToString() + "|" + soundPath + "|" + bgm;
+    }
+    public override void Deserialize(string s) {
+        string[] values = s.Split('|');
+        if (values.Length != 3)
+            throw new System.Exception("SerializationError : elements count doesn't match... " + s);
+
+        soundPath = values[1];
+        bgm = bool.Parse(values[2]);
     }
 }
 

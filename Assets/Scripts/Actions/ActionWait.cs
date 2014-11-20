@@ -20,6 +20,17 @@ public class ActionWait : MapObjectAction {
     public override string InLine() {
         return "Wait " + duration + " seconds.";
     }
+
+    public override string Serialize() {
+        return GetType().ToString() + "|" + duration;
+    }
+    public override void Deserialize(string s) {
+        string[] values = s.Split('|');
+        if (values.Length != 2)
+            throw new System.Exception("SerializationError : elements count doesn't match... " + s);
+
+        float.TryParse(values[1], out duration);
+    }
 }
 
 public class ActionWaitDisplay : MonoBehaviour {

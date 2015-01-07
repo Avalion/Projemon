@@ -21,7 +21,6 @@ public class DisplayBattleAnimation : MonoBehaviour {
     public void OnGUI() {
         GUI.depth = -1;
         foreach (BattleAnimation.ImageInstance i in battleAnimation.instances.FindAll(I => I.frame == m_currentframe)) {
-            //style.normal.background = i.image;
             i.Display(i.GetPixelRect(displayZone));
         }
     }

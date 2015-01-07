@@ -98,16 +98,22 @@ public class World : MonoBehaviour {
         if (currentMap.GetTile(0, (int)_destination.x, (int)_destination.y) == null)
             return false;
 
-        // If there is already an Event on this -- TODO : Check and Add layers on MapObjects
+        // If there is already an Event on this
         foreach (MapObject mo in mapObjects) {
             if (mo.mapCoords == _destination) {
                 o.OnCollision();
                 mo.OnCollision();
+                
+                if (mo.layer != o.layer || mo.allowMultipleObjects)
+                    continue;
                 return false;
             }
             if (mo.mapCoords + mo.currentMovement == _destination) {
                 o.OnCollision();
                 mo.OnCollision();
+
+                if (mo.layer != o.layer || mo.allowMultipleObjects)
+                    continue;
                 return false;
             }
         }

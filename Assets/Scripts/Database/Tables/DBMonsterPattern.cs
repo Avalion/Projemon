@@ -7,17 +7,17 @@ public class DBMonsterPattern : SQLTable {
     public Monster.Type type;
 
     public int start_life = 10;
-    public Vector2 lifeUp = new Vector2(5, 15);
+    public Vector2   lifeUp = new Vector2(5, 15);
     public int start_stamina = 10;
-    public Vector2 staminaUp = new Vector2(5, 15);
+    public Vector2   staminaUp = new Vector2(5, 15);
     public int start_might = 0;
-    public Vector2 mightUp = new Vector2(1, 3);
+    public Vector2   mightUp = new Vector2(1, 3);
     public int start_resistance = 0;
-    public Vector2 resistanceUp = new Vector2(1, 3);
+    public Vector2   resistanceUp = new Vector2(1, 3);
     public int start_luck = 0;
-    public Vector2 luckUp = new Vector2(1, 3);
+    public Vector2   luckUp = new Vector2(1, 3);
     public int start_speed = 0;
-    public Vector2 speedUp = new Vector2(1, 3);
+    public Vector2   speedUp = new Vector2(1, 3);
 
     public float capture_rate = 1;
 
@@ -86,7 +86,8 @@ public class DBMonsterPattern : SQLTable {
             "start_luck, luckUpX, luckUpY, " +
             "start_speed, speedUpX, speedUpY, " + 
             "capture_rate, " + 
-            "expM1, expM2, expM3, " +   
+            "expM1, expM2, expM3, " +
+
             "battleSprite, miniSprite, " + 
             "attackLeveled, " + 
             "encountered";

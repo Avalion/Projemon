@@ -122,7 +122,7 @@ public class BattleAnimationKreator : EditorWindow {
         GUILayout.EndHorizontal();
         GUILayout.BeginHorizontal();
         GUILayout.Label("Nb ");
-        numberElements = EditorGUILayout.IntField(numberElements);
+        numberElements = Mathf.Clamp(EditorGUILayout.IntField(numberElements), 0, 999);
         if (GUILayout.Button("Apply")) {
             while (elements.Count < numberElements)
                 elements.Add(new BattleAnimation(elements.Count));

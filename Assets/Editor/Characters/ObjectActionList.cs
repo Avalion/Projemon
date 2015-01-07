@@ -91,7 +91,7 @@ public class ObjectActionList : EditorWindow {
             case "ActionPNJBattle":
                 DisplayEditor((ActionPNJBattle)_action); break;
             default:
-                GUILayout.Label("Unknown Action");
+                GUILayout.Label("Unknown Action " + _action.GetType());
                 return;
         }
     }

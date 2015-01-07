@@ -186,5 +186,11 @@ public class Map {
     }
 
     // Destructor
-    public void Dispose() {}
+    public void Dispose() {
+        //foreach (MapObject o in GameObject.FindObjectsOfType<MapObject>())
+        //    if (o.GetComponent<Player>())
+        //        continue;
+        //    else
+        //        GameObject.DestroyImmediate(o.gameObject);
+    }
 }

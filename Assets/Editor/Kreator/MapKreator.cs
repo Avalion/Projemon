@@ -118,8 +118,10 @@ public class MapKreator : EditorWindow {
         if (GUILayout.Button("Apply")) {
             while (elements.Count < numberElements)
                 elements.Add(new Map(elements.Count));
-            while (elements.Count > numberElements)
+            while (elements.Count > numberElements) {
+                elements[elements.Count - 1].Dispose();
                 elements.RemoveAt(elements.Count - 1);
+            }
             Select(Mathf.Clamp(selectedElement, 0, numberElements - 1));
         }
         GUILayout.EndHorizontal();
@@ -136,15 +138,16 @@ public class MapKreator : EditorWindow {
             current.name = EditorGUILayout.TextField("Name", current.name);
 
             GUILayout.BeginHorizontal();
-            currentLayer = EditorGUILayout.IntSlider(currentLayer, 0, 5);
+            currentLayer = EditorGUILayout.IntSlider(currentLayer, 0, 4);
             if (currentLayer < 3)
                 GUILayout.Label("Layer " + currentLayer, GUILayout.Width(80));
             if (currentLayer == 3)
                 GUILayout.Label("Collisions", GUILayout.Width(80));
             if (currentLayer == 4)
                 GUILayout.Label("Events", GUILayout.Width(80));
-			if (currentLayer == 4)
-				GUILayout.Label("Combat Zones", GUILayout.Width(80));
+            // TODO - Define how to create Combat Zones
+            //if (currentLayer == 5)
+            //    GUILayout.Label("Combat Zones", GUILayout.Width(80));
             GUILayout.EndHorizontal();
 
             int value = EditorGUILayout.Popup(selectedPattern, patterns.ToArray());

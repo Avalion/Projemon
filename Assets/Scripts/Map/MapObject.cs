@@ -12,6 +12,10 @@ public class MapObject : MonoBehaviour {
     public enum Orientation { Down, Left, Right, Up };
     public Orientation orientation = Orientation.Down;
 
+    public enum Layer { Under, Middle, Top }
+    public Layer layer = Layer.Middle;
+    public bool allowMultipleObjects = false;
+
     public enum PossibleMovement { NULL, Left, Right, Up, Down, Forward, Backward, StrafeLeft, StrafeRight, TurnLeft, TurnRight, TurnUp, TurnDown, TurnLeftward, TurnRightward, TurnBackward, FollowPlayer, FleePlayer, LookPlayer }
 
     public enum ExecutionCondition { NULL, Action, ActionFace, Contact, Automatique }

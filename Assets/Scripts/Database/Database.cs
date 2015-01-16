@@ -156,6 +156,7 @@ public class DataBase {
         ExecCommand(cmd);
     }
 
+
     // Utils
     private int GetLastInsertId() {
         if (m_dbConnection == null) throw new System.Exception("DataBaseException : Database is not open.");
@@ -166,7 +167,18 @@ public class DataBase {
             int r = reader.Read() ? reader.GetInt32(0) : -1;
             cmd = null;
             return r;
-        }
-        catch (System.Exception e) { throw new System.Exception("SQL error with InsertLastId.", e); }
+        } catch (System.Exception e) { throw new System.Exception("SQL error with InsertLastId.", e); }
     }
+
+
+    // MapObject
+    public static List<DBMapObject> GetMapObjects(int mapId) {
+        return DataBase.Select<DBMapObject>("mapId = " + mapId);
+    }
+
+    public static List<DBMapObjectAction> GetMapObjectActions(int mapObjectId) {
+        return DataBase.Select<DBMapObjectAction>("mapObjectId = " + mapObjectId);
+    }
+
+    
 }

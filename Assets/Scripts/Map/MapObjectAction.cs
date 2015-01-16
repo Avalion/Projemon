@@ -21,11 +21,15 @@ public abstract class MapObjectAction {
 
     public abstract string Serialize();
     public abstract void Deserialize(string s);
+    
     public static MapObjectAction Generate(string s) {
         string type = s.Substring(0, s.IndexOf('|'));
         MapObjectAction action = ((MapObjectAction)System.Activator.CreateInstance(System.Type.GetType(type)));
         action.Deserialize(s);
 
         return action;
+    }
+    public static MapObjectAction Generate(DBMapObjectAction _source) {
+        return Generate(_source.serialized);
     }
 }

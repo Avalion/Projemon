@@ -84,13 +84,13 @@ public class World : MonoBehaviour {
 
         currentMap = new Map(mapId);
 
-        // TMP - TODO : Store MapObject in DB and generate them
-        mapObjects = new List<MapObject>(GameObject.FindObjectsOfType<MapObject>());
+        foreach (DBMapObject mo in DataBase.GetMapObjects(mapId))
+            mapObjects.Add(MapObject.Generate(mo));
     }
 
     /* Utils
      */
-    //TODO: Modifier pour éviter d'être à deux sur une case pendant un mouvement
+    
     public bool CanMoveOn(MapObject o, Vector2 _destination) {
         if (!currentMap.collisions[(int)_destination.x, (int)_destination.y])
             return false;
@@ -104,7 +104,7 @@ public class World : MonoBehaviour {
                 o.OnCollision();
                 mo.OnCollision();
                 
-                if (mo.layer != o.layer || mo.allowMultipleObjects)
+                if (mo.layer != o.layer || mo.allowPassThrough)
                     continue;
                 return false;
             }
@@ -112,7 +112,7 @@ public class World : MonoBehaviour {
                 o.OnCollision();
                 mo.OnCollision();
 
-                if (mo.layer != o.layer || mo.allowMultipleObjects)
+                if (mo.layer != o.layer || mo.allowPassThrough)
                     continue;
                 return false;
             }

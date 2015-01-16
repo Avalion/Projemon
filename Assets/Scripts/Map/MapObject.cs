@@ -4,8 +4,15 @@ using System.Collections;
 
 /**
  * This class defines map objects
+ * 
+ * TODO : Implements States : int value that determines a new list of Actions if state is setted
+ *          - So Add State into DBMapObjectAction only
+ *          - Only 4 states so just duplicate the actions list for each state names A B C D
  */
 public class MapObject : MonoBehaviour {
+    [HideInInspector]
+    public int mapObjectId;
+
     public enum MovementSpeed { Slow, Normal, Fast, Instant };
     public MovementSpeed speed = MovementSpeed.Normal;
 
@@ -14,15 +21,12 @@ public class MapObject : MonoBehaviour {
 
     public enum Layer { Under, Middle, Top }
     public Layer layer = Layer.Middle;
-    public bool allowMultipleObjects = false;
+    public bool allowPassThrough = false;
 
     public enum PossibleMovement { NULL, Left, Right, Up, Down, Forward, Backward, StrafeLeft, StrafeRight, TurnLeft, TurnRight, TurnUp, TurnDown, TurnLeftward, TurnRightward, TurnBackward, FollowPlayer, FleePlayer, LookPlayer }
 
     public enum ExecutionCondition { NULL, Action, ActionFace, Contact, Automatique }
     public ExecutionCondition execCondition = ExecutionCondition.Action;
-
-    public int CHAR_RESOLUTION_X = 32;
-    public int CHAR_RESOLUTION_Y = 48;
 
     public Texture2D sprite;
     public Texture2D Sprite { 
@@ -31,6 +35,9 @@ public class MapObject : MonoBehaviour {
             if (lerp > 0.2f && lerp < 0.8f)
                 step = ((orientation == Orientation.Left || orientation == Orientation.Right ? mapCoords.x : mapCoords.y) % 2 == 0) ? 0 : 2;
             
+            // A sprite contains 3 columns and 4 lines
+            int CHAR_RESOLUTION_X = sprite.width / 3;
+            int CHAR_RESOLUTION_Y = sprite.height / 4;
 
             switch (orientation) {
                 case Orientation.Left:
@@ -46,13 +53,14 @@ public class MapObject : MonoBehaviour {
     }
 
     public Vector2 mapCoords;
-    public Vector2 tempRestrictedCase = new Vector2(-1, -1);
+    private Vector2 tempRestrictedCase = new Vector2(-1, -1);
 
     [HideInInspector] public bool isMoving;
     [HideInInspector] public Vector2 currentMovement;
     protected float lerp = 0;
 
     public List<MapObjectAction> actions = new List<MapObjectAction>();
+    [HideInInspector] 
     public bool isRunning = false;
 
 
@@ -381,7 +389,30 @@ public class MapObject : MonoBehaviour {
         //Player.Unlock(); TEMP TODO: add bool
         foreach (MapObjectAction action in actions)
             action.Init();
+
         isRunning = false;
     }
 
+
+    public static MapObject Generate(DBMapObject _source) {
+        // Generate element
+        MapObject m = new MapObject();
+        m.mapObjectId = _source.ID;
+        m.mapCoords = _source.mapCoords;
+
+        m.sprite = InterfaceUtility.GetTexture("Characters/" + _source.sprite);
+
+        m.speed = _source.speed;
+        m.orientation = _source.orientation;
+        m.layer = _source.layer;
+        m.execCondition = _source.execCondition;
+
+        m.allowPassThrough = _source.allowPassThrough;
+
+        // Generate actions
+        foreach (DBMapObjectAction action in DataBase.GetMapObjectActions(m.mapObjectId))
+            m.actions.Add(MapObjectAction.Generate(action.serialized));
+
+        return m;
+    }
 }

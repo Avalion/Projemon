@@ -112,6 +112,9 @@ public class DBMonster : SQLTable {
             Stringize(attack4) + ", " + 
             Stringize(inTeam);
     }
+    public override void Delete() {
+        DataBase.DeleteByID<DBMonster>(ID);
+    }
 
     public static DBMonster ConvertFrom(Monster _source) {
         DBMonster m = new DBMonster();

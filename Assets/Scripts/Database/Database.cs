@@ -156,9 +156,21 @@ public class DataBase {
         ExecCommand(cmd);
     }
 
+    public static void DeleteByID<T>(int ID) where T : SQLTable, new() {
+        Delete<T>("ID = " + ID);
+    }
+    public static void Delete<T>(string where = "") where T : SQLTable, new() {
+        if (m_dbConnection == null) throw new System.Exception("DataBaseException : Database is not open.");
+
+        string cmd = "DELETE FROM " + new T().TableName();
+        if (where.Length > 0)
+            cmd += " WHERE " + where;
+        
+        ExecCommand(cmd);
+    }
 
     // Utils
-    private int GetLastInsertId() {
+    public static int GetLastInsertId() {
         if (m_dbConnection == null) throw new System.Exception("DataBaseException : Database is not open.");
         try {
             SqliteCommand cmd = m_dbConnection.CreateCommand();

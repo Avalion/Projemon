@@ -63,6 +63,9 @@ public class DBMapObject : SQLTable {
             Stringize((int)execCondition) + ", " +
             Stringize(allowPassThrough);
     }
+    public override void Delete() {
+        DataBase.DeleteByID<DBMapObject>(ID);
+    }
 
     public static DBMapObject ConvertFrom(Map _map, MapObject _source) {
         DBMapObject m = new DBMapObject();

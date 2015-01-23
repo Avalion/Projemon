@@ -17,6 +17,9 @@ public class Map {
 
     public int ID;
 
+    // List of mapObjects on this map to display
+    public List<MapObject> mapObjects = new List<MapObject>();
+
     public string name;
     public Vector2 size = new Vector2(32, 18);
 
@@ -62,6 +65,9 @@ public class Map {
         Import();
 
         SortTiles();
+
+        foreach (DBMapObject mo in DataBase.GetMapObjects(this.ID))
+            mapObjects.Add(MapObject.Generate(mo));
     }
 
     public void Display() {
@@ -122,8 +128,9 @@ public class Map {
     }
     public void Import() {
         string filePath = Config.GetConfigPath("Maps") + ID + ".txt";
+        
         if (!File.Exists(filePath))
-            return;
+            throw new System.Exception("Try to load a map with inexistant ID : " + ID);
         
         StreamReader sr = new StreamReader(filePath);
         
@@ -183,14 +190,5 @@ public class Map {
 
         sr.Close();
         sr.Dispose();
-    }
-
-    // Destructor
-    public void Dispose() {
-        //foreach (MapObject o in GameObject.FindObjectsOfType<MapObject>())
-        //    if (o.GetComponent<Player>())
-        //        continue;
-        //    else
-        //        GameObject.DestroyImmediate(o.gameObject);
     }
 }

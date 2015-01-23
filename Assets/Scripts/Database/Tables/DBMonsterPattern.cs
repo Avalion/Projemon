@@ -146,6 +146,9 @@ public class DBMonsterPattern : SQLTable {
 
             Stringize(encountered);
     }
+    public override void Delete() {
+         DataBase.DeleteByID<DBMonsterPattern>(ID);
+    }
 
     public override string ToString() {
         return name;

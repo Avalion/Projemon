@@ -31,6 +31,9 @@ public class DBMapObjectAction : SQLTable {
             Stringize(mapObjectId) + ", " + 
             Stringize(serialized);
     }
+    public override void Delete() {
+         DataBase.DeleteByID<DBMapObjectAction>(ID);
+    }
 
     public static DBMapObjectAction ConvertFrom(MapObject _object, MapObjectAction _source) {
         DBMapObjectAction m = new DBMapObjectAction();

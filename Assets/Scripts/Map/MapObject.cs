@@ -9,7 +9,7 @@ using System.Collections;
  *          - So Add State into DBMapObjectAction only
  *          - Only 4 states so just duplicate the actions list for each state names A B C D
  */
-public class MapObject : MonoBehaviour {
+public class MapObject {
     [HideInInspector]
     public int mapObjectId;
 
@@ -66,7 +66,7 @@ public class MapObject : MonoBehaviour {
 
     public void Start() {
         if (execCondition == ExecutionCondition.Automatique)
-            ExecuteActions();
+            World.Current.ExecuteActions(this);
 
         OnStart();
     }
@@ -92,7 +92,7 @@ public class MapObject : MonoBehaviour {
         }
 
         if (HaveToExecute())
-            ExecuteActions();
+            World.Current.ExecuteActions(this);
 
         OnUpdate();
     }
@@ -348,7 +348,7 @@ public class MapObject : MonoBehaviour {
 
     public void OnCollision() {
         if (execCondition == ExecutionCondition.Contact)
-            ExecuteActions();
+            World.Current.ExecuteActions(this);
     }
 
     protected bool HaveToExecute() {
@@ -372,27 +372,6 @@ public class MapObject : MonoBehaviour {
 
         return false;
     }
-
-    public virtual void ExecuteActions() {
-        isRunning = true;
-        //Player.Lock(); TEMP TODO: add bool
-        
-        StartCoroutine(ExecuteActionAsync());
-    }
-
-    private IEnumerator ExecuteActionAsync() {
-        foreach(MapObjectAction action in actions) {
-            action.Execute();
-            while (!action.Done())
-                yield return new WaitForEndOfFrame();
-        }
-        //Player.Unlock(); TEMP TODO: add bool
-        foreach (MapObjectAction action in actions)
-            action.Init();
-
-        isRunning = false;
-    }
-
 
     public static MapObject Generate(DBMapObject _source) {
         // Generate element

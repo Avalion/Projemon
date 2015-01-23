@@ -28,6 +28,13 @@ public class EditorUtility {
     }
 
 
+    public static void DrawSquare(Rect _zone, int _size, Color c) {
+        EditorGUI.DrawRect(new Rect(_zone.x, _zone.y, _size, _zone.height), c);
+        EditorGUI.DrawRect(new Rect(_zone.x, _zone.y, _zone.width, _size), c);
+        EditorGUI.DrawRect(new Rect(_zone.x + _zone.width - _size, _zone.y, _size, _zone.height), c);
+        EditorGUI.DrawRect(new Rect(_zone.x, _zone.y + _zone.height - _size, _zone.width, _size), c);
+    }
+
     [MenuItem("Creation/Clear All Caches &r")]
     public static void Clear() {
         Debug.Log("Cleared " + InterfaceUtility.ClearAllCache() + " objects !");

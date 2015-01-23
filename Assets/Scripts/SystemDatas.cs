@@ -60,11 +60,17 @@ public class SystemDatas {
         return maps;
     }
     public static void SetMaps(List<Map> _elements) {
+        // maps;
         foreach (string file in Directory.GetFiles(Config.GetConfigPath("Maps"))) {
             File.Delete(file);
         }
-        foreach (Map m in _elements)
+        foreach (Map m in _elements) {
             m.Export();
+
+            // mapObjects
+            foreach (MapObject pattern in m.mapObjects)
+                DataBase.Replace<DBMapObject>(DBMapObject.ConvertFrom(m, pattern));
+        }
     }
 
     /* Write all DataBase infos;

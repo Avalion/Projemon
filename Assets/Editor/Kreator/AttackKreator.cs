@@ -11,6 +11,8 @@ public class AttackKreator : EditorWindow {
     private int selectedElement = -1;
     private DBAttack current { get { return elements[selectedElement]; } }
 
+    public static List<DBAttack> toDestroy = new List<DBAttack>();
+    
     private static int numberElements = 0;
 
     public static List<BattleAnimation> battleAnimations;
@@ -52,10 +54,11 @@ public class AttackKreator : EditorWindow {
         }
         if (GUILayout.Button("Delete") && elements.Count > 1) {
             if (selectedElement == elements.Count - 1) {
+                toDestroy.Add(elements[selectedElement]);
                 elements.RemoveAt(selectedElement);
                 Select(elements.Count - 1);
             } else {
-                elements[selectedElement] = new DBAttack();
+                elements[selectedElement] = new DBAttack() { ID = elements[selectedElement].ID };
             }
             numberElements = elements.Count;
         }
@@ -66,8 +69,10 @@ public class AttackKreator : EditorWindow {
         if (GUILayout.Button("Apply")) {
             while (elements.Count < numberElements)
                 elements.Add(new DBAttack() { ID = elements.Count });
-            while (elements.Count > numberElements)
+            while (elements.Count > numberElements) {
+                toDestroy.Add(elements[elements.Count - 1]);
                 elements.RemoveAt(elements.Count - 1);
+            }
             Select(Mathf.Clamp(selectedElement, 0, numberElements - 1));
         }
         GUILayout.EndHorizontal();
@@ -121,6 +126,9 @@ public class AttackKreator : EditorWindow {
             } else {
                 foreach (DBAttack attack in elements)
                     DataBase.Replace<DBAttack>(attack);
+                foreach (DBAttack attack in toDestroy)
+                    attack.Delete();
+                toDestroy.Clear();
                 Close();
             }
             

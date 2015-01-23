@@ -77,7 +77,9 @@ public class DBAttack : SQLTable {
 
             Stringize(battleAnimationID);
     }
-
+    public override void Delete() {
+        DataBase.DeleteByID<DBAttack>(ID);
+    }
 
     public bool Launch(Monster caster, Monster target, Rect effectZone) {
         if (!caster.UseStamina(caster, staminaCost))

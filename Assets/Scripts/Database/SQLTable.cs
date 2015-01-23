@@ -8,6 +8,7 @@ public abstract class SQLTable {
     public abstract string TypedFields();
     public abstract void FromRow(SqliteDataReader reader);
     public abstract string ToRow();
+    public abstract void Delete();
 
     public string InsertInto() { return "INSERT INTO " + TableName() + " (" + Fields() + ") VALUES (" + ToRow() + ")"; }
     public string Replace() { return "INSERT OR REPLACE INTO " + TableName() + " (id, " + Fields() + ") VALUES (" + ID + ", " + ToRow() + ")"; }

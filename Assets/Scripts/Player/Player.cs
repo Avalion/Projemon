@@ -11,10 +11,16 @@ public class Player : Battler {
     public static Player Current {
         get {
             if (current == null) {
-                current = GameObject.FindObjectOfType<Player>();
-                if (current == null) {
-                    current = new GameObject("Player").AddComponent<Player>();
-                }
+                current = new Player();
+                
+                //TEMPORARY
+                CaptureItem scroll = new CaptureItem();
+                scroll.name = "Capture Scroll";
+                current.actions.Add(new ActionAddItem(scroll, Player.Current));
+
+                current.monsters.Add(Monster.Generate(DataBase.SelectById<DBMonsterPattern>(0), 5, 5));
+
+                MonsterCollection.capturedMonsters.Add(Monster.Generate(DataBase.SelectById<DBMonsterPattern>(3), 5, 5));
             }
             return current;
         }
@@ -32,46 +38,5 @@ public class Player : Battler {
     }
     public static void ForceUnlock() {
         locked = 0;
-    }
-
-    public void Awake() {
-        if (!DataBase.IsConnected) DataBase.Connect(Application.dataPath + "/database.sql");
-    }
-
-    // TEMPORARY !
-    public new void Start() {
-        CaptureItem scroll = new CaptureItem();
-        scroll.name = "Capture Scroll";
-        actions.Add(new ActionAddItem(scroll, Player.Current));
-        
-        monsters.Add(Monster.Generate(DataBase.SelectById<DBMonsterPattern>(0), 5, 5));
-
-        MonsterCollection.capturedMonsters.Add(Monster.Generate(DataBase.SelectById<DBMonsterPattern>(3), 5, 5));
-    }
-
-    public override void OnUpdate() {
-        if (!isMoving && !Locked) {
-            if (InputManager.Current.GetKey(KeyCode.LeftArrow))
-                Move(PossibleMovement.Left);
-            else if (InputManager.Current.GetKey(KeyCode.RightArrow))
-                Move(PossibleMovement.Right);
-            else if (InputManager.Current.GetKey(KeyCode.UpArrow))
-                Move(PossibleMovement.Up);
-            else if (InputManager.Current.GetKey(KeyCode.DownArrow))
-                Move(PossibleMovement.Down);
-        }
-
-        if (isMoving && Locked) {
-            lerp = 0;
-            currentMovement = Vector2.zero;
-            isMoving = false;
-        }
-    }
-
-    public void OnDestroy() {
-        DataBase.Close();
-    }
-    public void OnApplicationQuit() {
-        DataBase.Close();
     }
 }

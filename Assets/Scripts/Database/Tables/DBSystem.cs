@@ -24,4 +24,7 @@ public class DBSystem : SQLTable {
         return
             Stringize(dbversion);
     }
+    public override void Delete() {
+        DataBase.DeleteByID<DBSystem>(ID);
+    }
 }

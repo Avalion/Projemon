@@ -11,6 +11,9 @@ public class MonsterKreator : EditorWindow {
     private int selectedElement = -1;
     private DBMonsterPattern current { get { return elements[selectedElement]; } }
 
+    public static List<DBMonsterPattern> toDestroy = new List<DBMonsterPattern>();
+                
+
     private static int numberElements = 0;
 
     public static List<string> battlersTextures = new List<string>();
@@ -63,10 +66,11 @@ public class MonsterKreator : EditorWindow {
         }
         if (GUILayout.Button("Delete") && elements.Count > 1) {
             if (selectedElement == elements.Count - 1) {
+                toDestroy.Add(elements[selectedElement]);
                 elements.RemoveAt(selectedElement);
                 Select(elements.Count - 1);
             } else {
-                elements[selectedElement] = new DBMonsterPattern();
+                elements[selectedElement] = new DBMonsterPattern() { ID = elements[selectedElement].ID };
             }
             numberElements = elements.Count;
         }
@@ -77,8 +81,10 @@ public class MonsterKreator : EditorWindow {
         if (GUILayout.Button("Apply")) {
             while (elements.Count < numberElements)
                 elements.Add(new DBMonsterPattern() { ID = elements.Count });
-            while (elements.Count > numberElements)
+            while (elements.Count > numberElements) {
+                toDestroy.Add(elements[elements.Count - 1]);
                 elements.RemoveAt(elements.Count - 1);
+            }
             Select(Mathf.Clamp(selectedElement, 0, numberElements - 1));
         }
         GUILayout.EndHorizontal();
@@ -227,6 +233,9 @@ public class MonsterKreator : EditorWindow {
             } else {
                 foreach (DBMonsterPattern pattern in elements)
                     DataBase.Replace<DBMonsterPattern>(pattern);
+                foreach (DBMonsterPattern pattern in toDestroy)
+                    pattern.Delete();
+                toDestroy.Clear();
                 Close();
             }
         }

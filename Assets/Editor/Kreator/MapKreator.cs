@@ -9,6 +9,8 @@ public class MapKreator : EditorWindow {
         get { return elements[selectedElement]; }
     }
 
+    public static List<Map> toDestroy = new List<Map>();
+
     private static int numberElements = 0;
 
     // Images
@@ -16,8 +18,7 @@ public class MapKreator : EditorWindow {
     private static int selectedPattern = -1;
 
     private static Texture2D[,] currentPattern;
-    //private Vector2 currentMapCoords;
-
+    
     private Vector2 currentTileCoords;
     // Design
     private GUIStyle tileStyle = new GUIStyle();
@@ -30,6 +31,8 @@ public class MapKreator : EditorWindow {
     private Vector2 currentMapCoords;
     
     private int currentLayer;
+
+    private Vector2 selectedCoords = -Vector2.one;
 
     // Display
     public bool displayAllLayers = true;
@@ -104,6 +107,7 @@ public class MapKreator : EditorWindow {
         }
         if (GUILayout.Button("Delete") && elements.Count > 1) {
             if (selectedElement == elements.Count - 1) {
+                toDestroy.Add(elements[selectedElement]);
                 elements.RemoveAt(selectedElement);
                 Select(elements.Count - 1);
             } else {
@@ -119,7 +123,7 @@ public class MapKreator : EditorWindow {
             while (elements.Count < numberElements)
                 elements.Add(new Map(elements.Count));
             while (elements.Count > numberElements) {
-                elements[elements.Count - 1].Dispose();
+                toDestroy.Add(elements[elements.Count - 1]);
                 elements.RemoveAt(elements.Count - 1);
             }
             Select(Mathf.Clamp(selectedElement, 0, numberElements - 1));
@@ -192,6 +196,11 @@ public class MapKreator : EditorWindow {
         GUILayout.FlexibleSpace();
         if (GUILayout.Button("OK")) {
             SystemDatas.SetMaps(elements);
+
+            foreach (Map map in toDestroy)
+                foreach (MapObject mo in map.mapObjects)
+                    DataBase.DeleteByID<DBMapObject>(mo.mapObjectId);
+            toDestroy.Clear();    
             Close();
         }
         GUILayout.EndHorizontal();
@@ -233,8 +242,13 @@ public class MapKreator : EditorWindow {
                     break;
 
                 foreach (Map.Tile tile in current.GetTiles(layer)) {
-                    if (tile.Image != null)
+                    if (tile.Image != null) {
+                        Color c = GUI.color;
+                        GUI.color = new Color(c.r, c.g, c.b, layer <= currentLayer ? 1 : 0.3f);
+                        
                         GUI.DrawTexture(new Rect(resolution.x * tile.mapCoords.x, resolution.y * tile.mapCoords.y, resolution.x, resolution.y), tile.Image);
+                        GUI.color = c;
+                    }
                 }
             }
             // Collision 
@@ -254,7 +268,89 @@ public class MapKreator : EditorWindow {
             }
             // Events
             if (currentLayer == 4) {
-                // TODO !
+                for (int i = 0; i < Map.MAP_SCREEN_X; i++)
+                    for (int j = 0; j < Map.MAP_SCREEN_Y; j++) {
+                        Rect caseRect = new Rect(i * resolution.x, j * resolution.y, resolution.x, resolution.y);
+
+                        // check if there is a MO on the case
+                        MapObject mo = current.mapObjects.Find(MO => MO.mapCoords != new Vector2(i, j));
+                        if (mo != null) {
+                            // Display the Sprite
+                            if (GUI.Button(caseRect, mo.sprite, InterfaceUtility.CenteredStyle))
+                                selectedCoords = selectedCoords == -Vector2.one ? new Vector2(i, j) : -Vector2.one;
+
+                            // Square border
+                            EditorUtility.DrawSquare(caseRect, 4, new Color(0, 0, 0, 0.7f));
+                            // Square
+                            EditorUtility.DrawSquare(new Rect(caseRect.x + 1, caseRect.y + 1, caseRect.width - 2, caseRect.height - 2), 2, new Color(1, 1, 1, 0.7f));
+                        } else {
+                            // Else, display nothing
+                            if (GUI.Button(caseRect, "", InterfaceUtility.CenteredStyle))
+                                selectedCoords = selectedCoords == -Vector2.one ? new Vector2(i,j) : -Vector2.one;
+                        }
+
+                        if (selectedCoords == new Vector2(i, j)) {
+                            // Square border
+                            EditorUtility.DrawSquare(caseRect, 4, new Color(1, 1, 1, 0.7f));
+                            // Square
+                            EditorUtility.DrawSquare(new Rect(caseRect.x + 1, caseRect.y + 1, caseRect.width - 2, caseRect.height - 2), 2, new Color(0.5f, 0.5f, 1, 0.7f));
+                        }
+                    }
+
+                // Player start pos
+                if (World.Current.startMapID == current.ID) {
+                    Rect playerRect = new Rect(World.Current.startPlayerCoords.x * resolution.x, World.Current.startPlayerCoords.y * resolution.y, resolution.x, resolution.y);
+                    EditorGUI.DrawRect(playerRect, new Color(0.8f, 0.8f, 1, 0.5f));
+                    GUI.Label(playerRect, "S", InterfaceUtility.CenteredStyle);
+                }
+
+                // if a case is selected
+                if (selectedCoords != -Vector2.one) {
+                    // check if there is a MO on the case
+                    MapObject mo = current.mapObjects.Find(MO => MO.mapCoords != selectedCoords);
+                    if (mo == null && World.Current.startMapID == current.ID && World.Current.startPlayerCoords == selectedCoords)
+                        mo = Player.Current;
+                    
+                    // calc the optionsRect to don't overview the canvas
+                    Rect optionsRect = new Rect((selectedCoords.x + 0.8f) * resolution.x, (selectedCoords.y + 0.8f) * resolution.y, 100, 100);
+                    if (optionsRect.x + optionsRect.width > canvasRect.width)
+                        optionsRect.x -= optionsRect.width + 0.6f * resolution.x;
+                    if (optionsRect.y + optionsRect.height > canvasRect.height)
+                        optionsRect.y -= optionsRect.height + 0.6f * resolution.y;
+
+                    GUILayout.BeginArea(optionsRect);
+                    GUILayout.BeginVertical();
+                    GUI.enabled = mo != Player.Current;
+                    if (GUILayout.Button(mo != null ? "Editer" : "Créer")) {
+                        if (mo == null) {
+                            DBMapObject dbmo = new DBMapObject() { mapId = current.ID, mapCoords = selectedCoords };
+                            DataBase.Insert<DBMapObject>(dbmo);
+                            dbmo.ID = DataBase.GetLastInsertId();
+                            mo = MapObject.Generate(dbmo);
+                        }
+                        
+                        // TODO : Launch MapObject Editor
+
+                        selectedCoords = -Vector2.one;
+                    }
+                    GUI.enabled = mo != null && mo != Player.Current;
+                    if (GUILayout.Button("Supprimer")) {
+                        DataBase.DeleteByID<DBMapObject>(mo.mapObjectId);
+                        current.mapObjects.Remove(mo);
+
+                        selectedCoords = -Vector2.one;
+                    }
+                    GUI.enabled = mo == null;
+                    if (GUILayout.Button("Player")) {
+                        World.Current.startMapID = current.ID;
+                        World.Current.startPlayerCoords = selectedCoords;
+
+                        selectedCoords = -Vector2.one;
+                    }
+                    GUI.enabled = true;
+                    GUILayout.EndVertical();
+                    GUILayout.EndArea();
+                }
             }
             // Combat Zones
             if (currentLayer == 5) {

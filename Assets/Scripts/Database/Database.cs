@@ -182,6 +182,9 @@ public class DataBase {
         } catch (System.Exception e) { throw new System.Exception("SQL error with InsertLastId.", e); }
     }
 
+    public static void Vacuum() {
+        ExecCommand("VACUUM");
+    }
 
     // MapObject
     public static List<DBMapObject> GetMapObjects(int mapId) {

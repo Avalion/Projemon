@@ -8,6 +8,8 @@ public class DBMapObject : SQLTable {
     public int mapId;
     public Vector2 mapCoords;
 
+    public string name;
+    
     public string sprite;
 
     public MapObject.MovementSpeed speed;
@@ -24,7 +26,9 @@ public class DBMapObject : SQLTable {
 
         mapId = reader.GetInt32(pos++);
         mapCoords = new Vector2(reader.GetInt32(pos++), reader.GetInt32(pos++));
-        
+
+        name = reader.GetString(pos++);
+
         sprite = reader.GetString(pos++);
         
         speed = (MapObject.MovementSpeed)reader.GetInt32(pos++);
@@ -35,12 +39,13 @@ public class DBMapObject : SQLTable {
         allowPassThrough = reader.GetBoolean(pos++);
     }
     public override string Fields() {
-        return "mapID, mapCoodX, mapCoordY, sprite, speed, orientation, layer, execCondition, allowPassThrough";
+        return "mapID, mapCoodX, mapCoordY, name, sprite, speed, orientation, layer, execCondition, allowPassThrough";
     }
     public override string TypedFields() {
         return "mapId integer, " + 
                "mapCoodX int DEFAULT 0, " +
                "mapCoodY integer DEFAULT 0, " +
+               "name text" + 
                "sprite text, " +
                "speed integer, " +
                "orientation integer, " +
@@ -56,6 +61,7 @@ public class DBMapObject : SQLTable {
             Stringize(mapId) + ", " + 
             Stringize((int)mapCoords.x) + ", " + 
             Stringize((int)mapCoords.y) + ", " +
+            Stringize(name) + ", " + 
             Stringize(sprite) + ", " +
             Stringize((int)speed) + ", " +
             Stringize((int)orientation) + ", " +
@@ -71,6 +77,8 @@ public class DBMapObject : SQLTable {
         DBMapObject m = new DBMapObject();
         m.mapId = _map.ID;
         m.mapCoords = _source.mapCoords;
+
+        m.name = _source.name;
 
         m.sprite = _source.sprite.name;
         

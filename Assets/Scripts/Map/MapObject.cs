@@ -13,6 +13,8 @@ public class MapObject {
     [HideInInspector]
     public int mapObjectId;
 
+    public string name;
+
     public enum MovementSpeed { Slow, Normal, Fast, Instant };
     public MovementSpeed speed = MovementSpeed.Normal;
 
@@ -378,6 +380,8 @@ public class MapObject {
         MapObject m = new MapObject();
         m.mapObjectId = _source.ID;
         m.mapCoords = _source.mapCoords;
+
+        m.name = _source.name;
 
         m.sprite = InterfaceUtility.GetTexture("Characters/" + _source.sprite);
 

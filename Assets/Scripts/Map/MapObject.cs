@@ -57,6 +57,8 @@ public class MapObject {
     public Vector2 mapCoords;
     private Vector2 tempRestrictedCase = new Vector2(-1, -1);
 
+    private bool isJumping = false;
+
     [HideInInspector] public bool isMoving;
     [HideInInspector] public Vector2 currentMovement;
     protected float lerp = 0;
@@ -79,9 +81,9 @@ public class MapObject {
     public void Update() {
         if (isMoving) {
             switch (speed) {
-                case MovementSpeed.Slow: lerp += Time.deltaTime * 2f; break;
-                case MovementSpeed.Normal: lerp += Time.deltaTime * 4f; break;
-                case MovementSpeed.Fast: lerp += Time.deltaTime * 6f; break;
+                case MovementSpeed.Slow: lerp += Time.deltaTime * 2f / (isJumping ? 2 : 1); break;
+                case MovementSpeed.Normal: lerp += Time.deltaTime * 4f / (isJumping ? 2 : 1); break;
+                case MovementSpeed.Fast: lerp += Time.deltaTime * 6f / (isJumping ? 2 : 1); break;
                 case MovementSpeed.Instant: lerp = 1f; break;
             }
         }
@@ -90,6 +92,7 @@ public class MapObject {
             lerp = 0;
             mapCoords += currentMovement;
             currentMovement = Vector2.zero;
+            isJumping = false;
             isMoving = false;
         }
 
@@ -103,7 +106,7 @@ public class MapObject {
     public void DisplayOnMap() {
         if (sprite != null) {
             float height = Sprite.height * (Map.Resolution.x / Sprite.width);
-            GUI.DrawTexture(new Rect(Map.Resolution.x * (mapCoords.x + currentMovement.x * lerp), Map.Resolution.y * (mapCoords.y + currentMovement.y * lerp + 1) - height, Map.Resolution.x, height), Sprite);
+            GUI.DrawTexture(new Rect(Map.Resolution.x * (mapCoords.x + currentMovement.x * lerp), Map.Resolution.y * (mapCoords.y + currentMovement.y * lerp + 1) - height + (isJumping ? Mathf.RoundToInt(Mathf.Sin(lerp * Mathf.PI) * Map.Resolution.y) : 0), Map.Resolution.x, height), Sprite);
         }
     }
 

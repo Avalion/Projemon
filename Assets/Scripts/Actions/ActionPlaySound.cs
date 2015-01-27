@@ -3,18 +3,13 @@
 /**
  * This action will play a BGS or a BGM
  */
-[System.Serializable]
 public class ActionPlaySound : MapObjectAction {
-    public AudioClip sound;
-
-    // Todo : store only a relative Path to songs
     public string soundPath;
-
+    
     public bool bgm = false;
 
     public ActionPlaySound() {}
-    public ActionPlaySound(AudioClip _sound, bool _bgm = false, bool _waitForEnd = false) {
-        sound = _sound;
+    public ActionPlaySound(string _soundPath, bool _bgm = false, bool _waitForEnd = false) {
         bgm = _bgm;
         waitForEnd = _waitForEnd;
     }
@@ -22,18 +17,19 @@ public class ActionPlaySound : MapObjectAction {
     public override void Execute() {
         if (bgm) {
             World.Current.currentBGM.Stop();
-            World.Current.currentBGM.clip = sound;
-            if (sound != null)
+            World.Current.currentBGM.clip = InterfaceUtility.GetAudio(soundPath);
+            if (World.Current.currentBGM.clip != null)
                 World.Current.currentBGM.Play();
             Terminate();
         } else {
             ActionPlaySoundDisplay display = new GameObject("action_Sound").AddComponent<ActionPlaySoundDisplay>();
             display.action = this;
+            display.SendMessage("Start");
         }
     }
 
     public override string InLine() {
-        return "Play " + (bgm ? "BGM : " : "BGS : ") + sound.name+".";
+        return "Play " + (bgm ? "BGM : " : "BGS : ") + System.IO.Path.GetFileName(soundPath) + ".";
     }
 
     public override string Serialize() {
@@ -50,13 +46,14 @@ public class ActionPlaySound : MapObjectAction {
 }
 
 public class ActionPlaySoundDisplay : MonoBehaviour {
+    [HideInInspector]
     public ActionPlaySound action;
 
-    public AudioSource source;
+    private AudioSource source;
 
     public void Start() {
         source = new AudioSource();
-        source.clip = action.sound;
+        source.clip = InterfaceUtility.GetAudio(action.soundPath);
         source.Play();
     }
 

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 /**
  * This action will launch a battle
  */
-[System.Serializable]
 public class ActionMonsterBattle : MapObjectAction {
     [System.Serializable]
     public class EncounterMonster {
@@ -32,7 +31,7 @@ public class ActionMonsterBattle : MapObjectAction {
         foreach (EncounterMonster pattern in monsters)
             list.Add(Monster.Generate(pattern.pattern, pattern.lvlMin, pattern.lvlMax));
 
-        Battler battler = new GameObject("Wild Monster").AddComponent<Battler>();
+        Battler battler = new Battler() { name = "Wild Monster" };
         battler.monsters = list;
         Battle.Launch(this, battler);
     }

@@ -3,7 +3,6 @@
 /**
  * This action will add exp to a monster or a group of monsters
  */
-[System.Serializable]
 public class ActionEXP : MapObjectAction {
     public int targetMonster; //-1 to add exp for all the group
     public Battler target;

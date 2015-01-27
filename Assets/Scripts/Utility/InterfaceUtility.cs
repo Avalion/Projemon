@@ -191,7 +191,7 @@ public class InterfaceUtility {
     }
 
     /** Tooltip
-    */
+     */
     private static GUIStyle ms_tooltipStyle;
     public static GUIStyle TooltipStyle {
         get {
@@ -213,7 +213,7 @@ public class InterfaceUtility {
     }
 
     /** Box 
-    */
+     */
     private static List<GUIStyle> ms_borders = null;
     public static GUIStyle GetBorder(string _border) {
         if (ms_borders == null) {
@@ -298,11 +298,25 @@ public class InterfaceUtility {
         return -1;
     }
 
+    /** AudioClip
+     */
+    public static AudioClip GetAudio(string _relativePath) {
+        if (loaded.ContainsKey(_relativePath))
+            return loaded[_relativePath] as AudioClip;
+        
+        try {
+            AudioClip clip = Resources.LoadAssetAtPath(_relativePath, typeof(AudioClip)) as AudioClip;
+            loaded.Add(_relativePath, clip);
+            return clip;
+        } catch { Debug.LogError("File not found at " + _relativePath); }
+        return null;
+    }
+
     /** Textures
      */
     public static Texture2D GetTexture(string _relativePath) {
         if (loaded.ContainsKey(_relativePath))
-            return loaded[_relativePath];
+            return loaded[_relativePath] as Texture2D;
 
         try {
             Texture2D tex = Resources.LoadAssetAtPath(_relativePath, typeof(Texture2D)) as Texture2D;
@@ -360,7 +374,7 @@ public class InterfaceUtility {
 
     /** Cache
      */
-    private static Dictionary<string, Texture2D> loaded = new Dictionary<string, Texture2D>();
+    private static Dictionary<string, object> loaded = new Dictionary<string, object>();
     private static Dictionary<string, Texture2D> inverted = new Dictionary<string, Texture2D>();
     private static Dictionary<string, Texture2D> colored = new Dictionary<string, Texture2D>();
     private static Dictionary<string, Texture2D> separated = new Dictionary<string, Texture2D>();
@@ -371,7 +385,9 @@ public class InterfaceUtility {
         inverted.Clear();
         colored.Clear();
         separated.Clear();
+
         Resources.UnloadUnusedAssets();
+        System.GC.Collect();
 
         return nb;
     }

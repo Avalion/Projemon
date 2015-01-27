@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+/**
+ * This action will add display a random message 
+ */
 public class ActionAleaMessage : MapObjectAction {
     public Texture2D face;
     bool faceOnRight;

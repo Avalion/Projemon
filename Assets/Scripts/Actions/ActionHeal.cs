@@ -3,7 +3,6 @@
 /**
  * This action will heal a monster or a group of monsters
  */
-[System.Serializable]
 public class ActionHeal : MapObjectAction {
     public int targetMonster;//-1 to heal all the group
     public Battler target;

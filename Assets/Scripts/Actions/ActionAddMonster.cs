@@ -1,17 +1,13 @@
 ﻿using UnityEngine;
 
 /**
- * This action will add a monster to the 
+ * This action will add a monster to the collection
  */
-[System.Serializable]
 public class ActionAddMonster : MapObjectAction {
     public int lvl;
 
     private Monster m;
 
-    //public ActionAddMonster() {
-    //    throw new System.Exception("ActionAddMonster have to be initialized");
-    //}
     public ActionAddMonster(int _patternId, int _lvl) {
         lvl = _lvl;
 

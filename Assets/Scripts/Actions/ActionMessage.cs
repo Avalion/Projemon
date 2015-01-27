@@ -3,7 +3,6 @@
 /**
  * This action will display a Message
  */
-[System.Serializable]
 public class ActionMessage : MapObjectAction {
     public Texture2D face;
     public string message = "";
@@ -35,6 +34,7 @@ public class ActionMessage : MapObjectAction {
     public override void Execute() {
         ActionMessageDisplay display = new GameObject("action_Message").AddComponent<ActionMessageDisplay>();
         display.action = this;
+        display.SendMessage("Start");
     }
 
     public override string InLine() {
@@ -57,10 +57,11 @@ public class ActionMessage : MapObjectAction {
 }
 
 public class ActionMessageDisplay : IDisplayable {
+    [HideInInspector]
     public ActionMessage action;
 
-    public GUIStyle messageStyle = new GUIStyle() { fontSize = 30, fontStyle = FontStyle.Bold, wordWrap = true, normal = new GUIStyleState() { textColor = Color.white } };
-    public GUIStyle headStyle = new GUIStyle() { fontSize = 30, fontStyle = FontStyle.Bold, wordWrap = true, normal = new GUIStyleState() { textColor = Color.white } };
+    private GUIStyle messageStyle = new GUIStyle();
+    private GUIStyle headStyle = new GUIStyle();
 
     private float lerp = 0;
     public float duration = -1;

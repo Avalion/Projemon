@@ -3,9 +3,7 @@
 /**
  * This action will add an item to a battler
  */
-[System.Serializable]
 public class ActionAddItem : MapObjectAction {
-
     Item item;
     Battler target;
 

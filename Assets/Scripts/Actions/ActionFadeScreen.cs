@@ -3,7 +3,6 @@
 /**
  * This action will apply a filter on the camera
  */
-[System.Serializable]
 public class ActionFadeScreen : MapObjectAction {
     public float duration;
 
@@ -44,11 +43,12 @@ public class ActionFadeScreen : MapObjectAction {
 }
 
 public class ActionFadeDisplay : IDisplayable {
+    [HideInInspector]
     public ActionFadeScreen action;
 
-    public float lerp = 0;
+    private float lerp = 0;
 
-    public Color init;
+    private Color init;
 
     public void Start() {
         init = World.Current.currentFilter;

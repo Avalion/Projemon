@@ -3,7 +3,6 @@
 /**
  * This action will teleport a MapObject to a destination
  */
-[System.Serializable]
 public class ActionTeleport : MapObjectAction {
     public MapObject target;
     public MapObject.Orientation orientation;

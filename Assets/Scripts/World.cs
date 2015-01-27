@@ -83,7 +83,11 @@ public class World : MonoBehaviour {
         }
 
         // Player movements
+#if UNITY_EDITOR
+        if (!Player.Current.isMoving && (!Player.Locked || InputManager.Current.GetKey(KeyCode.LeftControl))) {
+#else
         if (!Player.Current.isMoving && !Player.Locked) {
+#endif
             if (InputManager.Current.GetKey(KeyCode.LeftArrow))
                 Player.Current.Move(MapObject.PossibleMovement.Left);
             else if (InputManager.Current.GetKey(KeyCode.RightArrow))

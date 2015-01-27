@@ -4,7 +4,6 @@ using System.Collections.Generic;
 /**
  * This action will move a MapObject toward a path, ignore not possible moves
  */
-[System.Serializable]
 public class ActionMove : MapObjectAction {
     public MapObject target;
     public List<MapObject.PossibleMovement> movements = new List<MapObject.PossibleMovement>();
@@ -23,6 +22,7 @@ public class ActionMove : MapObjectAction {
     public override void Execute() {
         ActionMoveDisplay display = new GameObject("action_Move").AddComponent<ActionMoveDisplay>();
         display.action = this;
+        display.SendMessage("Start");
     }
 
     public override string InLine() {
@@ -45,6 +45,7 @@ public class ActionMove : MapObjectAction {
 }
 
 public class ActionMoveDisplay : MonoBehaviour {
+    [HideInInspector]
     public ActionMove action;
     private int count = 0;
 

@@ -3,7 +3,6 @@
 /**
  * This action will remove an item to a battler
  */
-[System.Serializable]
 public class ActionRemoveItem : MapObjectAction {
 
     Item item;

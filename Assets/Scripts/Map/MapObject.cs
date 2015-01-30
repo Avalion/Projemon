@@ -10,6 +10,8 @@ using System.Collections;
  *          - Only 4 states so just duplicate the actions list for each state names A B C D
  */
 public class MapObject {
+    public const string IMAGE_FOLDER = "Characters";
+
     [HideInInspector]
     public int mapObjectId;
 
@@ -385,8 +387,7 @@ public class MapObject {
         m.mapCoords = _source.mapCoords;
 
         m.name = _source.name;
-
-        m.sprite = InterfaceUtility.GetTexture("Characters/" + _source.sprite);
+        m.sprite = InterfaceUtility.GetTexture(Config.GetResourcePath(IMAGE_FOLDER) + _source.sprite);
 
         m.speed = _source.speed;
         m.orientation = _source.orientation;

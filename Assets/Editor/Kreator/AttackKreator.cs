@@ -121,7 +121,7 @@ public class AttackKreator : EditorWindow {
         GUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
         if (GUILayout.Button("OK")) {
-            if (elements.Find(P => P.name == null) != null) {
+            if (elements.Find(P => P.name == null || P.name == "") != null) {
                 Debug.LogError("You can't save if some elements have no name !");
             } else {
                 foreach (DBAttack attack in elements)

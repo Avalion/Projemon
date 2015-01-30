@@ -146,7 +146,7 @@ public class Monster {
                     if (attacks.Count > 4)
                         attacks.RemoveAt(Random.Range(0, 3));
                 } else {
-                    // TODO
+                    // TODO : Display messages for learning Attacks.
                 }
             }
         }
@@ -213,8 +213,8 @@ public class Monster {
         m.stat_speed = _pattern.start_speed;
         m.maxLife = _pattern.start_life;
         m.maxStamina = _pattern.start_stamina;
-        m.battleSprite = Resources.LoadAssetAtPath(Config.GetResourcePath(IMAGE_FOLDER) + _pattern.battleSprite, typeof(Texture2D)) as Texture2D;
-        m.miniSprite = Resources.LoadAssetAtPath(Config.GetResourcePath(IMAGE_FOLDER) + _pattern.miniSprite, typeof(Texture2D)) as Texture2D;
+        m.battleSprite = InterfaceUtility.GetTexture(Config.GetResourcePath(IMAGE_FOLDER) + _pattern.battleSprite);
+        m.miniSprite = InterfaceUtility.GetTexture(Config.GetResourcePath(IMAGE_FOLDER) + _pattern.miniSprite);
         m.type = _pattern.type;
 
         m.lvl = 1;
@@ -253,9 +253,10 @@ public class Monster {
         m.maxStamina = _source.maxStamina;
         m.life = _source.life;
         m.stamina = _source.stamina;
-
-        m.battleSprite = Resources.LoadAssetAtPath(Config.GetResourcePath(IMAGE_FOLDER) + m.monsterPattern.battleSprite, typeof(Texture2D)) as Texture2D;
-        m.miniSprite = Resources.LoadAssetAtPath(Config.GetResourcePath(IMAGE_FOLDER) + m.monsterPattern.miniSprite, typeof(Texture2D)) as Texture2D;
+        
+        
+        m.battleSprite = InterfaceUtility.GetTexture(Config.GetResourcePath(IMAGE_FOLDER) + m.monsterPattern.battleSprite);
+        m.miniSprite = InterfaceUtility.GetTexture(Config.GetResourcePath(IMAGE_FOLDER) + m.monsterPattern.miniSprite);
 
         try {
             m.attacks.Add(DataBase.SelectById<DBAttack>(_source.attack1));

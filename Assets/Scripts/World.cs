@@ -45,6 +45,8 @@ public class World : MonoBehaviour {
     }
 
     public void Start() {
+        InterfaceUtility.ClearAllCache();
+
         currentBGM = gameObject.AddComponent<AudioSource>();
         currentMap = new Map(startMapID);
 
@@ -109,6 +111,11 @@ public class World : MonoBehaviour {
     /* Load
      */
     public void LoadMap(int mapId) {
+        currentMap = null;
+
+        Resources.UnloadUnusedAssets();
+        InterfaceUtility.ClearAllCache();
+
         currentMap = new Map(mapId);
     }
 
@@ -137,6 +144,10 @@ public class World : MonoBehaviour {
 
     /* Utils
      */
+    public MapObject GetMapObjectById(int _mapObjectId) {
+        return currentMap.mapObjects.Find(MO => MO.mapObjectId == _mapObjectId);
+    } 
+    
     public bool CanMoveOn(MapObject o, Vector2 _destination) {
         if (!currentMap.collisions[(int)_destination.x, (int)_destination.y])
             return false;

@@ -94,7 +94,7 @@ public class Map {
 
     // Serialization
     public void Export() {
-        string filePath = Config.GetConfigPath("Maps") + ID + ".txt";
+        string filePath = Config.GetConfigPath(IMAGE_FOLDER) + ID + ".txt";
         if (tiles.Count == 0) {
             if (File.Exists(filePath))
                 File.Delete(filePath);
@@ -127,7 +127,7 @@ public class Map {
         sw.Dispose();
     }
     public void Import() {
-        string filePath = Config.GetConfigPath("Maps") + ID + ".txt";
+        string filePath = Config.GetConfigPath(IMAGE_FOLDER) + ID + ".txt";
         
         if (!File.Exists(filePath))
             throw new System.Exception("Try to load a map with inexistant ID : " + ID);

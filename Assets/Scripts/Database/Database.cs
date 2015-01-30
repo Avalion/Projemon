@@ -50,6 +50,8 @@ public class DataBase {
         ExecCommand(new DBMonster().Create());
         ExecCommand(new DBMonsterPattern().Create());
         ExecCommand(new DBAttack().Create());
+        ExecCommand(new DBMapObject().Create());
+        ExecCommand(new DBMapObjectAction().Create());
     }
 
     // Destructors
@@ -155,7 +157,7 @@ public class DataBase {
         
         ExecCommand(cmd);
     }
-
+    
     public static void DeleteByID<T>(int ID) where T : SQLTable, new() {
         Delete<T>("ID = " + ID);
     }

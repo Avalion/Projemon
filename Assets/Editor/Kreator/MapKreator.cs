@@ -30,7 +30,7 @@ public class MapKreator : EditorWindow {
     private Rect canvasRect;
     private Vector2 currentMapCoords;
     
-    private int currentLayer;
+    private static int currentLayer = 4;
 
     private Vector2 selectedCoords = -Vector2.one;
 
@@ -50,6 +50,8 @@ public class MapKreator : EditorWindow {
         window.minSize = new Vector2(1200, 500);
         window.maxSize = new Vector2(1200, 501);
         window.Show();
+
+        if (!DataBase.IsConnected) DataBase.Connect(Application.dataPath + "/database.sql");
 
         InterfaceUtility.ClearAllCache();
 
@@ -76,10 +78,19 @@ public class MapKreator : EditorWindow {
     public void Update() {
         Repaint();
     }
+    
+    // Verify if subEditors are not open !
+    public bool CanEdit() {
+        return !MapObjectKreator.isOpen;
+    }
+
     // Display
     public void OnGUI() {
+        if (!CanEdit())
+            GUI.Button(new Rect(0, 0, Screen.width, Screen.height), "", InterfaceUtility.EmptyStyle);
+
         if (patterns.Count == 0) {
-            GUILayout.Label("No patterns in " + Config.GetResourcePath("Maps"));
+            GUILayout.Label("No patterns in " + Config.GetResourcePath(Map.IMAGE_FOLDER));
             if (GUILayout.Button("Refresh")) {
                 patterns = SystemDatas.GetMapsPatterns();
                 if (patterns.Count > 0) {
@@ -149,41 +160,87 @@ public class MapKreator : EditorWindow {
                 GUILayout.Label("Collisions", GUILayout.Width(80));
             if (currentLayer == 4)
                 GUILayout.Label("Events", GUILayout.Width(80));
-            // TODO - Define how to create Combat Zones
-            //if (currentLayer == 5)
-            //    GUILayout.Label("Combat Zones", GUILayout.Width(80));
+            if (currentLayer == 5)
+                GUILayout.Label("Combat Zones", GUILayout.Width(80));
             GUILayout.EndHorizontal();
 
-            int value = EditorGUILayout.Popup(selectedPattern, patterns.ToArray());
-            if (value != selectedPattern) {
-                selectedPattern = value;
-                UpdateImages();
-            }
+            if (currentLayer < 3) {
+                int value = EditorGUILayout.Popup(selectedPattern, patterns.ToArray());
+                if (value != selectedPattern) {
+                    selectedPattern = value;
+                    UpdateImages();
+                }
 
-            forceMode = GUILayout.Toggle(forceMode, "Forced mode ?");
-            if (forceMode) {
-                scrollpos = GUILayout.BeginScrollView(scrollpos);
-                for (int y = 0; y < currentPattern.GetLength(1); y++) {
-                    GUILayout.Space(2);
-                    GUILayout.BeginHorizontal();
-                    for (int x = 0; x < currentPattern.GetLength(0); x++) {
+                forceMode = GUILayout.Toggle(forceMode, "Forced mode ?");
+                if (forceMode) {
+                    scrollpos = GUILayout.BeginScrollView(scrollpos);
+                    for (int y = 0; y < currentPattern.GetLength(1); y++) {
                         GUILayout.Space(2);
-                        tileStyle.normal.background = currentPattern[x, y];
-                        if (GUILayout.Button("", tileStyle, GUILayout.Width(Map.Tile.TILE_RESOLUTION), GUILayout.Height(Map.Tile.TILE_RESOLUTION)))
-                            currentTileCoords = new Vector2(x, y);
-                        if (x == currentTileCoords.x && y == currentTileCoords.y) {
-                            GUILayout.Space(-Map.Tile.TILE_RESOLUTION);
-                            GUILayout.Label("", selectedTileStyle, GUILayout.Width(Map.Tile.TILE_RESOLUTION), GUILayout.Height(Map.Tile.TILE_RESOLUTION));
+                        GUILayout.BeginHorizontal();
+                        for (int x = 0; x < currentPattern.GetLength(0); x++) {
+                            GUILayout.Space(2);
+                            tileStyle.normal.background = currentPattern[x, y];
+                            if (GUILayout.Button("", tileStyle, GUILayout.Width(Map.Tile.TILE_RESOLUTION), GUILayout.Height(Map.Tile.TILE_RESOLUTION)))
+                                currentTileCoords = new Vector2(x, y);
+                            if (x == currentTileCoords.x && y == currentTileCoords.y) {
+                                GUILayout.Space(-Map.Tile.TILE_RESOLUTION);
+                                GUILayout.Label("", selectedTileStyle, GUILayout.Width(Map.Tile.TILE_RESOLUTION), GUILayout.Height(Map.Tile.TILE_RESOLUTION));
+                            }
                         }
+                        GUILayout.EndHorizontal();
                     }
+                    GUILayout.EndScrollView();
+                } else {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(5);
+                    GUILayout.Label(currentPattern[0, 0], InterfaceUtility.EmptyStyle, GUILayout.Width(Map.Tile.TILE_RESOLUTION), GUILayout.Height(Map.Tile.TILE_RESOLUTION));
                     GUILayout.EndHorizontal();
                 }
-                GUILayout.EndScrollView();
-            } else {
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(5);
-                GUILayout.Label(currentPattern[0,0], InterfaceUtility.EmptyStyle, GUILayout.Width(Map.Tile.TILE_RESOLUTION), GUILayout.Height(Map.Tile.TILE_RESOLUTION));
-                GUILayout.EndHorizontal();
+            } else if (currentLayer == 3) {
+                
+            } else if (currentLayer == 4) {
+                if (selectedCoords != -Vector2.one) {
+                    // check if there is a MO on the case
+                    MapObject mo = current.mapObjects.Find(MO => MO.mapCoords != selectedCoords);
+                    if (mo == null && World.Current.startMapID == current.ID && World.Current.startPlayerCoords == selectedCoords)
+                        mo = Player.Current;
+                    
+                    // calc the optionsRect to don't overview the canvas
+                    Vector2 resolution = new Vector2(canvasRect.width / (float)Map.MAP_SCREEN_X, canvasRect.height / (float)Map.MAP_SCREEN_Y);
+                    
+                    GUILayout.BeginVertical();
+                    GUI.enabled = mo != Player.Current;
+                    if (GUILayout.Button(mo != null ? "Editer" : "Créer")) {
+                        if (mo == null) {
+                            DBMapObject dbmo = new DBMapObject() { mapId = current.ID, mapCoords = selectedCoords };
+                            DataBase.Insert<DBMapObject>(dbmo);
+                            dbmo.ID = DataBase.GetLastInsertId();
+                            mo = MapObject.Generate(dbmo);
+                        }
+
+                        MapObjectKreator.Open(mo);
+
+                        selectedCoords = -Vector2.one;
+                    }
+                    GUI.enabled = mo != null && mo != Player.Current;
+                    if (GUILayout.Button("Supprimer")) {
+                        DataBase.SelectById<DBMapObject>(mo.mapObjectId).Delete();
+                        current.mapObjects.Remove(mo);
+
+                        selectedCoords = -Vector2.one;
+                    }
+                    GUI.enabled = mo == null;
+                    if (GUILayout.Button("Player")) {
+                        World.Current.startMapID = current.ID;
+                        World.Current.startPlayerCoords = selectedCoords;
+
+                        selectedCoords = -Vector2.one;
+                    }
+                    GUI.enabled = true;
+                    GUILayout.EndVertical();
+                }
+            } else if (currentLayer == 5) {
+                //TODO : Define how to do Combat Zone
             }
         }
         GUILayout.FlexibleSpace();
@@ -199,7 +256,7 @@ public class MapKreator : EditorWindow {
 
             foreach (Map map in toDestroy)
                 foreach (MapObject mo in map.mapObjects)
-                    DataBase.DeleteByID<DBMapObject>(mo.mapObjectId);
+                    DataBase.SelectById<DBMapObject>(mo.mapObjectId).Delete();
             toDestroy.Clear();    
             Close();
         }
@@ -265,6 +322,9 @@ public class MapKreator : EditorWindow {
                             }
                             current.collisions[i, j] = !current.collisions[i, j];
                         }
+
+                if (drawRectMode && isDragging)
+                    EditorGUI.DrawRect(new Rect(startDragMousePosition.x, startDragMousePosition.y, Event.current.mousePosition.x - startDragMousePosition.x, Event.current.mousePosition.y - startDragMousePosition.y), new Color(0,0,0,0.5f));
             }
             // Events
             if (currentLayer == 4) {
@@ -285,71 +345,44 @@ public class MapKreator : EditorWindow {
                             EditorUtility.DrawSquare(new Rect(caseRect.x + 1, caseRect.y + 1, caseRect.width - 2, caseRect.height - 2), 2, new Color(1, 1, 1, 0.7f));
                         } else {
                             // Else, display nothing
-                            if (GUI.Button(caseRect, "", InterfaceUtility.CenteredStyle))
-                                selectedCoords = selectedCoords == -Vector2.one ? new Vector2(i,j) : -Vector2.one;
+                            if (GUI.Button(caseRect, "", InterfaceUtility.CenteredStyle) && Event.current.button == 0)
+                                selectedCoords = new Vector2(i, j);
                         }
 
                         if (selectedCoords == new Vector2(i, j)) {
                             // Square border
-                            EditorUtility.DrawSquare(caseRect, 4, new Color(1, 1, 1, 0.7f));
+                            EditorUtility.DrawSquare(caseRect, 4, new Color(0, 0, 0, 0.7f));
                             // Square
-                            EditorUtility.DrawSquare(new Rect(caseRect.x + 1, caseRect.y + 1, caseRect.width - 2, caseRect.height - 2), 2, new Color(0.5f, 0.5f, 1, 0.7f));
+                            EditorUtility.DrawSquare(new Rect(caseRect.x + 1, caseRect.y + 1, caseRect.width - 2, caseRect.height - 2), 2, new Color(0.9f, 0.8f, 1, 0.7f));
                         }
                     }
 
                 // Player start pos
                 if (World.Current.startMapID == current.ID) {
                     Rect playerRect = new Rect(World.Current.startPlayerCoords.x * resolution.x, World.Current.startPlayerCoords.y * resolution.y, resolution.x, resolution.y);
-                    EditorGUI.DrawRect(playerRect, new Color(0.8f, 0.8f, 1, 0.5f));
+
+                    // Square border
+                    EditorGUI.DrawRect(playerRect, new Color(0.2f, 0.1f, 1, 0.4f));
+                    // Square border
+                    EditorUtility.DrawSquare(playerRect, 4, new Color(0, 0, 0, 0.7f));
+                    // Square
+                    EditorUtility.DrawSquare(new Rect(playerRect.x + 1, playerRect.y + 1, playerRect.width - 2, playerRect.height - 2), 2, new Color(1, 1, 1, 0.7f));
+
                     GUI.Label(playerRect, "S", InterfaceUtility.CenteredStyle);
                 }
 
-                // if a case is selected
-                if (selectedCoords != -Vector2.one) {
+                if (isDragging) {
+                    Vector2 currentCoords = new Vector2(Mathf.Clamp((int)((Event.current.mousePosition.x) / resolution.x), 0, (int)current.size.x), Mathf.Clamp((int)((Event.current.mousePosition.y) / resolution.y), 0, (int)current.size.y));
+
                     // check if there is a MO on the case
-                    MapObject mo = current.mapObjects.Find(MO => MO.mapCoords != selectedCoords);
-                    if (mo == null && World.Current.startMapID == current.ID && World.Current.startPlayerCoords == selectedCoords)
-                        mo = Player.Current;
-                    
-                    // calc the optionsRect to don't overview the canvas
-                    Rect optionsRect = new Rect((selectedCoords.x + 0.8f) * resolution.x, (selectedCoords.y + 0.8f) * resolution.y, 100, 100);
-                    if (optionsRect.x + optionsRect.width > canvasRect.width)
-                        optionsRect.x -= optionsRect.width + 0.6f * resolution.x;
-                    if (optionsRect.y + optionsRect.height > canvasRect.height)
-                        optionsRect.y -= optionsRect.height + 0.6f * resolution.y;
-
-                    GUILayout.BeginArea(optionsRect);
-                    GUILayout.BeginVertical();
-                    GUI.enabled = mo != Player.Current;
-                    if (GUILayout.Button(mo != null ? "Editer" : "Créer")) {
-                        if (mo == null) {
-                            DBMapObject dbmo = new DBMapObject() { mapId = current.ID, mapCoords = selectedCoords };
-                            DataBase.Insert<DBMapObject>(dbmo);
-                            dbmo.ID = DataBase.GetLastInsertId();
-                            mo = MapObject.Generate(dbmo);
-                        }
-                        
-                        // TODO : Launch MapObject Editor
-
-                        selectedCoords = -Vector2.one;
+                    MapObject mo = current.mapObjects.Find(MO => MO.mapCoords != currentCoords);
+                    if (mo == null) {
+                        Rect caseRect = new Rect(currentCoords.x * resolution.x, currentCoords.y * resolution.y, resolution.x, resolution.y);
+                        // Square border
+                        EditorUtility.DrawSquare(caseRect, 4, new Color(0, 0, 0, 0.7f));
+                        // Square
+                        EditorUtility.DrawSquare(new Rect(caseRect.x + 1, caseRect.y + 1, caseRect.width - 2, caseRect.height - 2), 2, new Color(1, 1, 1, 0.7f));
                     }
-                    GUI.enabled = mo != null && mo != Player.Current;
-                    if (GUILayout.Button("Supprimer")) {
-                        DataBase.DeleteByID<DBMapObject>(mo.mapObjectId);
-                        current.mapObjects.Remove(mo);
-
-                        selectedCoords = -Vector2.one;
-                    }
-                    GUI.enabled = mo == null;
-                    if (GUILayout.Button("Player")) {
-                        World.Current.startMapID = current.ID;
-                        World.Current.startPlayerCoords = selectedCoords;
-
-                        selectedCoords = -Vector2.one;
-                    }
-                    GUI.enabled = true;
-                    GUILayout.EndVertical();
-                    GUILayout.EndArea();
                 }
             }
             // Combat Zones
@@ -363,7 +396,7 @@ public class MapKreator : EditorWindow {
         int y = Mathf.Clamp((int)((Event.current.mousePosition.y) / resolution.y), 0, (int)current.size.y);
             
         GUI.Label(new Rect(0, 0, 70, 20), "X: " + x + " Y: " + y, posDisplayStyle);
-        
+
         GUI.EndGroup();
     }
     private void CanvasEvents(Rect _rect) {
@@ -378,14 +411,21 @@ public class MapKreator : EditorWindow {
         int x = (int)((Event.current.mousePosition.x - _rect.x) / resolution.x);
         int y = (int)((Event.current.mousePosition.y - _rect.y) / resolution.y);
 
-        if (currentLayer < 3) {
-            if (Event.current.type == EventType.MouseDown && Event.current.button == 0) {
-                isDragging = true;
-                startDragMousePosition = new Vector2(Event.current.mousePosition.x, Event.current.mousePosition.y);
-            }
-            if (Event.current.type == EventType.MouseUp && Event.current.button == 0) {
-                isDragging = false;
+        if (Event.current.type == EventType.MouseDown && Event.current.button == 0) {
+            isDragging = true;
+            startDragMousePosition = new Vector2(Event.current.mousePosition.x, Event.current.mousePosition.y);
+        }
 
+        bool isDraggingFinishing = false;
+
+        if (Event.current.type == EventType.MouseUp && Event.current.button == 0) {
+            isDragging = false;
+            isDraggingFinishing = true;
+        }
+
+        if (currentLayer < 3) {
+            #region Tiles
+            if (isDraggingFinishing) {
                 if (drawRectMode) {
                     int startx = (int)((startDragMousePosition.x - _rect.x) / resolution.x);
                     int starty = (int)((startDragMousePosition.y - _rect.y) / resolution.y);
@@ -397,13 +437,8 @@ public class MapKreator : EditorWindow {
                 }
             }
 
-            if (isDragging) {
-                if (drawRectMode) {
-                    EditorGUI.DrawRect(new Rect(startDragMousePosition.x, startDragMousePosition.y, Event.current.mousePosition.x - startDragMousePosition.x, Event.current.mousePosition.y - startDragMousePosition.y), InterfaceUtility.HexaToColor("#00CC0044"));
-                } else {
-                    SetTile(currentLayer, x, y);
-                }
-            }
+            if (isDragging && !drawRectMode)
+                SetTile(currentLayer, x, y);
 
             if (Event.current.type == EventType.MouseDown && Event.current.button == 1) {
                 if (current.GetTile(currentLayer, x, y) != null) {
@@ -413,7 +448,37 @@ public class MapKreator : EditorWindow {
                     UpdateImages();
                 }
             }
+            #endregion
+        } else if (currentLayer == 4) {
+            #region MapObjects
+            if (isDraggingFinishing) {
+                // check if there is a MO on the case
+                Vector2 currentCoords = new Vector2((int)((Event.current.mousePosition.x - _rect.x) / resolution.x), (int)((Event.current.mousePosition.y - _rect.y) / resolution.y));
+                MapObject mo = current.mapObjects.Find(MO => MO.mapCoords == currentCoords);
+                if (mo == null) {
+                    mo = current.mapObjects.Find(MO => MO.mapCoords == selectedCoords);
+                    if (mo != null)
+                        mo.mapCoords = currentCoords;
+                }
+            }
+
+            if (Event.current.type == EventType.KeyDown) {
+                if (Event.current.keyCode == KeyCode.LeftArrow) {
+                    selectedCoords.x = Mathf.Max(0, selectedCoords.x - 1);
+                }
+                if (Event.current.keyCode == KeyCode.RightArrow) {
+                    selectedCoords.x = Mathf.Min(current.size.x - 1, selectedCoords.x + 1);
+                }
+                if (Event.current.keyCode == KeyCode.UpArrow) {
+                    selectedCoords.y = Mathf.Max(0, selectedCoords.y - 1);
+                }
+                if (Event.current.keyCode == KeyCode.DownArrow) {
+                    selectedCoords.y = Mathf.Min(current.size.y - 1, selectedCoords.y + 1);
+                }
+            }
+            #endregion
         }
+
         /** Keyboard Events
          */
         if (Event.current.type == EventType.KeyDown) {

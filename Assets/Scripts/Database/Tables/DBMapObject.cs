@@ -8,16 +8,16 @@ public class DBMapObject : SQLTable {
     public int mapId;
     public Vector2 mapCoords;
 
-    public string name;
+    public string name = "MapObject";
     
-    public string sprite;
+    public string sprite = "";
 
-    public MapObject.MovementSpeed speed;
-    public MapObject.Orientation orientation;
-    public MapObject.Layer layer;
-    public MapObject.ExecutionCondition execCondition;
+    public MapObject.MovementSpeed speed = MapObject.MovementSpeed.Normal;
+    public MapObject.Orientation orientation = MapObject.Orientation.Down;
+    public MapObject.Layer layer = MapObject.Layer.Middle;
+    public MapObject.ExecutionCondition execCondition = MapObject.ExecutionCondition.Action;
 
-    public bool allowPassThrough;
+    public bool allowPassThrough = true;
 
 
     public override void FromRow(SqliteDataReader reader) {
@@ -39,13 +39,13 @@ public class DBMapObject : SQLTable {
         allowPassThrough = reader.GetBoolean(pos++);
     }
     public override string Fields() {
-        return "mapID, mapCoodX, mapCoordY, name, sprite, speed, orientation, layer, execCondition, allowPassThrough";
+        return "mapID, mapCoordX, mapCoordY, name, sprite, speed, orientation, layer, execCondition, allowPassThrough";
     }
     public override string TypedFields() {
         return "mapId integer, " + 
-               "mapCoodX int DEFAULT 0, " +
-               "mapCoodY integer DEFAULT 0, " +
-               "name text" + 
+               "mapCoordX int DEFAULT 0, " +
+               "mapCoordY integer DEFAULT 0, " +
+               "name text, " + 
                "sprite text, " +
                "speed integer, " +
                "orientation integer, " +
@@ -71,6 +71,8 @@ public class DBMapObject : SQLTable {
     }
     public override void Delete() {
         DataBase.DeleteByID<DBMapObject>(ID);
+
+        DataBase.Delete<DBMapObjectAction>("mapObjectID = " + ID);
     }
 
     public static DBMapObject ConvertFrom(Map _map, MapObject _source) {

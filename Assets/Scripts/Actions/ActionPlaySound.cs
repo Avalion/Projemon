@@ -29,7 +29,7 @@ public class ActionPlaySound : MapObjectAction {
     }
 
     public override string InLine() {
-        return "Play " + (bgm ? "BGM : " : "BGS : ") + System.IO.Path.GetFileName(soundPath) + ".";
+        return "Play " + (bgm ? "BGM : " : "BGS : ") + soundPath + ".";
     }
 
     public override string Serialize() {

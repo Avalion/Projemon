@@ -17,7 +17,8 @@ public class MonsterKreator : EditorWindow {
     private static int numberElements = 0;
 
     public static List<string> battlersTextures = new List<string>();
-    public static Texture2D previewBattleSprite;
+    private static Texture2D previewBattleSprite;
+    private static Texture2D previewMiniSprite;
 
     public static List<DBAttack> attackList = new List<DBAttack>();
 
@@ -115,10 +116,10 @@ public class MonsterKreator : EditorWindow {
             value = EditorGUILayout.Popup("MiniSprite", index, battlersTextures.ToArray(), GUILayout.MaxWidth(Screen.width));
             if (index != value || mp.miniSprite != battlersTextures[value]) {
                 string localpath = Config.GetResourcePath(Monster.IMAGE_FOLDER) + battlersTextures[value];
-                previewBattleSprite = Resources.LoadAssetAtPath(localpath, typeof(Texture2D)) as Texture2D;
+                previewMiniSprite = Resources.LoadAssetAtPath(localpath, typeof(Texture2D)) as Texture2D;
                 mp.miniSprite = battlersTextures[value];
             }
-            
+            GUILayout.Label(previewMiniSprite);
             GUILayout.FlexibleSpace();
             GUILayout.EndVertical();
             GUILayout.BeginVertical();
@@ -228,7 +229,7 @@ public class MonsterKreator : EditorWindow {
         GUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
         if (GUILayout.Button("OK")) {
-            if (elements.Find(P => P.name == null) != null) {
+            if (elements.Find(P => P.name == null || P.name == "") != null) {
                 Debug.LogError("You can't save if some elements have no name !");
             } else {
                 foreach (DBMonsterPattern pattern in elements)

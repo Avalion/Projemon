@@ -19,6 +19,9 @@ public class ActionEXP : MapObjectAction {
     }
 
     public override void Execute() {
+        if (target == null) {
+            Debug.LogError("Unexpected Behaviour : Try to add EXP to a not found MapObject");
+        }
         if (targetMonster == -1) {
             foreach (Monster m in target.monsters)
                 m.Exp(expValue);
@@ -33,8 +36,7 @@ public class ActionEXP : MapObjectAction {
     }
 
     public override string Serialize() {
-        // TODO : Add MapObjectID when MapObject are into DB
-        return GetType().ToString() + "|" + targetMonster + "|" + expValue;
+        return GetType().ToString() + "|" + target.mapObjectId + "|" + targetMonster + "|" + expValue;
     }
     public override void Deserialize(string s) {
         string[] values = s.Split('|');
@@ -42,7 +44,8 @@ public class ActionEXP : MapObjectAction {
             throw new System.Exception("SerializationError : elements count doesn't match... " + s);
 
         // TODO : Read and find MapObjectID when MapObject are into DB
-        targetMonster = int.Parse(values[1]);
-        expValue = int.Parse(values[2]);
+        target = World.Current.GetMapObjectById(int.Parse(values[1])) as Battler;
+        targetMonster = int.Parse(values[2]);
+        expValue = int.Parse(values[3]);
     }
 }

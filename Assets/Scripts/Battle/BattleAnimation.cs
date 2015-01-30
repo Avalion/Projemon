@@ -9,7 +9,7 @@ using System.IO;
  */
 public class BattleAnimation {
     // Constantes
-    public const string IMAGE_FOLDER = "BattleAnimations";
+    public const string IMAGE_FOLDER = "BattleAnims";
     public const float TIME_BETWEEN_FRAMES = 0.05f;
 
     public int ID;
@@ -75,7 +75,7 @@ public class BattleAnimation {
 
     // Serialization
     public void Export() {
-        string filePath = Config.GetConfigPath("BattleAnims") + ID + ".txt";
+        string filePath = Config.GetConfigPath(IMAGE_FOLDER) + ID + ".txt";
         if (instances.Count == 0) {
             if (File.Exists(filePath))
                 File.Delete(filePath);
@@ -102,7 +102,7 @@ public class BattleAnimation {
         sw.Dispose();
     }
     public void Import() {
-        string filePath = Config.GetConfigPath("BattleAnims") + ID + ".txt";
+        string filePath = Config.GetConfigPath(IMAGE_FOLDER) + ID + ".txt";
         if (!File.Exists(filePath))
             return;
 

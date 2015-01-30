@@ -18,9 +18,10 @@ public class Player : Battler {
                 scroll.name = "Capture Scroll";
                 current.actions.Add(new ActionAddItem(scroll, Player.Current));
 
-                current.monsters.Add(Monster.Generate(DataBase.SelectById<DBMonsterPattern>(0), 5, 5));
+                Monster m = Monster.Generate(DataBase.SelectById<DBMonsterPattern>(0), 5, 5);
 
-                MonsterCollection.capturedMonsters.Add(Monster.Generate(DataBase.SelectById<DBMonsterPattern>(3), 5, 5));
+                current.monsters.Add(m);
+                MonsterCollection.AddToCollection(m);
             }
             return current;
         }

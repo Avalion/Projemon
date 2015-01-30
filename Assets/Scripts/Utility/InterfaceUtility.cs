@@ -306,7 +306,7 @@ public class InterfaceUtility {
         
         try {
             AudioClip clip = Resources.LoadAssetAtPath(_relativePath, typeof(AudioClip)) as AudioClip;
-            loaded.Add(_relativePath, clip);
+            if (Application.isPlaying) loaded.Add(_relativePath, clip);
             return clip;
         } catch { Debug.LogError("File not found at " + _relativePath); }
         return null;
@@ -320,7 +320,7 @@ public class InterfaceUtility {
 
         try {
             Texture2D tex = Resources.LoadAssetAtPath(_relativePath, typeof(Texture2D)) as Texture2D;
-            loaded.Add(_relativePath, tex);
+            if (Application.isPlaying) loaded.Add(_relativePath, tex);
             return tex;
         } catch { Debug.LogError("File not found at " + _relativePath); }
         return null;
@@ -346,7 +346,7 @@ public class InterfaceUtility {
 
         tex.SetPixels(newPixels);
         tex.Apply();
-        inverted.Add(serializedId, tex);
+        if (Application.isPlaying) inverted.Add(serializedId, tex);
 
         return tex;
     }
@@ -367,7 +367,7 @@ public class InterfaceUtility {
         tex.SetPixels(_pixels);
         tex.Apply();
 
-        separated.Add(serializedId, tex);
+        if (Application.isPlaying) separated.Add(serializedId, tex);
 
         return tex;
     }

@@ -1,8 +1,9 @@
 ﻿/**
  * This abstract class patterns the differents Actions a MapObject can launch.
  */
-[System.Serializable]
 public abstract class MapObjectAction {
+    public int actionId;
+
     private bool valid = false;
 
     public bool waitForEnd = true;
@@ -30,6 +31,8 @@ public abstract class MapObjectAction {
         return action;
     }
     public static MapObjectAction Generate(DBMapObjectAction _source) {
-        return Generate(_source.serialized);
+        MapObjectAction action = Generate(_source.serialized);
+        action.actionId = _source.ID;
+        return action;
     }
 }

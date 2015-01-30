@@ -41,12 +41,12 @@ public class SystemDatas {
 
     public static List<BattleAnimation> GetBattleAnimations() {
         List<BattleAnimation> animations = new List<BattleAnimation>();
-        foreach (string s in GetDirectoryFiles(Config.GetConfigPath("BattleAnims")))
+        foreach (string s in GetDirectoryFiles(Config.GetConfigPath(BattleAnimation.IMAGE_FOLDER)))
             animations.Add(new BattleAnimation(int.Parse(Path.GetFileNameWithoutExtension(s))));
         return animations;
     }
     public static void SetBattleAnimations(List<BattleAnimation> _elements) {
-        foreach (string file in Directory.GetFiles(Config.GetConfigPath("BattleAnims"))) {
+        foreach (string file in Directory.GetFiles(Config.GetConfigPath(BattleAnimation.IMAGE_FOLDER))) {
             File.Delete(file);
         }
         foreach (BattleAnimation ba in _elements)
@@ -55,21 +55,28 @@ public class SystemDatas {
 
     public static List<Map> GetMaps() {
         List<Map> maps = new List<Map>();
-        foreach (string s in GetDirectoryFiles(Config.GetConfigPath("Maps")))
+        foreach (string s in GetDirectoryFiles(Config.GetConfigPath(Map.IMAGE_FOLDER)))
             maps.Add(new Map(int.Parse(Path.GetFileNameWithoutExtension(s))));
         return maps;
     }
     public static void SetMaps(List<Map> _elements) {
         // maps;
-        foreach (string file in Directory.GetFiles(Config.GetConfigPath("Maps"))) {
+        foreach (string file in Directory.GetFiles(Config.GetConfigPath(Map.IMAGE_FOLDER))) {
             File.Delete(file);
         }
         foreach (Map m in _elements) {
             m.Export();
 
             // mapObjects
-            foreach (MapObject pattern in m.mapObjects)
-                DataBase.Replace<DBMapObject>(DBMapObject.ConvertFrom(m, pattern));
+            foreach (MapObject mo in m.mapObjects) {
+                DataBase.Replace<DBMapObject>(DBMapObject.ConvertFrom(m, mo));
+
+                // Renew MOActions
+                DataBase.Delete<DBMapObjectAction>("mapObjectID = " + mo.mapObjectId);
+
+                foreach (MapObjectAction action in mo.actions)
+                    DataBase.Replace<DBMapObjectAction>(DBMapObjectAction.ConvertFrom(mo, action));
+            }
         }
     }
 

@@ -36,7 +36,6 @@ public class ActionFadeScreen : MapObjectAction {
         if (values.Length != 3)
             throw new System.Exception("SerializationError : elements count doesn't match... " + s);
 
-        // TODO : Read and find MapObjectID when MapObject are into DB
         duration = float.Parse(values[1]);
         color = new Color(float.Parse(values[2]), float.Parse(values[3]), float.Parse(values[4]), float.Parse(values[5]));
     }

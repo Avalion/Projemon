@@ -52,6 +52,8 @@ public class DataBase {
         ExecCommand(new DBAttack().Create());
         ExecCommand(new DBMapObject().Create());
         ExecCommand(new DBMapObjectAction().Create());
+        ExecCommand(new DBState().Create());
+        ExecCommand(new DBVariable().Create());
     }
 
     // Destructors
@@ -197,5 +199,12 @@ public class DataBase {
         return DataBase.Select<DBMapObjectAction>("mapObjectId = " + mapObjectId);
     }
 
-    
+    // Variables And States
+    public static int GetVariable(int _id) { return SelectById<DBVariable>(_id).value; }
+    public static int GetVariable(string _name) { return SelectUnique<DBVariable>("name=" + _name).value; }
+    public static void SetVariable(int _id, int _value) { Update<DBVariable>("value", _value, "id=" + _id); }
+
+    public static bool GetState(int _id) { return SelectById<DBState>(_id).value; }
+    public static bool GetState(string _name) { return SelectUnique<DBState>("name=" + _name).value; }
+    public static void SetState(int _id, bool _value) { Update<DBState>("value", _value, "id=" + _id); }
 }

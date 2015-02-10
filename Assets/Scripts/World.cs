@@ -122,20 +122,22 @@ public class World : MonoBehaviour {
     
     /* MapObject Actions
      */
-    public virtual void ExecuteActions(MapObject mo) {
+    public virtual void ExecuteActions(MapObject mo, bool _lock) {
         mo.isRunning = true;
-        //Player.Lock(); TEMP TODO: add bool
+        if (_lock)
+            Player.Lock();
 
-        StartCoroutine(ExecuteActionAsync(mo));
+        StartCoroutine(ExecuteActionAsync(mo, _lock));
     }
 
-    private IEnumerator ExecuteActionAsync(MapObject mo) {
+    private IEnumerator ExecuteActionAsync(MapObject mo, bool _lock) {
         foreach (MapObjectAction action in mo.actions) {
             action.Execute();
             while (!action.Done())
                 yield return new WaitForEndOfFrame();
         }
-        //Player.Unlock(); TEMP TODO: add bool
+        if (_lock)
+            Player.Unlock();
         foreach (MapObjectAction action in mo.actions)
             action.Init();
 

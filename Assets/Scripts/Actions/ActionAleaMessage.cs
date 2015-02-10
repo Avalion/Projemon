@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 
 /**
- * This action will add display a random message 
+ * This action will add display a random message
+ * 
+ * TODO : Wait message to be able to Terminate this action !!!!
  */
 public class ActionAleaMessage : MapObjectAction {
     public Texture2D face;

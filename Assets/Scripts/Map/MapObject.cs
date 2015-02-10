@@ -72,7 +72,8 @@ public class MapObject {
 
     public void Start() {
         if (execCondition == ExecutionCondition.Automatique)
-            World.Current.ExecuteActions(this);
+            // TODO : Add Boolean to lockPlayer while actions
+            World.Current.ExecuteActions(this, false);
 
         OnStart();
     }
@@ -99,7 +100,8 @@ public class MapObject {
         }
 
         if (HaveToExecute())
-            World.Current.ExecuteActions(this);
+            // TODO : Add Boolean to lockPlayer while actions
+            World.Current.ExecuteActions(this, false);
 
         OnUpdate();
     }
@@ -355,7 +357,8 @@ public class MapObject {
 
     public void OnCollision() {
         if (execCondition == ExecutionCondition.Contact)
-            World.Current.ExecuteActions(this);
+            // TODO : Add Boolean to lockPlayer while actions
+            World.Current.ExecuteActions(this, false);
     }
 
     protected bool HaveToExecute() {

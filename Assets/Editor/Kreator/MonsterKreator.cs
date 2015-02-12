@@ -12,7 +12,9 @@ public class MonsterKreator : EditorWindow {
     private DBMonsterPattern current { get { return elements[selectedElement]; } }
 
     public static List<DBMonsterPattern> toDestroy = new List<DBMonsterPattern>();
-                
+
+    private static int selectedLevel = 1;
+    private static int selectedExp = 1;
 
     private static int numberElements = 0;
 
@@ -128,6 +130,28 @@ public class MonsterKreator : EditorWindow {
                 previewBattleSprite = InterfaceUtility.InvertTexture(previewBattleSprite);
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
+
+            GUILayout.Label("- Experience");
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("F1", GUILayout.Width(20));
+            int F1 = Mathf.Clamp(EditorGUILayout.IntField(mp.expMultiplier1), 5, 60);
+            if (F1 != mp.expMultiplier1) { mp.expMultiplier1 = F1; selectedExp = mp.CalcExpRequired(selectedLevel); }
+            EditorGUILayout.LabelField("F2", GUILayout.Width(20));
+            int F2 = Mathf.Clamp(EditorGUILayout.IntField(mp.expMultiplier2), 0, 60);
+            if (F2 != mp.expMultiplier2) { mp.expMultiplier2 = F2; selectedExp = mp.CalcExpRequired(selectedLevel); }
+            EditorGUILayout.LabelField("F3", GUILayout.Width(20));
+            int F3 = Mathf.Clamp(EditorGUILayout.IntField(mp.expMultiplier3), 0, 60);
+            if (F3 != mp.expMultiplier3) { mp.expMultiplier3 = F3; selectedExp = mp.CalcExpRequired(selectedLevel); }
+            GUILayout.EndHorizontal();
+
+            selectedLevel = EditorGUILayout.IntSlider(selectedLevel, 1, 98);
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField(selectedLevel + " -> " + (selectedLevel + 1));
+            GUILayout.FlexibleSpace();
+            EditorGUILayout.LabelField("need " + selectedExp);
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(10);
 
             GUILayout.Label("- Stats");
             GUILayout.BeginHorizontal();
@@ -249,5 +273,7 @@ public class MonsterKreator : EditorWindow {
             elements[selectedElement].battleSprite = battlersTextures[0];
         string localpath = Config.GetResourcePath(Monster.IMAGE_FOLDER) + elements[selectedElement].battleSprite;
         previewBattleSprite = Resources.LoadAssetAtPath(localpath, typeof(Texture2D)) as Texture2D;
+
+        selectedExp = elements[selectedElement].CalcExpRequired(selectedLevel);
     }
 }

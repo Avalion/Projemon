@@ -10,25 +10,32 @@ public class DBMonsterPattern : SQLTable {
     public Vector2   lifeUp = new Vector2(5, 15);
     public int start_stamina = 10;
     public Vector2   staminaUp = new Vector2(5, 15);
-    public int start_might = 0;
+    public int start_might = 5;
     public Vector2   mightUp = new Vector2(1, 3);
-    public int start_resistance = 0;
+    public int start_resistance = 5;
     public Vector2   resistanceUp = new Vector2(1, 3);
-    public int start_luck = 0;
+    public int start_luck = 5;
     public Vector2   luckUp = new Vector2(1, 3);
-    public int start_speed = 0;
+    public int start_speed = 5;
     public Vector2   speedUp = new Vector2(1, 3);
 
     public float capture_rate = 1;
 
-    public int expMultiplier1;
-    public int expMultiplier2;
-    public int expMultiplier3;
+    public int expMultiplier1 = 50;
+    public int expMultiplier2 = 30;
+    public int expMultiplier3 = 20;
 
     public string battleSprite;
     public string miniSprite;
 
     public bool encountered;
+
+    public int CalcExpRequired(int lvl) {
+        int exp = 0;
+        for (int i = 1; i <= lvl; i++)
+            exp = exp + expMultiplier1 + 2 * i * expMultiplier2 + (3 * (i - 1)) * expMultiplier3;
+        return exp;
+    }
 
     public class AttackLevelUp {
         public int lvl;

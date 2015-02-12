@@ -196,7 +196,9 @@ public class DataBase {
     }
 
     public static List<DBMapObjectAction> GetMapObjectActions(int mapObjectId) {
-        return DataBase.Select<DBMapObjectAction>("mapObjectId = " + mapObjectId);
+        List<DBMapObjectAction> result = DataBase.Select<DBMapObjectAction>("mapObjectId = " + mapObjectId);
+        result.Sort(delegate(DBMapObjectAction a, DBMapObjectAction b) { return a.executeOrder.CompareTo(b.executeOrder); });
+        return result;
     }
 
     // Variables And States

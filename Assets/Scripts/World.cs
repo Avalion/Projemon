@@ -122,14 +122,30 @@ public class World : MonoBehaviour {
     
     /* MapObject Actions
      */
-    public virtual void ExecuteActions(MapObject mo, bool _lock) {
+    delegate void ExecOnEnd();
+
+    public void ExecuteActions(MapObjectAction[] moa, ExecOnEnd _action) {
+        StartCoroutine(ExecuteActionAsync(moa, _action));
+    }
+    private IEnumerator ExecuteActionAsync(MapObjectAction[] moa, ExecOnEnd _action) {
+        foreach (MapObjectAction action in moa) {
+            action.Execute();
+            while (!action.Done())
+                yield return new WaitForEndOfFrame();
+        }
+        foreach (MapObjectAction action in moa)
+            action.Init();
+        
+        _action();
+    }
+
+    public void ExecuteActions(MapObject mo, bool _lock) {
         mo.isRunning = true;
         if (_lock)
             Player.Lock();
 
         StartCoroutine(ExecuteActionAsync(mo, _lock));
     }
-
     private IEnumerator ExecuteActionAsync(MapObject mo, bool _lock) {
         foreach (MapObjectAction action in mo.actions) {
             action.Execute();
@@ -142,6 +158,29 @@ public class World : MonoBehaviour {
             action.Init();
 
         mo.isRunning = false;
+    }
+
+    public void ExecuteActions(MapObject mo, bool _lock, ExecOnEnd _action) {
+        mo.isRunning = true;
+        if (_lock)
+            Player.Lock();
+
+        StartCoroutine(ExecuteActionAsync(mo, _lock, _action));
+    }
+    private IEnumerator ExecuteActionAsync(MapObject mo, bool _lock, ExecOnEnd _action) {
+        foreach (MapObjectAction action in mo.actions) {
+            action.Execute();
+            while (!action.Done())
+                yield return new WaitForEndOfFrame();
+        }
+        if (_lock)
+            Player.Unlock();
+        foreach (MapObjectAction action in mo.actions)
+            action.Init();
+
+        mo.isRunning = false;
+
+        _action();
     }
 
     /* Utils

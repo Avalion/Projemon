@@ -401,7 +401,7 @@ public class MapObject {
 
         // Generate actions
         foreach (DBMapObjectAction action in DataBase.GetMapObjectActions(m.mapObjectId))
-            m.actions.Add(MapObjectAction.Generate(action.serialized));
+            m.actions.Add(MapObjectAction.Generate(action));
 
         return m;
     }

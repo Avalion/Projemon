@@ -5,20 +5,20 @@ using UnityEngine;
  * this table manage attack patterns
  */
 public class DBAttack : SQLTable {
-    public string name;
+    public string name = "";
     public Monster.Type type;
 
-    public int power;
-    public int accuracy; // 0 a 100
+    public int power = 20;
+    public int accuracy = 80; // 0 a 100
 
-    public int staminaCost;
+    public int staminaCost = 10;
 
     public Monster.State enemyStateChange = Monster.State.None;
     public int enemyStateChangeAccuracy = 0; // 0 a 100
     public Monster.State launcherStateChange = Monster.State.None;
     public int launcherStateChangeAccuracy = 0; // 0 a 100
 
-    public int battleAnimationID;
+    public int battleAnimationID = -1;
 
     public override void FromRow(SqliteDataReader reader) {
         int pos = 0;

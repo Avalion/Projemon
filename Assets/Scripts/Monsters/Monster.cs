@@ -217,6 +217,8 @@ public class Monster {
         m.miniSprite = InterfaceUtility.GetTexture(Config.GetResourcePath(IMAGE_FOLDER) + _pattern.miniSprite);
         m.type = _pattern.type;
 
+        m.CalcExpRequired();
+
         m.lvl = 1;
         foreach (DBMonsterPattern.AttackLevelUp a in _pattern.attackLevelUp) {
             if (a.lvl <= 1) {

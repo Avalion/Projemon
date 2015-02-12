@@ -5,8 +5,8 @@ using UnityEngine;
  * this table manage attack patterns
  */
 public class DBState : SQLTable {
-    public string name;
-    public bool value;
+    public string name = "";
+    public bool value = false;
 
     public override void FromRow(SqliteDataReader reader) {
         int pos = 0;

@@ -7,20 +7,20 @@ public class DBMonster : SQLTable {
     public int patternId;
 
     public Monster.Type type;
-    public Monster.State state;
-    public string nickName;
+    public Monster.State state = Monster.State.Healthy;
+    public string nickName = "";
 
     // Lvl
     public int lvl = 1;
     public int exp = 0;
 
     // Life
-    public int maxLife;
-    public int life;
+    public int maxLife = 100;
+    public int life = 100;
     
     // Stamina
-    public int maxStamina;
-    public int stamina;
+    public int maxStamina = 100;
+    public int stamina = 100;
 
     // Stats
     public int stat_might;

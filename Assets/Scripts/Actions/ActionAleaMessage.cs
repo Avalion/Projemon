@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 /**
  * This action will add display a random message
- * 
- * TODO : Wait message to be able to Terminate this action !!!!
  */
 public class ActionAleaMessage : MapObjectAction {
     public Texture2D face;
@@ -14,13 +12,12 @@ public class ActionAleaMessage : MapObjectAction {
         "Je t'ai déjà dit ce que je savais !",
         "Laisse moi tranquille maintenant !",
         "Arrête de me harceler !",
-        "Heu... on s'est déjà salué !",
+        "Heu... on s'est déjà salué...",
     };
 
     
-    
     public override void Execute() {
-        new ActionMessage(face, m_messagesList[Random.Range(0, m_messagesList.Length)], faceOnRight).Execute();
+        World.Current.ExecuteActions(new ActionMessage[] { new ActionMessage(face, m_messagesList[Random.Range(0, m_messagesList.Length - 1)], faceOnRight) }, delegate() { Terminate(); });
     }
     public override string InLine() {
         return "Alea Message.";

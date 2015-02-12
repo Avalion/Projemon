@@ -2,8 +2,6 @@
 
 /**
  * This action will launch target mapObject actions
- * 
- * TODO : Wait message to be able to Terminate this action !!!!
  */
 public class ActionExecuteMapObjectActions : MapObjectAction {
     int mapObjectId = -1;
@@ -12,10 +10,12 @@ public class ActionExecuteMapObjectActions : MapObjectAction {
 
     public override void Execute() {
         MapObject mo = World.Current.GetMapObjectById(mapObjectId);
-        if (mo != null && !mo.isRunning)
-            // TODO : Add a boolean to lock player while actions
-            World.Current.ExecuteActions(mo, false);
-        Terminate();
+        if (mo == null || mo.isRunning) {
+            Terminate();
+            return;
+        }
+        // TODO : Add a boolean to lock player while actions
+        World.Current.ExecuteActions(mo, false, delegate() { Terminate(); });
     }
 
     public override string InLine() {

@@ -4,7 +4,7 @@
  * This table manage all general informations
  */
 public class DBSystem : SQLTable {
-    public int dbversion;
+    public int dbversion = 0;
 
     public override void FromRow(SqliteDataReader reader) {
         int pos = 0;

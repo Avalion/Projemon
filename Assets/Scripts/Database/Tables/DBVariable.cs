@@ -5,8 +5,8 @@ using UnityEngine;
  * this table manage attack patterns
  */
 public class DBVariable : SQLTable {
-    public string name;
-    public int value;
+    public string name = "";
+    public int value = 0;
 
     public override void FromRow(SqliteDataReader reader) {
         int pos = 0;

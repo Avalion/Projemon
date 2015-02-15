@@ -35,6 +35,9 @@ public class MapObject {
     public Texture2D sprite;
     public Texture2D Sprite { 
         get {
+            if (sprite == null)
+                return null;
+
             int step = 1;
             if (lerp > 0.2f && lerp < 0.8f)
                 step = ((orientation == Orientation.Left || orientation == Orientation.Right ? mapCoords.x : mapCoords.y) % 2 == 0) ? 0 : 2;
@@ -70,18 +73,15 @@ public class MapObject {
     public bool isRunning = false;
 
 
-    public void Start() {
+    public void OnStart() {
         if (execCondition == ExecutionCondition.Automatique)
             // TODO : Add Boolean to lockPlayer while actions
             World.Current.ExecuteActions(this, false);
-
-        OnStart();
     }
-    public virtual void OnStart() {}
 
     /* Functions
      */
-    public void Update() {
+    public void OnUpdate() {
         if (isMoving) {
             switch (speed) {
                 case MovementSpeed.Slow: lerp += Time.deltaTime * 2f / (isJumping ? 2 : 1); break;
@@ -102,10 +102,7 @@ public class MapObject {
         if (HaveToExecute())
             // TODO : Add Boolean to lockPlayer while actions
             World.Current.ExecuteActions(this, false);
-
-        OnUpdate();
     }
-    public virtual void OnUpdate() {}
 
     public void DisplayOnMap() {
         if (sprite != null) {
@@ -391,7 +388,7 @@ public class MapObject {
 
         m.name = _source.name;
         m.sprite = InterfaceUtility.GetTexture(Config.GetResourcePath(IMAGE_FOLDER) + _source.sprite);
-
+        
         m.speed = _source.speed;
         m.orientation = _source.orientation;
         m.layer = _source.layer;

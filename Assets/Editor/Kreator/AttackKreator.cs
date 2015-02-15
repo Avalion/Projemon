@@ -33,6 +33,10 @@ public class AttackKreator : EditorWindow {
         if (!DataBase.IsConnected) DataBase.Connect(Application.dataPath + "/database.sql");
 
         elements = DataBase.Select<DBAttack>();
+        numberElements = elements.Count;
+
+        if (numberElements > 0)
+            window.Select(0);
 
         battleAnimations = SystemDatas.GetBattleAnimations();
     }
@@ -48,7 +52,7 @@ public class AttackKreator : EditorWindow {
         GUILayout.FlexibleSpace();
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Add")) {
-            elements.Add(new DBAttack());
+            elements.Add(new DBAttack() { ID = elements.Count });
             Select(elements.Count - 1);
             numberElements = elements.Count;
         }
@@ -83,12 +87,18 @@ public class AttackKreator : EditorWindow {
             current.name = EditorGUILayout.TextField("Name", current.name);
             current.type = (Monster.Type)EditorGUILayout.EnumPopup("Type", current.type);
 
-            GUILayout.Label("- Stats");
+            GUILayout.Space(10);
+
+            GUILayout.Label("- Attack", InterfaceUtility.TitleStyle);
             current.power = EditorGUILayout.IntField("Power", current.power);
             current.accuracy = EditorGUILayout.IntField("Precision", current.accuracy);
 
             current.staminaCost = EditorGUILayout.IntField("Cost (Stamina)", current.staminaCost);
 
+
+            GUILayout.Space(10);
+            GUILayout.Label("- States", InterfaceUtility.TitleStyle);
+            
             GUILayout.BeginHorizontal();
             current.enemyStateChange = (Monster.State)EditorGUILayout.EnumPopup("Target State change", current.enemyStateChange);
             GUI.enabled = current.enemyStateChange != Monster.State.None;

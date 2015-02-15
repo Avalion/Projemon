@@ -82,7 +82,8 @@ public class DBMapObject : SQLTable {
 
         m.name = _source.name;
 
-        m.sprite = _source.sprite.name;
+        if (_source.sprite != null)
+            m.sprite = _source.sprite.name;
         
         m.speed = _source.speed;
         m.orientation = _source.orientation;
@@ -93,5 +94,4 @@ public class DBMapObject : SQLTable {
 
         return m;
     }
-
 }

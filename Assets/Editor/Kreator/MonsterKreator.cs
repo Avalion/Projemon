@@ -5,6 +5,10 @@ using System.Collections.Generic;
 
 /**
  * This class provides gestion of MonsterPattern
+ * 
+ * TODO :
+ *      Propose an autofill of Sprites from name and common IMAGE_FOLDER
+ *      Propose some randomizations of experience monitoring
  */
 public class MonsterKreator : EditorWindow {
     public static List<DBMonsterPattern> elements = new List<DBMonsterPattern>();
@@ -24,7 +28,8 @@ public class MonsterKreator : EditorWindow {
 
     public static List<DBAttack> attackList = new List<DBAttack>();
 
-    private Vector2 _scrollPosList = Vector2.zero;
+    private static Vector2 _scrollPosList = Vector2.zero;
+    private static Vector2 _scrollPosAttackList = Vector2.zero;
 
     
     // Launch
@@ -45,6 +50,9 @@ public class MonsterKreator : EditorWindow {
 
         elements = DataBase.Select<DBMonsterPattern>();
         numberElements = elements.Count;
+
+        if (numberElements > 0)
+            window.Select(0);
 
         attackList = DataBase.Select<DBAttack>();
     }
@@ -102,7 +110,9 @@ public class MonsterKreator : EditorWindow {
             mp.type = (Monster.Type)EditorGUILayout.EnumPopup("Type", mp.type);
 
             GUILayout.BeginHorizontal(GUILayout.Height(100));
-            
+
+            GUILayout.Label("- Display", InterfaceUtility.TitleStyle);
+
             GUILayout.BeginVertical();
             GUILayout.FlexibleSpace();
             int index = battlersTextures.IndexOf(mp.battleSprite);
@@ -121,39 +131,39 @@ public class MonsterKreator : EditorWindow {
                 previewMiniSprite = Resources.LoadAssetAtPath(localpath, typeof(Texture2D)) as Texture2D;
                 mp.miniSprite = battlersTextures[value];
             }
-            GUILayout.Label(previewMiniSprite);
+            GUILayout.Label(previewMiniSprite, GUILayout.Width(50), GUILayout.Height(50));
             GUILayout.FlexibleSpace();
             GUILayout.EndVertical();
             GUILayout.BeginVertical();
-            GUILayout.Label(previewBattleSprite);
+            GUILayout.Label(previewBattleSprite, GUILayout.Width(100), GUILayout.Height(100));
             if (GUILayout.Button("Invert Preview"))
                 previewBattleSprite = InterfaceUtility.InvertTexture(previewBattleSprite);
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
 
-            GUILayout.Label("- Experience");
+            GUILayout.Label("- Experience", InterfaceUtility.TitleStyle);
             GUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("F1", GUILayout.Width(20));
-            int F1 = Mathf.Clamp(EditorGUILayout.IntField(mp.expMultiplier1), 5, 60);
+            int F1 = Mathf.Clamp(EditorGUILayout.IntField(mp.expMultiplier1, GUILayout.Width(40)), 5, 60);
             if (F1 != mp.expMultiplier1) { mp.expMultiplier1 = F1; selectedExp = mp.CalcExpRequired(selectedLevel); }
             EditorGUILayout.LabelField("F2", GUILayout.Width(20));
-            int F2 = Mathf.Clamp(EditorGUILayout.IntField(mp.expMultiplier2), 0, 60);
+            int F2 = Mathf.Clamp(EditorGUILayout.IntField(mp.expMultiplier2, GUILayout.Width(40)), 0, 60);
             if (F2 != mp.expMultiplier2) { mp.expMultiplier2 = F2; selectedExp = mp.CalcExpRequired(selectedLevel); }
             EditorGUILayout.LabelField("F3", GUILayout.Width(20));
-            int F3 = Mathf.Clamp(EditorGUILayout.IntField(mp.expMultiplier3), 0, 60);
+            int F3 = Mathf.Clamp(EditorGUILayout.IntField(mp.expMultiplier3, GUILayout.Width(40)), 0, 60);
             if (F3 != mp.expMultiplier3) { mp.expMultiplier3 = F3; selectedExp = mp.CalcExpRequired(selectedLevel); }
-            GUILayout.EndHorizontal();
 
-            selectedLevel = EditorGUILayout.IntSlider(selectedLevel, 1, 98);
-            GUILayout.BeginHorizontal();
-            EditorGUILayout.LabelField(selectedLevel + " -> " + (selectedLevel + 1));
-            GUILayout.FlexibleSpace();
-            EditorGUILayout.LabelField("need " + selectedExp);
+            int val = EditorGUILayout.IntSlider(selectedLevel, 1, 98);
+            if (selectedLevel != val) {
+                selectedLevel = val;
+                selectedExp = mp.CalcExpRequired(selectedLevel);
+            }
+            EditorGUILayout.LabelField(" -> " + (selectedLevel + 1) + " : need " + selectedExp, GUILayout.Width(150));
             GUILayout.EndHorizontal();
 
             GUILayout.Space(10);
 
-            GUILayout.Label("- Stats");
+            GUILayout.Label("- Stats", InterfaceUtility.TitleStyle);
             GUILayout.BeginHorizontal();
             GUILayout.Label("Life : ", GUILayout.Width(100));
             GUILayout.Label("Start : ");
@@ -219,8 +229,9 @@ public class MonsterKreator : EditorWindow {
             if (attackList.Count == 0) {
                 GUILayout.Label("Please define attacks !", InterfaceUtility.ErroStyle);
             } else {
+                _scrollPosAttackList = GUILayout.BeginScrollView(_scrollPosAttackList);
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("- Attacks");
+                GUILayout.Label("- Attacks", InterfaceUtility.TitleStyle);
                 GUILayout.FlexibleSpace();
 
                 if (GUILayout.Button("Add"))
@@ -244,6 +255,7 @@ public class MonsterKreator : EditorWindow {
                     }
                     GUILayout.EndHorizontal();
                 }
+                GUILayout.EndScrollView();
             }
         }
         GUILayout.EndVertical();
@@ -273,6 +285,11 @@ public class MonsterKreator : EditorWindow {
             elements[selectedElement].battleSprite = battlersTextures[0];
         string localpath = Config.GetResourcePath(Monster.IMAGE_FOLDER) + elements[selectedElement].battleSprite;
         previewBattleSprite = Resources.LoadAssetAtPath(localpath, typeof(Texture2D)) as Texture2D;
+
+        if (elements[selectedElement].miniSprite == "" && battlersTextures.Count > 0)
+            elements[selectedElement].miniSprite = battlersTextures[0];
+        localpath = Config.GetResourcePath(Monster.IMAGE_FOLDER) + elements[selectedElement].miniSprite;
+        previewMiniSprite = Resources.LoadAssetAtPath(localpath, typeof(Texture2D)) as Texture2D;
 
         selectedExp = elements[selectedElement].CalcExpRequired(selectedLevel);
     }

@@ -58,7 +58,11 @@ public class BattleAnimationKreator : EditorWindow {
         InterfaceUtility.ClearAllCache();
 
         elements = SystemDatas.GetBattleAnimations();
-        
+        numberElements = elements.Count;
+
+        if (numberElements > 0)
+            window.Select(0);
+
         imagesFolders = SystemDatas.GetBattleAnimationsFolders();
         if (imagesFolders.Count > 0)
             selectedFolder = imagesFolders[0];

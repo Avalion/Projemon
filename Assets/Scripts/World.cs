@@ -51,9 +51,13 @@ public class World : MonoBehaviour {
         currentMap = new Map(startMapID);
 
         Player.Current.mapCoords = startPlayerCoords;
+        Player.Current.sprite = InterfaceUtility.GetTexture(Config.GetResourcePath(MapObject.IMAGE_FOLDER) + "perso_00.png");
 
         if (currentBGM.clip != null)
             currentBGM.Play();
+
+        foreach (MapObject mo in currentMap.mapObjects)
+            mo.OnStart();
     }
 
     /* MonoBehaviour functions
@@ -66,8 +70,10 @@ public class World : MonoBehaviour {
         currentMap.Display();
 
         // Display Map Objects
-        currentMap.mapObjects.Sort(delegate(MapObject a, MapObject b) { return a.mapCoords.y.CompareTo(b.mapCoords.y); });
-        foreach (MapObject mo in currentMap.mapObjects)
+        List<MapObject> mos = new List<MapObject>(currentMap.mapObjects);
+        mos.Add(Player.Current);
+        mos.Sort(delegate(MapObject a, MapObject b) { return (a.mapCoords.y + (a.currentMovement.y > 0 ? a.currentMovement.y : 0)).CompareTo(b.mapCoords.y + (b.currentMovement.y > 0 ? b.currentMovement.y : 0)); });
+        foreach (MapObject mo in mos)
             mo.DisplayOnMap();
 
         // Display currentFilter
@@ -78,13 +84,14 @@ public class World : MonoBehaviour {
             d.Display();
     }
     public void Update() {
-        // Loop background music
+        #region Music
         if (currentBGM.clip != null && !currentBGM.isPlaying) {
             currentBGM.Stop();
             currentBGM.Play();
         }
+        #endregion
 
-        // Player movements
+        #region Player
 #if UNITY_EDITOR
         if (!Player.Current.isMoving && (!Player.Locked || InputManager.Current.GetKey(KeyCode.LeftControl))) {
 #else
@@ -99,6 +106,14 @@ public class World : MonoBehaviour {
             else if (InputManager.Current.GetKey(KeyCode.DownArrow))
                 Player.Current.Move(MapObject.PossibleMovement.Down);
         }
+        #endregion
+
+        #region MapObjects
+        foreach (MapObject mo in currentMap.mapObjects)
+            mo.OnUpdate();
+
+        Player.Current.OnUpdate();
+        #endregion
     }
 
     public void OnDestroy() {
@@ -122,7 +137,7 @@ public class World : MonoBehaviour {
     
     /* MapObject Actions
      */
-    delegate void ExecOnEnd();
+    public delegate void ExecOnEnd();
 
     public void ExecuteActions(MapObjectAction[] moa, ExecOnEnd _action) {
         StartCoroutine(ExecuteActionAsync(moa, _action));
@@ -204,6 +219,7 @@ public class World : MonoBehaviour {
 
                 if (mo.layer != o.layer || mo.allowPassThrough)
                     continue;
+
                 return false;
             }
             if (mo.mapCoords + mo.currentMovement == _destination) {

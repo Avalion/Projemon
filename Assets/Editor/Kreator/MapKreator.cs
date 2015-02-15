@@ -56,8 +56,13 @@ public class MapKreator : EditorWindow {
         InterfaceUtility.ClearAllCache();
 
         elements = SystemDatas.GetMaps();
-        patterns = SystemDatas.GetMapsPatterns();
+        numberElements = elements.Count;
 
+        if (numberElements > 0)
+            window.Select(0);
+
+        patterns = SystemDatas.GetMapsPatterns();
+        
         if (patterns.Count > 0) {
             selectedPattern = 0;
             UpdateImages();
@@ -201,7 +206,7 @@ public class MapKreator : EditorWindow {
             } else if (currentLayer == 4) {
                 if (selectedCoords != -Vector2.one) {
                     // check if there is a MO on the case
-                    MapObject mo = current.mapObjects.Find(MO => MO.mapCoords != selectedCoords);
+                    MapObject mo = current.mapObjects.Find(MO => MO.mapCoords == selectedCoords);
                     if (mo == null && World.Current.startMapID == current.ID && World.Current.startPlayerCoords == selectedCoords)
                         mo = Player.Current;
                     
@@ -216,25 +221,21 @@ public class MapKreator : EditorWindow {
                             DataBase.Insert<DBMapObject>(dbmo);
                             dbmo.ID = DataBase.GetLastInsertId();
                             mo = MapObject.Generate(dbmo);
+
+                            current.mapObjects.Add(mo);
                         }
 
                         MapObjectKreator.Open(mo);
-
-                        selectedCoords = -Vector2.one;
                     }
                     GUI.enabled = mo != null && mo != Player.Current;
                     if (GUILayout.Button("Supprimer")) {
                         DataBase.SelectById<DBMapObject>(mo.mapObjectId).Delete();
                         current.mapObjects.Remove(mo);
-
-                        selectedCoords = -Vector2.one;
                     }
                     GUI.enabled = mo == null;
                     if (GUILayout.Button("Player")) {
                         World.Current.startMapID = current.ID;
                         World.Current.startPlayerCoords = selectedCoords;
-
-                        selectedCoords = -Vector2.one;
                     }
                     GUI.enabled = true;
                     GUILayout.EndVertical();
@@ -244,7 +245,7 @@ public class MapKreator : EditorWindow {
             }
         }
         GUILayout.FlexibleSpace();
-        if (GUILayout.Button("Erase")) {
+        if (currentLayer < 3 && GUILayout.Button("Erase")) {
             currentTileCoords = new Vector2(-1, -1);
             selectedPattern = -1;
         }
@@ -333,27 +334,20 @@ public class MapKreator : EditorWindow {
                         Rect caseRect = new Rect(i * resolution.x, j * resolution.y, resolution.x, resolution.y);
 
                         // check if there is a MO on the case
-                        MapObject mo = current.mapObjects.Find(MO => MO.mapCoords != new Vector2(i, j));
+                        MapObject mo = current.mapObjects.Find(MO => MO.mapCoords == new Vector2(i, j));
                         if (mo != null) {
                             // Display the Sprite
-                            if (GUI.Button(caseRect, mo.sprite, InterfaceUtility.CenteredStyle))
-                                selectedCoords = selectedCoords == -Vector2.one ? new Vector2(i, j) : -Vector2.one;
+                            if (GUI.Button(caseRect, mo.Sprite, InterfaceUtility.CenteredStyle))
+                                selectedCoords = new Vector2(i, j);
 
                             // Square border
-                            EditorUtility.DrawSquare(caseRect, 4, new Color(0, 0, 0, 0.7f));
+                            EditorUtility.DrawSquare(caseRect, 3, new Color(0, 0, 0, 0.7f));
                             // Square
-                            EditorUtility.DrawSquare(new Rect(caseRect.x + 1, caseRect.y + 1, caseRect.width - 2, caseRect.height - 2), 2, new Color(1, 1, 1, 0.7f));
+                            EditorUtility.DrawSquare(new Rect(caseRect.x + 1, caseRect.y + 1, caseRect.width - 2, caseRect.height - 2), 1, new Color(0.7f, 0.7f, 0.7f, 1));
                         } else {
                             // Else, display nothing
                             if (GUI.Button(caseRect, "", InterfaceUtility.CenteredStyle) && Event.current.button == 0)
                                 selectedCoords = new Vector2(i, j);
-                        }
-
-                        if (selectedCoords == new Vector2(i, j)) {
-                            // Square border
-                            EditorUtility.DrawSquare(caseRect, 4, new Color(0, 0, 0, 0.7f));
-                            // Square
-                            EditorUtility.DrawSquare(new Rect(caseRect.x + 1, caseRect.y + 1, caseRect.width - 2, caseRect.height - 2), 2, new Color(0.9f, 0.8f, 1, 0.7f));
                         }
                     }
 
@@ -361,14 +355,22 @@ public class MapKreator : EditorWindow {
                 if (World.Current.startMapID == current.ID) {
                     Rect playerRect = new Rect(World.Current.startPlayerCoords.x * resolution.x, World.Current.startPlayerCoords.y * resolution.y, resolution.x, resolution.y);
 
+                    // bg
+                    EditorGUI.DrawRect(playerRect, new Color(0.2f, 0.2f, 0.2f, 0.7f));
                     // Square border
-                    EditorGUI.DrawRect(playerRect, new Color(0.2f, 0.1f, 1, 0.4f));
-                    // Square border
-                    EditorUtility.DrawSquare(playerRect, 4, new Color(0, 0, 0, 0.7f));
+                    EditorUtility.DrawSquare(playerRect, 3, new Color(0, 0, 0, 0.7f));
                     // Square
-                    EditorUtility.DrawSquare(new Rect(playerRect.x + 1, playerRect.y + 1, playerRect.width - 2, playerRect.height - 2), 2, new Color(1, 1, 1, 0.7f));
+                    EditorUtility.DrawSquare(new Rect(playerRect.x + 1, playerRect.y + 1, playerRect.width - 2, playerRect.height - 2), 1, new Color(0.7f, 0.7f, 0.7f, 1));
 
                     GUI.Label(playerRect, "S", InterfaceUtility.CenteredStyle);
+                }
+
+                if (selectedCoords != -Vector2.one) {
+                    Rect caseRect = new Rect(selectedCoords.x * resolution.x, selectedCoords.y * resolution.y, resolution.x, resolution.y);
+                    // Square border
+                    EditorUtility.DrawSquare(caseRect, 3, new Color(0, 0, 0, 0.7f));
+                    // Square
+                    EditorUtility.DrawSquare(new Rect(caseRect.x + 1, caseRect.y + 1, caseRect.width - 2, caseRect.height - 2), 1, new Color(1, 1, 1, 1f));
                 }
 
                 if (isDragging) {
@@ -400,8 +402,32 @@ public class MapKreator : EditorWindow {
         GUI.EndGroup();
     }
     private void CanvasEvents(Rect _rect) {
+        /** Keyboard Events
+         */
+        if (Event.current.type == EventType.KeyDown) {
+            if (Event.current.keyCode == KeyCode.LeftArrow) {
+                selectedCoords.x = Mathf.Max(0, selectedCoords.x - 1);
+            }
+            if (Event.current.keyCode == KeyCode.RightArrow) {
+                selectedCoords.x = Mathf.Min(current.size.x - 1, selectedCoords.x + 1);
+            }
+            if (Event.current.keyCode == KeyCode.UpArrow) {
+                selectedCoords.y = Mathf.Max(0, selectedCoords.y - 1);
+            }
+            if (Event.current.keyCode == KeyCode.DownArrow) {
+                selectedCoords.y = Mathf.Min(current.size.y - 1, selectedCoords.y + 1);
+            }
+        }
+
+        if (Event.current.type == EventType.KeyDown) {
+            if (Event.current.keyCode == KeyCode.H) {
+                displayAllLayers = !displayAllLayers;
+            }
+        }
+
         if (!_rect.Contains(Event.current.mousePosition)) {
             isDragging = false;
+            Repaint();
             return;
         }
         /** Mouse Events
@@ -461,30 +487,7 @@ public class MapKreator : EditorWindow {
                         mo.mapCoords = currentCoords;
                 }
             }
-
-            if (Event.current.type == EventType.KeyDown) {
-                if (Event.current.keyCode == KeyCode.LeftArrow) {
-                    selectedCoords.x = Mathf.Max(0, selectedCoords.x - 1);
-                }
-                if (Event.current.keyCode == KeyCode.RightArrow) {
-                    selectedCoords.x = Mathf.Min(current.size.x - 1, selectedCoords.x + 1);
-                }
-                if (Event.current.keyCode == KeyCode.UpArrow) {
-                    selectedCoords.y = Mathf.Max(0, selectedCoords.y - 1);
-                }
-                if (Event.current.keyCode == KeyCode.DownArrow) {
-                    selectedCoords.y = Mathf.Min(current.size.y - 1, selectedCoords.y + 1);
-                }
-            }
             #endregion
-        }
-
-        /** Keyboard Events
-         */
-        if (Event.current.type == EventType.KeyDown) {
-            if (Event.current.keyCode == KeyCode.H) {
-                displayAllLayers = !displayAllLayers;
-            }
         }
 
         Repaint();

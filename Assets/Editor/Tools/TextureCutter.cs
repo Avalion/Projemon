@@ -36,7 +36,7 @@ public class TextureCutter : EditorWindow {
     public void Cut() {
         Vector2 currentPattern = new Vector2(sprite.width / resolutionX, sprite.height / resolutionY);
 
-        string directory = Application.dataPath.Replace("Assets", "") + Config.GetResourcePath("BattleAnimations") + outputFolder + "/";
+        string directory = Application.dataPath.Replace("Assets", "") + Config.GetResourcePath(BattleAnimation.IMAGE_FOLDER) + outputFolder + "/";
         if (!Directory.Exists(directory))
             Directory.CreateDirectory(directory);
 

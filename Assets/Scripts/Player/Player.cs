@@ -27,7 +27,7 @@ public class Player : Battler {
         }
     }
 
-    private static int locked;
+    private static int locked = 0;
     public static bool Locked {
         get { return locked != 0; }
     }

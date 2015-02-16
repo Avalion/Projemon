@@ -5,6 +5,7 @@ using System.Collections.Generic;
  * This action will move a MapObject toward a path, ignore not possible moves
  */
 public class ActionMove : MapObjectAction {
+    public int targetId;
     public MapObject target;
     public List<MapObject.PossibleMovement> movements = new List<MapObject.PossibleMovement>();
 
@@ -20,6 +21,8 @@ public class ActionMove : MapObjectAction {
     }
 
     public override void Execute() {
+        target = World.Current.GetMapObjectById(targetId);
+
         ActionMoveDisplay display = new GameObject("action_Move").AddComponent<ActionMoveDisplay>();
         display.action = this;
         display.SendMessage("Start");
@@ -30,17 +33,20 @@ public class ActionMove : MapObjectAction {
     }
 
     public override string Serialize() {
-        // TODO : Add MapObjectID when MapObject are into DB
-        // TODO : Serialize list of movements
-        return GetType().ToString();
+        string result = GetType().ToString() + "|" + targetId;
+        foreach (MapObject.PossibleMovement move in movements)
+            result += "|" + ((int)move);
+        
+        return result;
     }
     public override void Deserialize(string s) {
         string[] values = s.Split('|');
-        if (values.Length != 1)
+        if (values.Length < 2)
             throw new System.Exception("SerializationError : elements count doesn't match... " + s);
 
-        // TODO : Read and find MapObjectID when MapObject are into DB
-        // TODO : Deserialize list of movements
+        targetId = int.Parse(values[1]);
+        for (int i = 2; i < values.Length; ++i)
+            movements.Add((MapObject.PossibleMovement)int.Parse(values[i]));
     }
 }
 

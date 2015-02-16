@@ -726,5 +726,7 @@ public class MapKreator : EditorWindow {
 
     public void Select(int _select) {
         selectedElement = _select;
+
+        World.Current.currentMap = elements[selectedElement];
     }
 }

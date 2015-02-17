@@ -4,22 +4,23 @@
  * This action will teleport a MapObject to a destination
  */
 public class ActionTeleport : MapObjectAction {
-    public MapObject target;
+    public int mapObjectId = -1;
     public MapObject.Orientation orientation;
     public int mapID;
     public Vector2 arrival;
 
     public ActionTeleport() {
-        target = Player.Current;
+        mapObjectId = Player.Current.mapObjectId;
     }
     public ActionTeleport(MapObject _target, MapObject.Orientation _orientation, int _mapID, Vector2 _arrival) {
-        target = _target;
+        mapObjectId = _target.mapObjectId;
         orientation = _orientation;
         arrival = _arrival;
         mapID = _mapID;
     }
 
     public override void Execute() {
+        MapObject target = World.Current.GetMapObjectById(mapObjectId);
         if(World.Current.currentMap.ID != mapID) World.Current.LoadMap(mapID);
 
         target.mapCoords = arrival;
@@ -29,7 +30,11 @@ public class ActionTeleport : MapObjectAction {
     }
 
     public override string InLine() {
-        return "Teleport " + target.name + " to : " + arrival + ":" + orientation;
+        DBMapObject moa = null;
+        try {
+            moa = DataBase.SelectById<DBMapObject>(mapObjectId);
+        } catch { }
+        return "Teleport " + (moa != null ? moa.name : "") + " to : " + arrival + ":" + orientation;
     }
 
     public override string Serialize() {

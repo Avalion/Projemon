@@ -33,7 +33,7 @@ public class ActionFadeScreen : MapObjectAction {
     }
     public override void Deserialize(string s) {
         string[] values = s.Split('|');
-        if (values.Length != 3)
+        if (values.Length != 6)
             throw new System.Exception("SerializationError : elements count doesn't match... " + s);
 
         duration = float.Parse(values[1]);

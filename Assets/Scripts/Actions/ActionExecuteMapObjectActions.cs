@@ -4,7 +4,7 @@
  * This action will launch target mapObject actions
  */
 public class ActionExecuteMapObjectActions : MapObjectAction {
-    int mapObjectId = -1;
+    public int mapObjectId = -1;
 
     public ActionExecuteMapObjectActions() {}
 

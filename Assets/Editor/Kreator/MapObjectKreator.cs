@@ -10,6 +10,7 @@ public class MapObjectKreator : EditorWindow {
     private int selectedElement = -1;
 
     private static List<string> sprites = new List<string>();
+    private static List<string> sounds = new List<string>();
     private static string[] actionTypes;
     
     private Vector2 scrollPosList;
@@ -33,6 +34,8 @@ public class MapObjectKreator : EditorWindow {
     private static void InitLists() {
         sprites = new List<string>() { "" };
         sprites.AddRange(SystemDatas.GetMapObjectsPaths());
+        sounds = new List<string>() { "" };
+        sounds.AddRange(SystemDatas.GetMusics());
 
         actionTypes = new string[] {
             "Select an Action to Add", 
@@ -267,8 +270,12 @@ public class MapObjectKreator : EditorWindow {
         GUILayout.EndHorizontal();
     }
     private void DisplayEditor(ActionPlaySound a) {
-        GUILayout.Label("TODO : propose list of files into BGM or BGS folder");
-        //a.soundPath = EditorGUILayout.ObjectField("Sound", a.soundPath, typeof(AudioClip), false) as AudioClip;
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Sound", GUILayout.Width(100));
+        int index = sounds.IndexOf(a.soundPath);
+        if (index < 0) { index = 0; }
+        a.soundPath = sounds[EditorGUILayout.Popup(index, sounds.ToArray())];
+        GUILayout.EndHorizontal();
         a.bgm = EditorGUILayout.Toggle("BGM", a.bgm);
     }
     private void DisplayEditor(ActionSetVariable a) {
@@ -287,6 +294,24 @@ public class MapObjectKreator : EditorWindow {
         a.duration = Mathf.Max(0, EditorGUILayout.FloatField("Time", a.duration));
     }
     private void DisplayEditor(ActionTransform a) {
-        GUILayout.Label("TODO : Display a popup with all MapObject");
+        List<string> mapObjectList = new List<string>(){"Player"};
+        foreach(MapObject mo in World.Current.currentMap.mapObjects){
+            mapObjectList.Add(mo.mapObjectId + ": " + mo.name);
+        }
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Target", GUILayout.Width(100));
+        int index = mapObjectList.FindIndex(S => S.StartsWith(a.mapObjectId+":"));
+        if (index < 0) { index = 0; }
+        string val = mapObjectList[EditorGUILayout.Popup(index, mapObjectList.ToArray())];
+        if (val == "Player") { a.mapObjectId = -1; } else { a.mapObjectId = int.Parse(val.Substring(0, val.IndexOf(":")));  }
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Sprite", GUILayout.Width(100));
+        val = sprites[EditorGUILayout.Popup(sprites.IndexOf(a.newSpritePath), sprites.ToArray())];
+        if (val != a.newSpritePath) {
+            a.newSpritePath = val;
+        }
+        GUILayout.EndHorizontal();
     }
 }

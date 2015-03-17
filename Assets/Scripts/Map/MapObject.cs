@@ -32,11 +32,16 @@ public class MapObject {
     public enum ExecutionCondition { NULL, Action, ActionFace, Contact, Automatique }
     public ExecutionCondition execCondition = ExecutionCondition.Action;
 
+    public string spritePath = "";
     public Texture2D sprite;
     public Texture2D Sprite { 
         get {
-            if (sprite == null)
-                return null;
+            if (sprite == null) {
+                if (spritePath == "")
+                    return null;
+                sprite = InterfaceUtility.GetTexture(Config.GetResourcePath(IMAGE_FOLDER) + spritePath);
+            }
+                
 
             int step = 1;
             if (lerp > 0.2f && lerp < 0.8f)
@@ -387,6 +392,7 @@ public class MapObject {
         m.mapCoords = _source.mapCoords;
 
         m.name = _source.name;
+        m.spritePath = _source.sprite;
         m.sprite = InterfaceUtility.GetTexture(Config.GetResourcePath(IMAGE_FOLDER) + _source.sprite);
         
         m.speed = _source.speed;

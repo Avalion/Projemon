@@ -44,7 +44,7 @@ public class MonsterKreator : EditorWindow {
 
         InterfaceUtility.ClearAllCache();
 
-        battlersTextures = SystemDatas.GetBattlersPaths();
+        battlersTextures = SystemDatas.GetMonstersPaths();
         
         InitStyles();
 

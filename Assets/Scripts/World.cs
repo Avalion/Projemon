@@ -23,9 +23,8 @@ public class World : MonoBehaviour {
     public static bool ShowMap = true;
 
     // Init Var
-    public int startMapID;
-
-    public Vector2 startPlayerCoords;
+    [HideInInspector] public int startMapID;
+    [HideInInspector] public Vector2 startPlayerCoords;
 
     // Define current Map
     [HideInInspector] public Map currentMap;
@@ -50,7 +49,10 @@ public class World : MonoBehaviour {
         currentBGM = gameObject.AddComponent<AudioSource>();
         currentMap = new Map(startMapID);
 
+        Player.Current.mapObjectId = -1;
         Player.Current.mapCoords = startPlayerCoords;
+        
+        // TEMPORARY
         Player.Current.sprite = InterfaceUtility.GetTexture(Config.GetResourcePath(MapObject.IMAGE_FOLDER) + "perso_00.png");
 
         if (currentBGM.clip != null)
@@ -201,6 +203,9 @@ public class World : MonoBehaviour {
     /* Utils
      */
     public MapObject GetMapObjectById(int _mapObjectId) {
+        if (_mapObjectId == -1)
+            return Player.Current;
+
         return currentMap.mapObjects.Find(MO => MO.mapObjectId == _mapObjectId);
     } 
     

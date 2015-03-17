@@ -4,15 +4,14 @@ using System.Collections.Generic;
 public class Serializer {
     public static string Serialize<T> (object toSerialize) where T : class {
         switch (typeof(T).ToString()) {
-            case "Texture2D" :
+            case "UnityEngine.Texture2D" :
                 return SerializeTexture((Texture2D)toSerialize);
         }
-
         throw new System.Exception("The type " + typeof(T).ToString() + " cannot be serialized...");
     }
     public static T Deserialize<T>(string serial) where T : class {
         switch (typeof(T).ToString()) {
-            case "Texture2D":
+            case "UnityEngine.Texture2D":
                 return DeserializeTexture(serial) as T;
         }
 

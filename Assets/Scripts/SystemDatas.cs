@@ -19,11 +19,17 @@ public class SystemDatas {
         return files.ToArray();
     }
 
-    public static List<string> GetBattlersPaths() {
-        List<string> battlersTextures = new List<string>();
+    public static List<string> GetMapObjectsPaths() {
+        List<string> textures = new List<string>();
+        foreach (string s in GetDirectoryFiles(Application.dataPath.Replace("Assets", "") + Config.GetResourcePath(MapObject.IMAGE_FOLDER)))
+            textures.Add(Path.GetFileName(s));
+        return textures;
+    }
+    public static List<string> GetMonstersPaths() {
+        List<string> textures = new List<string>();
         foreach (string s in GetDirectoryFiles(Application.dataPath.Replace("Assets", "") + Config.GetResourcePath(Monster.IMAGE_FOLDER)))
-            battlersTextures.Add(Path.GetFileName(s));
-        return battlersTextures;
+            textures.Add(Path.GetFileName(s));
+        return textures;
     }
     public static List<string> GetBattleAnimationsFolders() {
         List<string> folders = new List<string>(Directory.GetDirectories(Application.dataPath.Replace("Assets", "") + Config.GetResourcePath(BattleAnimation.IMAGE_FOLDER)));
@@ -32,10 +38,16 @@ public class SystemDatas {
         return folders;
     }
     public static List<string> GetMapsPatterns() {
-        List<string> mapsPatterns = new List<string>();
+        List<string> patterns = new List<string>();
         foreach (string s in GetDirectoryFiles(Application.dataPath.Replace("Assets", "") + Config.GetResourcePath(Map.IMAGE_FOLDER)))
-            mapsPatterns.Add(Path.GetFileName(s));
-        return mapsPatterns;
+            patterns.Add(Path.GetFileName(s));
+        return patterns;
+    }
+    public static List<string> GetMusics() {
+        List<string> patterns = new List<string>();
+        foreach (string s in GetDirectoryFiles(Application.dataPath.Replace("Assets", "") + Config.GetResourcePath(ActionPlaySound.IMAGE_FOLDER)))
+            patterns.Add(Path.GetFileName(s));
+        return patterns;
     }
     
 

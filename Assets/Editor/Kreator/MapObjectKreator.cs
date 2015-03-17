@@ -9,6 +9,15 @@ public class MapObjectKreator : EditorWindow {
 
     private int selectedElement = -1;
 
+    private static List<string> sprites = new List<string>();
+    private static List<string> sounds = new List<string>();
+    private static string[] actionTypes;
+    
+    private Vector2 scrollPosList;
+    private Vector2 scrollPosEdit;
+
+
+
     public static void Open(MapObject mo) {
         if (mo == null)
             return;
@@ -18,50 +27,118 @@ public class MapObjectKreator : EditorWindow {
         window.m_target = mo;
         window.Show();
 
+        InitLists(); 
+
         isOpen = true;
     }
+    private static void InitLists() {
+        sprites = new List<string>() { "" };
+        sprites.AddRange(SystemDatas.GetMapObjectsPaths());
+        sounds = new List<string>() { "" };
+        sounds.AddRange(SystemDatas.GetMusics());
 
-    Vector2 scrollPosList;
-    Vector2 scrollPosEdit;
+        actionTypes = new string[] {
+            "Select an Action to Add", 
+            typeof(ActionAddItem).ToString(), 
+            typeof(ActionAddMonster).ToString(), 
+            typeof(ActionAleaMessage).ToString(), 
+            typeof(ActionExecuteMapObjectActions).ToString(), 
+            typeof(ActionEXP).ToString(), 
+            typeof(ActionFadeScreen).ToString(), 
+            typeof(ActionHeal).ToString(), 
+            typeof(ActionMessage).ToString(), 
+            typeof(ActionMonsterBattle).ToString(), 
+            typeof(ActionMove).ToString(), 
+            typeof(ActionPlaySound).ToString(), 
+            typeof(ActionRemoveItem).ToString(), 
+            typeof(ActionSetState).ToString(),
+            typeof(ActionSetVariable).ToString(), 
+            typeof(ActionTeleport).ToString(), 
+            typeof(ActionTransform).ToString(), 
+            typeof(ActionWait).ToString()
+        };
+    }
 
-    string[] types = new string[] { 
-        "Select an Action to Add", 
-        typeof(ActionAddItem).ToString(), 
-        typeof(ActionAddMonster).ToString(), 
-        typeof(ActionAleaMessage).ToString(), 
-        typeof(ActionExecuteMapObjectActions).ToString(), 
-        typeof(ActionEXP).ToString(), 
-        typeof(ActionFadeScreen).ToString(), 
-        typeof(ActionHeal).ToString(), 
-        typeof(ActionMessage).ToString(), 
-        typeof(ActionMonsterBattle).ToString(), 
-        typeof(ActionMove).ToString(), 
-        typeof(ActionPlaySound).ToString(), 
-        typeof(ActionRemoveItem).ToString(), 
-        typeof(ActionSetState).ToString(),
-        typeof(ActionSetVariable).ToString(), 
-        typeof(ActionTeleport).ToString(), 
-        typeof(ActionTransform).ToString(), 
-        typeof(ActionWait).ToString()
-    };
-    
     public void OnGUI() {
         if (m_target == null) {
             Close();
             return;
         }
 
+        GUILayout.Space(10);
+        
         GUILayout.BeginHorizontal();
+        // Map Object infos
         GUILayout.BeginVertical(GUILayout.Width(Screen.width / 3));
+        
+        
+        GUILayout.BeginHorizontal();
+        GUILayout.Label(m_target.Sprite, InterfaceUtility.CenteredStyle, GUILayout.Width(70), GUILayout.Height(70));
+
+        GUILayout.BeginVertical();
+        GUILayout.Space(5);
+        
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Name", GUILayout.Width(100));
+        m_target.name = EditorGUILayout.TextField(m_target.name);
+        GUILayout.EndHorizontal();
+        
+        GUILayout.Space(5);
+        
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Sprite", GUILayout.Width(100));
+        string val = sprites[EditorGUILayout.Popup((m_target.sprite == null ? 0 : sprites.IndexOf(m_target.spritePath)), sprites.ToArray())];
+        if (val != m_target.spritePath) {
+            m_target.spritePath = val;
+            m_target.sprite = null;
+        }
+        GUILayout.EndHorizontal();
+        
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Orientation", GUILayout.Width(100));
+        m_target.orientation = (MapObject.Orientation)EditorGUILayout.EnumPopup(m_target.orientation);
+        GUILayout.EndHorizontal();
+
+        GUILayout.Space(5);
+        GUILayout.EndVertical();
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Layer", GUILayout.Width(100));
+        m_target.layer = (MapObject.Layer)EditorGUILayout.EnumPopup(m_target.layer);
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Speed", GUILayout.Width(100));
+        m_target.speed = (MapObject.MovementSpeed)EditorGUILayout.EnumPopup(m_target.speed);
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("AllowPassThrough", GUILayout.Width(100));
+        m_target.allowPassThrough = EditorGUILayout.Toggle(m_target.allowPassThrough);
+        GUILayout.EndHorizontal();
+
+
+        GUILayout.EndVertical();
+
+        // Map Object actions
+        GUILayout.BeginVertical(GUILayout.Width(Screen.width / 3));
+        GUILayout.Space(5);
+        
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("ExecCondition", GUILayout.Width(170));
+        m_target.execCondition = (MapObject.ExecutionCondition)EditorGUILayout.EnumPopup(m_target.execCondition);
+        GUILayout.EndHorizontal();
+
         scrollPosList = GUILayout.BeginScrollView(scrollPosList);
         GUILayout.BeginVertical();
         for (int i = 0; i < m_target.actions.Count; ++i) {
             MapObjectAction a = m_target.actions[i];
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button((a.waitForEnd ? "*" : "") + a.InLine(), GUILayout.Width(Screen.width / 3 - 100))) {
+            if (GUILayout.Button((a.waitForEnd ? "* " : "") + a.InLine(), GUILayout.MaxWidth(Screen.width / 3))) {
                 selectedElement = i;
             }
-            if (GUILayout.Button("X")) {
+            if (GUILayout.Button("X", GUILayout.Width(30))) {
                 m_target.actions.Remove(a);
                 if (selectedElement == i)
                     selectedElement = -1;
@@ -71,23 +148,32 @@ public class MapObjectKreator : EditorWindow {
             GUILayout.EndHorizontal();
 
         }
+
+        int value = EditorGUILayout.Popup(0, actionTypes);
+        if (value != 0) {
+            m_target.actions.Add(System.Activator.CreateInstance(Types.GetType(actionTypes[value], "Assembly-CSharp")) as MapObjectAction);
+            selectedElement = m_target.actions.Count - 1;
+        }
+        
         GUILayout.EndVertical();
         GUILayout.EndScrollView();
 
-        int value = EditorGUILayout.Popup(0, types);
-        if (value != 0) {
-            m_target.actions.Add(System.Activator.CreateInstance(Types.GetType(types[value], "Assembly-CSharp")) as MapObjectAction);
-            selectedElement = m_target.actions.Count - 1;
-        }
         GUILayout.EndVertical();
 
+        GUILayout.BeginVertical();
         scrollPosEdit = GUILayout.BeginScrollView(scrollPosEdit);
         GUILayout.BeginVertical();
-        if (selectedElement > 0 && selectedElement < m_target.actions.Count) {
+        if (selectedElement >= 0 && selectedElement < m_target.actions.Count) {
             EditDisplay(m_target.actions[selectedElement]);
         }
         GUILayout.EndVertical();
         GUILayout.EndScrollView();
+
+        if (GUILayout.Button("OK")) {
+            Close();
+        }
+
+        GUILayout.EndVertical();
         GUILayout.EndHorizontal();
     }
 
@@ -170,8 +256,9 @@ public class MapObjectKreator : EditorWindow {
     private void DisplayEditor(ActionMove a) {
         for (int i = 0; i < a.movements.Count; i++) {
             GUILayout.BeginHorizontal();
-            a.movements[i] = (MapObject.PossibleMovement)EditorGUILayout.EnumPopup(i + ":", a.movements[i]);
-            if (GUILayout.Button("X"))
+            GUILayout.Label(i + ":", GUILayout.Width(30));
+            a.movements[i] = (MapObject.PossibleMovement)EditorGUILayout.EnumPopup(a.movements[i]);
+            if (GUILayout.Button("X", GUILayout.Width(30)))
                 a.movements.RemoveAt(i);
             GUILayout.EndHorizontal();
         }
@@ -183,8 +270,12 @@ public class MapObjectKreator : EditorWindow {
         GUILayout.EndHorizontal();
     }
     private void DisplayEditor(ActionPlaySound a) {
-        GUILayout.Label("TODO : propose list of files into BGM or BGS folder");
-        //a.soundPath = EditorGUILayout.ObjectField("Sound", a.soundPath, typeof(AudioClip), false) as AudioClip;
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Sound", GUILayout.Width(100));
+        int index = sounds.IndexOf(a.soundPath);
+        if (index < 0) { index = 0; }
+        a.soundPath = sounds[EditorGUILayout.Popup(index, sounds.ToArray())];
+        GUILayout.EndHorizontal();
         a.bgm = EditorGUILayout.Toggle("BGM", a.bgm);
     }
     private void DisplayEditor(ActionSetVariable a) {
@@ -203,6 +294,24 @@ public class MapObjectKreator : EditorWindow {
         a.duration = Mathf.Max(0, EditorGUILayout.FloatField("Time", a.duration));
     }
     private void DisplayEditor(ActionTransform a) {
-        GUILayout.Label("TODO : Display a popup with all MapObject");
+        List<string> mapObjectList = new List<string>(){"Player"};
+        foreach(MapObject mo in World.Current.currentMap.mapObjects){
+            mapObjectList.Add(mo.mapObjectId + ": " + mo.name);
+        }
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Target", GUILayout.Width(100));
+        int index = mapObjectList.FindIndex(S => S.StartsWith(a.mapObjectId+":"));
+        if (index < 0) { index = 0; }
+        string val = mapObjectList[EditorGUILayout.Popup(index, mapObjectList.ToArray())];
+        if (val == "Player") { a.mapObjectId = -1; } else { a.mapObjectId = int.Parse(val.Substring(0, val.IndexOf(":")));  }
+        GUILayout.EndHorizontal();
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Sprite", GUILayout.Width(100));
+        val = sprites[EditorGUILayout.Popup(sprites.IndexOf(a.newSpritePath), sprites.ToArray())];
+        if (val != a.newSpritePath) {
+            a.newSpritePath = val;
+        }
+        GUILayout.EndHorizontal();
     }
 }

@@ -4,6 +4,7 @@
  * This action will play a BGS or a BGM
  */
 public class ActionPlaySound : MapObjectAction {
+    public const string IMAGE_FOLDER = "Musics";
     public string soundPath;
     
     public bool bgm = false;

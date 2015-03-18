@@ -126,6 +126,17 @@ public class BattleAnimationKreator : EditorWindow {
         GUILayout.EndHorizontal();
         GUILayout.BeginHorizontal();
         GUILayout.Label("Nb ");
+
+        // Check return event before Unity Text because it use the KeyDown Event
+        if (GUI.GetNameOfFocusedControl() == "EditorListSize" && Event.current.type == EventType.KeyDown && (Event.current.keyCode == KeyCode.KeypadEnter || Event.current.keyCode == KeyCode.Return)) {
+            while (elements.Count < numberElements)
+                elements.Add(new BattleAnimation(elements.Count));
+            while (elements.Count > numberElements)
+                elements.RemoveAt(elements.Count - 1);
+            Select(Mathf.Clamp(selectedElement, 0, numberElements - 1));
+        }
+
+        GUI.SetNextControlName("EditorListSize");
         numberElements = Mathf.Clamp(EditorGUILayout.IntField(numberElements), 0, 999);
         if (GUILayout.Button("Apply")) {
             while (elements.Count < numberElements)

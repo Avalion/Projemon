@@ -45,6 +45,7 @@ public class ActionMove : MapObjectAction {
             throw new System.Exception("SerializationError : elements count doesn't match... " + s);
 
         targetId = int.Parse(values[1]);
+        movements.Clear();
         for (int i = 2; i < values.Length; ++i)
             movements.Add((MapObject.PossibleMovement)int.Parse(values[i]));
     }

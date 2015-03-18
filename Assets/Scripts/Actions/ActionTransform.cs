@@ -7,37 +7,44 @@ using System.Collections.Generic;
  * This action will change sprite of a MapObject
  */
 public class ActionTransform : MapObjectAction {
-    public Texture2D newSprite;
-    public MapObject target;
+    public int mapObjectId;
+    public string newSpritePath = "";
+    private Texture2D newSprite;
 
     public ActionTransform() {
-        target = Player.Current;
+        mapObjectId = Player.Current.mapObjectId;
     }
 
     public ActionTransform(MapObject _target, Texture2D _newSprite) {
+        newSpritePath = _newSprite.name;
         newSprite = _newSprite;
-        target = _target;
+        mapObjectId = _target.mapObjectId;
     }
 
     public override void Execute() {
+        if (newSprite == null) { newSprite = InterfaceUtility.GetTexture(Config.GetResourcePath(MapObject.IMAGE_FOLDER) + newSpritePath); }
+        MapObject target = World.Current.GetMapObjectById(mapObjectId);
         target.sprite = newSprite;
         Terminate();
     }
 
     public override string InLine() {
-        return "Modify sprite of " + target.name + " to " + (newSprite != null ? newSprite.name : "null")+".";
+        DBMapObject moa = null;
+        try {
+            moa = DataBase.SelectById<DBMapObject>(mapObjectId);
+        } catch { }
+        return "Modify sprite of " + (moa != null ? moa.name : "") + " to " + newSpritePath + ".";
     }
 
     public override string Serialize() {
-        string serial = Serializer.Serialize<Texture2D>(newSprite);
-        return GetType().ToString() + "|" + serial; // TODO : Add MapObjectID when MapObject are into DB
+        return GetType().ToString() + "|" + mapObjectId + "|" + newSpritePath;
     }
     public override void Deserialize(string s) {
         string[] values = s.Split('|');
-        if (values.Length != 2)
+        if (values.Length != 3)
             throw new System.Exception("SerializationError : elements count doesn't match... " + s);
 
-        // TODO : Read and find MapObjectID when MapObject are into DB
-        newSprite = Serializer.Deserialize<Texture2D>(values[1]);
+        mapObjectId = int.Parse(values[1]);
+        newSpritePath = values[2];
     }
 }

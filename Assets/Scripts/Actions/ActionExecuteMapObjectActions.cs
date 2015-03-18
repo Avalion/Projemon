@@ -19,7 +19,10 @@ public class ActionExecuteMapObjectActions : MapObjectAction {
     }
 
     public override string InLine() {
-        DBMapObject moa = DataBase.SelectById<DBMapObject>(mapObjectId);
+        DBMapObject moa = null;
+        try {
+            moa = DataBase.SelectById<DBMapObject>(mapObjectId);
+        } catch {}
         return "Execute " + mapObjectId + ":" + (moa != null ? moa.name : "") + " actions.";
     }
 

@@ -1,10 +1,10 @@
-﻿//using UnityEngine;
-//using System.Collections.Generic;
+﻿using UnityEngine;
+using System.Collections.Generic;
 
-///**
-// * this class is a MapObject to work on monster collection
-// */
-//public class Computer : MapObject {
+/**
+ * this class is a MapObject to work on monster collection
+ */
+//public class Computer : IDisplayable {
 //    public static Rect DISPLAY_POSITION_GENERAL = new Rect(1,0,0.1f,0.3f);
 //    public static Rect DISPLAY_POSITION_MONSTERS = new Rect(0.1f, 0.1f, 0.9f, 0.9f);
 //    public static Rect DISPLAY_POSITION_PLAYERMONSTERS = new Rect(0.7f, 0.5f, 0.2f, 0.4f);

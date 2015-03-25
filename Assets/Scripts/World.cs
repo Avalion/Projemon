@@ -22,6 +22,10 @@ public class World : MonoBehaviour {
     // Display Map ?
     public static bool ShowMap = true;
 
+    public ImageRessources InterfaceResources = new ImageRessources();
+
+
+
     // Init Var
     [HideInInspector] public int startMapID;
     [HideInInspector] public Vector2 startPlayerCoords;

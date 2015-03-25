@@ -25,6 +25,96 @@ public class Utility {
         sw.Close();
     }
 
+    /** 
+     *   convert hexa color code ( ex : #000000 ) to unityengine color
+     *  @param _value hexa color value
+     *  @return Color 
+     */
+    public static string ConvertColorToHexa(Color32 _color) {
+        //We use Color32 because ToString("x") is not working with Color.
+        string colorS = _color.ToString("x");
+        colorS = colorS.Replace("RGBA(", " ");
+        colorS = colorS.Replace(")", " ");
+        colorS = colorS.Replace(" ", "");
+        string[] colorRGBA = colorS.Split(',');
+        for (int i = 0; i < colorRGBA.Length; ++i) {
+            if (colorRGBA[i].Length == 1) {
+                colorRGBA[i] = "0" + colorRGBA[i];
+            }
+
+        }
+        if (colorRGBA.Length >= 4)
+            return "#" + colorRGBA[0] + colorRGBA[1] + colorRGBA[2] + colorRGBA[3];
+        else
+            return "#" + colorRGBA[0] + colorRGBA[1] + colorRGBA[2];
+    }
+    public static string ConvertTextureToHexa(Texture2D _texture2D) {
+        try {
+            Color32 _color = _texture2D.GetPixel(1, 1);
+            //We use Color32 because ToString("x") is not working with Color.
+            string colorS = _color.ToString("x");
+            colorS = colorS.Replace("RGBA(", " ");
+            colorS = colorS.Replace(")", " ");
+            colorS = colorS.Replace(" ", "");
+            string[] colorRGBA = colorS.Split(',');
+            for (int i = 0; i < colorRGBA.Length; ++i) {
+                if (colorRGBA[i].Length == 1)
+                    colorRGBA[i] = "0" + colorRGBA[i];
+            }
+
+            if (colorRGBA.Length >= 4)
+                return "#" + colorRGBA[0] + colorRGBA[1] + colorRGBA[2] + colorRGBA[3];
+            else
+                return "#" + colorRGBA[0] + colorRGBA[1] + colorRGBA[2];
+        } catch (System.Exception) {
+            Debug.LogWarning("An error occured importing a texture. Texture changed to White color");
+            return "#FFFFFFFF";
+        }
+    }
+    public static Color ConvertHexaToColor(string _value) {
+        Color c = new Color();
+
+        // parse string color
+        if (!_value.StartsWith("#") || (_value.Length != 7 && _value.Length != 9))
+            throw new System.ArgumentException("Hexa color not start with # or not have good length : " + c);
+
+        // remove # start
+        string color = _value.Substring(1);
+        c.r = System.Int32.Parse(color.Substring(0, 2), System.Globalization.NumberStyles.HexNumber) / 255f;
+        c.g = System.Int32.Parse(color.Substring(2, 2), System.Globalization.NumberStyles.HexNumber) / 255f;
+        c.b = System.Int32.Parse(color.Substring(4, 2), System.Globalization.NumberStyles.HexNumber) / 255f;
+        c.a = (_value.Length == 9) ? System.Int32.Parse(color.Substring(6, 2), System.Globalization.NumberStyles.HexNumber) / 255f : 1;
+        return c;
+    }
+    public static Color ConvertTextureToColor(Texture2D _texture2D) {
+        try {
+            return _texture2D.GetPixel(1, 1);
+        } catch (System.Exception) {
+            Debug.LogWarning("An error occured importing a texture. Texture changed to White color");
+            return Color.white;
+        }
+    }
+    public static Texture2D ConvertHexaToTexture(string _value, int _x = 1, int _y = 1) {
+        return ConvertColorToTexture(ConvertHexaToColor(_value), _x, _y);
+    }
+    public static Texture2D ConvertColorToTexture(Color _color, int _x = 1, int _y = 1) {
+        // make texture2d with parsed color
+        Texture2D retour = new Texture2D(_x, _y);
+
+        Color[] colors = new Color[_x * _y];
+
+        for (int i = 0; i < _x; i++)
+            for (int j = 0; j < _y; j++)
+                colors[j * _x + i] = _color;
+
+        retour.SetPixels(colors);
+        retour.Apply();
+
+        // return it
+        return retour;
+    }
+    
+
     /** GameObjects
 	*/
 	public static void SetLayerRecursively(Transform _parent, LayerMask _layer) {

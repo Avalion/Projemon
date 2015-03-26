@@ -1,5 +1,7 @@
 ﻿/**
  * This abstract class patterns the differents Actions a MapObject can launch.
+ * 
+ *  /!\ Actions have to be terminated
  */
 public abstract class MapObjectAction {
     public int actionId;

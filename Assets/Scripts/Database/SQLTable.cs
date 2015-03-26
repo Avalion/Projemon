@@ -27,7 +27,7 @@ public abstract class SQLTable {
             return "'" + SQLEscape((string)s) + "'";
         // Bool
         if (s.GetType() == typeof(bool))
-            return (bool)s ? "1" : "0"; 
+            return (bool)s ? "1" : "0";
 
         return s.ToString();
     }

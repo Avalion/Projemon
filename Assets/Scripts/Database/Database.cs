@@ -40,8 +40,7 @@ public class DataBase {
     private static void CheckVersion() {
         DBSystem system = SelectUnique<DBSystem>();
 
-        if (system.dbversion < 1)
-            V0toV1();
+        if (system.dbversion < 1) V0toV1();
 
         Update<DBSystem>("dbversion", CURRENT_DB_VERSION, "id=" + system.ID);
     }

@@ -64,7 +64,7 @@ public class MonsterKreator : EditorWindow {
     public void OnGUI() {
         GUILayout.BeginHorizontal();
         GUILayout.BeginVertical(GUILayout.Width(150));
-        int value = EditorUtility.DisplayList<DBMonsterPattern>(selectedElement, elements, ref _scrollPosList);
+        int value = UtilityEditor.DisplayList<DBMonsterPattern>(selectedElement, elements, ref _scrollPosList);
         if (selectedElement != value) {
             Select(value);
         }
@@ -251,7 +251,7 @@ public class MonsterKreator : EditorWindow {
                     mp.attackLevelUp.Add(new DBMonsterPattern.AttackLevelUp() { attack = attackList[0], lvl = 0 });
                 GUILayout.EndHorizontal();
 
-                List<string> attackListString = EditorUtility.ToStringList<DBAttack>(attackList);
+                List<string> attackListString = UtilityEditor.ToStringList<DBAttack>(attackList);
 
                 foreach (DBMonsterPattern.AttackLevelUp a in mp.attackLevelUp) {
                     GUILayout.BeginHorizontal();

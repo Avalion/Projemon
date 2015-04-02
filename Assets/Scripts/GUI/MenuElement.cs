@@ -9,7 +9,23 @@ public class MenuElement {
     public delegate void MenuAction();
     public MenuAction action = null;
 
-    public MenuElement(MenuElement.Type _type = Type.Space, object _value = null, MenuElement.MenuAction _action = null) {
+    // Macros
+    public static MenuElement FlexibleSpace() {
+        return new MenuElement();
+    }
+    public static MenuElement Space(int value) {
+        return new MenuElement(Type.Space, value);
+    }
+    public static MenuElement Label(string value) {
+        return new MenuElement(Type.Label, value);
+    }
+    public static MenuElement Button(GUIContent value, MenuAction _action) {
+        return new MenuElement(Type.Button, value, _action);
+    }
+    
+
+
+    private MenuElement(MenuElement.Type _type = Type.Space, object _value = null, MenuElement.MenuAction _action = null) {
         type = _type;
         value = _value;
         action = _action;
@@ -27,7 +43,7 @@ public class MenuElement {
                 GUILayout.Label((string)value, active ? World.Current.InterfaceResources.menuElementStyle : World.Current.InterfaceResources.menuElementActiveStyle);
                 break;
             case Type.Button:
-                if (GUILayout.Button((string)value, active ? World.Current.InterfaceResources.menuElementStyle : World.Current.InterfaceResources.menuElementActiveStyle) && action != null)
+                if (GUILayout.Button((GUIContent)value, active ? World.Current.InterfaceResources.menuElementStyle : World.Current.InterfaceResources.menuElementActiveStyle) && action != null)
                     action();
                 break;
         }

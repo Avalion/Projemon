@@ -21,7 +21,8 @@ public class Map {
     public List<MapObject> mapObjects = new List<MapObject>();
 
     public string name;
-    public Vector2 size = new Vector2(32, 18);
+    private Vector2 _size = new Vector2(MAP_SCREEN_X, MAP_SCREEN_Y);
+    public Vector2 Size { get { return _size; }}
 
     public List<Tile> tiles = new List<Tile>();
     public bool[,] collisions;
@@ -58,9 +59,7 @@ public class Map {
     public Map(int _id) {
         this.ID = _id;
 
-        size = new Vector2(32, 18);
-
-        collisions = new bool[(int)size.x, (int)size.y];
+        SetSize(50, 30);
 
         Import();
 
@@ -80,12 +79,23 @@ public class Map {
     public void SortTiles() {
         tiles.Sort(delegate(Tile x, Tile y) { return x.layer.CompareTo(y.layer); });
     }
-    
+
+    public void SetSize(int width, int height) {
+        _size = new Vector2(width, height);
+        //TODO : Set Tiles and Collisions !
+        tiles = new List<Tile>();
+        collisions = new bool[(int)Size.x, (int)Size.y];
+
+    }
+
     public Tile GetTile(int layer, int x, int y) {
         return tiles.Find(T => T.mapCoords.x == x && T.mapCoords.y == y && T.layer == layer);
     }
     public List<Tile> GetTiles(int layer) {
         return tiles.FindAll(T => T.layer == layer);
+    }
+    public List<Tile> GetTiles(int layer, Vector2 minPos) {
+        return tiles.FindAll(T => T.layer == layer && T.mapCoords.x >= minPos.x && T.mapCoords.x < minPos.x + MAP_SCREEN_X && T.mapCoords.y >= minPos.y && T.mapCoords.y < minPos.y + MAP_SCREEN_Y);
     }
 
     public override string ToString() {
@@ -107,10 +117,10 @@ public class Map {
         sw.WriteLine("- Map " + InterfaceUtility.IntString(ID, 4) + " -");
         sw.WriteLine("------------");
         sw.WriteLine(name);
-        sw.WriteLine(size.x + ";" + size.y);
+        sw.WriteLine(_size.x + ";" + _size.y);
         sw.WriteLine();
 
-        List<Tile> toExport = tiles.FindAll(T => T.mapCoords.x < size.x && T.mapCoords.y < size.y);
+        List<Tile> toExport = tiles.FindAll(T => T.mapCoords.x < _size.x && T.mapCoords.y < _size.y);
         sw.WriteLine(toExport.Count);
         foreach (Tile i in toExport) {
             sw.WriteLine(i.mapCoords.x + "#" + i.mapCoords.y + "#" + i.layer + "#" + i.originTile + "#" + i.originTileCoords.x + "#" + i.originTileCoords.y);
@@ -118,8 +128,8 @@ public class Map {
         sw.WriteLine();
 
         sw.WriteLine(collisions.Length);
-        for (int i = 0; i < size.x; i++)
-            for (int j= 0; j < size.y; j++)
+        for (int i = 0; i < _size.x; i++)
+            for (int j= 0; j < _size.y; j++)
                 sw.WriteLine(i + "#" + j + "#" + collisions[i, j]);
         sw.WriteLine();
 
@@ -143,8 +153,8 @@ public class Map {
         name = sr.ReadLine();
         string line = sr.ReadLine();
         string[] values = line.Split(';');
-        size.x = int.Parse(values[0]);
-        size.y = int.Parse(values[1]);
+        _size.x = int.Parse(values[0]);
+        _size.y = int.Parse(values[1]);
 
         sr.ReadLine();
 
@@ -170,9 +180,9 @@ public class Map {
         line = sr.ReadLine();
 
         // Read collisions
-        collisions = new bool[(int)size.x, (int)size.y];
-        for (int i = 0; i < size.x; i++)
-            for (int j= 0; j < size.y; j++)
+        collisions = new bool[(int)_size.x, (int)_size.y];
+        for (int i = 0; i < _size.x; i++)
+            for (int j= 0; j < _size.y; j++)
                 collisions[i, j] = true;
             
         try {

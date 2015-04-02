@@ -97,7 +97,7 @@ public class BattleAnimationKreator : EditorWindow {
         GUILayout.BeginHorizontal();
         // List
         GUILayout.BeginVertical(GUILayout.Width(150));
-        int sel = EditorUtility.DisplayList<BattleAnimation>(selectedElement, elements, ref scrollPosList);
+        int sel = UtilityEditor.DisplayList<BattleAnimation>(selectedElement, elements, ref scrollPosList);
         if (sel != selectedElement) {
             Select(sel);
             currentFrame = 0;
@@ -258,15 +258,15 @@ public class BattleAnimationKreator : EditorWindow {
         foreach (BattleAnimation.ImageInstance i in current.instances.FindAll(I => I.frame == currentFrame)) {
             if (!isPlaying) {
                 if (i == selectedInstance)
-                    EditorUtility.DrawEmptyRect(MathUtility.ExtendRect(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), 2), InterfaceUtility.HexaToColor("#0000FFFF"), 2);
+                    UtilityEditor.DrawEmptyRect(MathUtility.ExtendRect(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), 2), InterfaceUtility.HexaToColor("#0000FFFF"), 2);
                 else
-                    EditorUtility.DrawEmptyRect(MathUtility.ExtendRect(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), 1), InterfaceUtility.HexaToColor("#4444FFCC"), 1);
+                    UtilityEditor.DrawEmptyRect(MathUtility.ExtendRect(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), 1), InterfaceUtility.HexaToColor("#4444FFCC"), 1);
             }
             i.Display(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)));
         }
         if (!isPlaying && displayPrecedent) {
             foreach (BattleAnimation.ImageInstance i in current.instances.FindAll(I => I.frame == currentFrame - 1)) {
-                EditorUtility.DrawEmptyRect(MathUtility.ExtendRect(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), 1), InterfaceUtility.HexaToColor("#CCCCFF44"), 1);
+                UtilityEditor.DrawEmptyRect(MathUtility.ExtendRect(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), 1), InterfaceUtility.HexaToColor("#CCCCFF44"), 1);
                 
                 i.Display(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), i.alpha * 0.3f);
             }

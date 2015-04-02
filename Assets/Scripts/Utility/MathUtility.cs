@@ -51,4 +51,12 @@ public class MathUtility {
         return TestProbability(value / 100f);
     }
 
+
+
+    public static float Lerp {
+        get { return Mathf.Cos(Time.time) / 2f + 0.5f; }
+    }
+    public static float Lerp2 {
+        get { return Mathf.Cos(Time.time); }
+    }
 }

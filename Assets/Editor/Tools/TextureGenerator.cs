@@ -45,7 +45,7 @@ class TextureGenerator : EditorWindow {
 
         AssetDatabase.Refresh();
         
-        t = EditorUtility.LoadAssetAtPath<Texture2D>("Assets/" + assetPath);
+        t = UtilityEditor.LoadAssetAtPath<Texture2D>("Assets/" + assetPath);
         EditorGUIUtility.PingObject(t);
     }
 }

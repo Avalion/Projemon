@@ -4,7 +4,7 @@ using System.Collections.Generic;
 /**
  * this class is a MapObject to work on monster collection
  */
-//public class Computer : IDisplayable {
+public class Computer : MapObject {
 //    public static Rect DISPLAY_POSITION_GENERAL = new Rect(1,0,0.1f,0.3f);
 //    public static Rect DISPLAY_POSITION_MONSTERS = new Rect(0.1f, 0.1f, 0.9f, 0.9f);
 //    public static Rect DISPLAY_POSITION_PLAYERMONSTERS = new Rect(0.7f, 0.5f, 0.2f, 0.4f);
@@ -17,13 +17,7 @@ using System.Collections.Generic;
 //    private Vector2 scrollPos = Vector2.zero;
 
 //    // Sort
-//    private enum SortMode { NULL, Name, Type }
-//    private static SortMode sortMode = SortMode.NULL;
     
-//    private static Monster.Type sortTypeValue = Monster.Type.Water;
-//    private static char sortCharValue = 'a';
-
-
 //    public void OnGUI() {
 //        switch (currentPage) {
 //            case MenuPage.General: 
@@ -202,4 +196,4 @@ using System.Collections.Generic;
 
 //        displayableList.Sort(delegate(Monster m1, Monster m2) { return m1.monsterPattern.name.CompareTo(m1.monsterPattern.name); });
 //    }
-//}
+}

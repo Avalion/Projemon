@@ -43,6 +43,11 @@ public class MapKreator : EditorWindow {
     
     bool forceMode = false;
 
+    private Vector2 currentMapSize;
+
+    private Vector2 mapScrollPos = Vector2.zero;
+
+
     // Launch
     [MenuItem("Creation/Maps &L")]
     public static void Init() {
@@ -69,6 +74,8 @@ public class MapKreator : EditorWindow {
         }
 
         window.InitStyles();
+
+        window.saved = false;
     }
 
     public void InitStyles() {
@@ -109,7 +116,7 @@ public class MapKreator : EditorWindow {
         GUILayout.BeginHorizontal();
         // List
         GUILayout.BeginVertical(GUILayout.Width(150));
-        int sel = EditorUtility.DisplayList<Map>(selectedElement, elements, ref scrollPosList);
+        int sel = UtilityEditor.DisplayList<Map>(selectedElement, elements, ref scrollPosList);
         if (sel != selectedElement) {
             selectedElement = sel;
         }
@@ -164,11 +171,32 @@ public class MapKreator : EditorWindow {
         GUILayout.BeginVertical();
         DisplayCanvas();
         GUILayout.EndVertical();
+        // Count the scroll bar (isn't in layout) !
+        GUILayout.Space(20);
 
         // Images
         GUILayout.BeginVertical();
         if (elements.Count > 0 && selectedElement >= 0) {
             current.name = EditorGUILayout.TextField("Name", current.name);
+            
+            // Check return event before Unity Text because it use the KeyDown Event
+            if ((GUI.GetNameOfFocusedControl() == "EditorMapSizeX" || GUI.GetNameOfFocusedControl() == "EditorMapSizeY") && Event.current.type == EventType.KeyDown && (Event.current.keyCode == KeyCode.KeypadEnter || Event.current.keyCode == KeyCode.Return) && currentMapSize != current.Size) {
+                current.SetSize((int)currentMapSize.x, (int)currentMapSize.y);
+            }
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Size : ");
+            GUILayout.Label("X");
+            GUI.SetNextControlName("EditorMapSizeX");
+            currentMapSize.x = Mathf.Max(EditorGUILayout.IntField((int)currentMapSize.x), Map.MAP_SCREEN_X);
+            GUILayout.Label("Y");
+            GUI.SetNextControlName("EditorMapSizeY");
+            currentMapSize.y = Mathf.Max(EditorGUILayout.IntField((int)currentMapSize.y), Map.MAP_SCREEN_Y);
+            if (GUILayout.Button("Apply"))
+                current.SetSize((int)currentMapSize.x, (int)currentMapSize.y);
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(10);
 
             GUILayout.BeginHorizontal();
             currentLayer = EditorGUILayout.IntSlider(currentLayer, 0, 4);
@@ -223,9 +251,6 @@ public class MapKreator : EditorWindow {
                     if (mo == null && World.Current.startMapID == current.ID && World.Current.startPlayerCoords == selectedCoords)
                         mo = Player.Current;
                     
-                    // calc the optionsRect to don't overview the canvas
-                    Vector2 resolution = new Vector2(canvasRect.width / (float)Map.MAP_SCREEN_X, canvasRect.height / (float)Map.MAP_SCREEN_Y);
-                    
                     GUILayout.BeginVertical();
                     GUI.enabled = mo != Player.Current;
                     if (GUILayout.Button(mo != null ? "Editer" : "Créer")) {
@@ -266,13 +291,7 @@ public class MapKreator : EditorWindow {
         GUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
         if (GUILayout.Button("OK")) {
-            SystemDatas.SetMaps(elements);
-
-            foreach (Map map in toDestroy)
-                foreach (MapObject mo in map.mapObjects)
-                    DataBase.SelectById<DBMapObject>(mo.mapObjectId).Delete();
-            toDestroy.Clear();    
-            Close();
+            Dispose();
         }
         GUILayout.EndHorizontal();
 
@@ -284,8 +303,28 @@ public class MapKreator : EditorWindow {
         CanvasEvents(canvasRect);
     }
 
+    // Close
+    public bool saved = false;
+    public void Save() {
+        SystemDatas.SetMaps(elements);
+
+        foreach (Map map in toDestroy)
+            foreach (MapObject mo in map.mapObjects)
+                DataBase.SelectById<DBMapObject>(mo.mapObjectId).Delete();
+        toDestroy.Clear();
+    }
+    public void Dispose() {
+        Save();
+        saved = true;
+        Close();
+    }
+    public void OnDestroy() {
+        if (!saved && !EditorUtility.DisplayDialog("Modifications ?", "Les modifications appliquées dans cet outil n'ont pas été sauvegardées. Pour ne pas avoir ce message, veuillez utilisez le bouton \"OK\" en bas de l'interface.", "Ne pas sauvegarder", "Sauvegarder"))
+            Save();
+    }
+
     public void DisplayCanvas() {
-        canvasRect = GUILayoutUtility.GetRect((Screen.width - 150) * 0.75f, Screen.height - 60);
+        canvasRect = GUILayoutUtility.GetRect((Screen.width - 150) * 0.75f - 20, Screen.height - 80);
 
         // Box
         canvasRect = MathUtility.ExtendRect(canvasRect, -4);
@@ -312,21 +351,21 @@ public class MapKreator : EditorWindow {
                 if (!displayAllLayers && layer > currentLayer)
                     break;
 
-                foreach (Map.Tile tile in current.GetTiles(layer)) {
+                foreach (Map.Tile tile in current.GetTiles(layer, mapScrollPos)) {
                     if (tile.Image != null) {
                         Color c = GUI.color;
                         GUI.color = new Color(c.r, c.g, c.b, layer <= currentLayer ? 1 : 0.3f);
-                        
-                        GUI.DrawTexture(new Rect(resolution.x * tile.mapCoords.x, resolution.y * tile.mapCoords.y, resolution.x, resolution.y), tile.Image);
+
+                        GUI.DrawTexture(new Rect(resolution.x * (tile.mapCoords.x - (int)mapScrollPos.x), resolution.y * (tile.mapCoords.y - (int)mapScrollPos.y), resolution.x, resolution.y), tile.Image);
                         GUI.color = c;
                     }
                 }
             }
             // Collision 
             if (currentLayer == 3) {
-                for (int i = 0; i < Map.MAP_SCREEN_X; i++)
-                    for (int j = 0; j < Map.MAP_SCREEN_Y; j++)
-                        if (GUI.Button(new Rect(i * resolution.x, j * resolution.y, resolution.x, resolution.y), current.collisions[i, j] ? "O" : "X", InterfaceUtility.CenteredStyle)) {
+                for (int i = (int)mapScrollPos.x; i < (int)mapScrollPos.x + Map.MAP_SCREEN_X; i++)
+                    for (int j = (int)mapScrollPos.y; j < (int)mapScrollPos.y + Map.MAP_SCREEN_Y; j++) {
+                        if (GUI.Button(new Rect((i - (int)mapScrollPos.x) * resolution.x, (j - (int)mapScrollPos.y) * resolution.y, resolution.x, resolution.y), current.collisions[i, j] ? "O" : "X", InterfaceUtility.CenteredStyle)) {
                             if (Event.current.control) {
                                 Map.Tile reftile = current.tiles.Find(T => T.mapCoords.x == i && T.mapCoords.y == j && T.layer == 0);
                                 if (reftile != null) {
@@ -336,15 +375,15 @@ public class MapKreator : EditorWindow {
                             }
                             current.collisions[i, j] = !current.collisions[i, j];
                         }
-
+                    }
                 if (drawRectMode && isDragging)
                     EditorGUI.DrawRect(new Rect(startDragMousePosition.x, startDragMousePosition.y, Event.current.mousePosition.x - startDragMousePosition.x, Event.current.mousePosition.y - startDragMousePosition.y), new Color(0,0,0,0.5f));
             }
             // Events
             if (currentLayer == 4) {
-                for (int i = 0; i < Map.MAP_SCREEN_X; i++)
-                    for (int j = 0; j < Map.MAP_SCREEN_Y; j++) {
-                        Rect caseRect = new Rect(i * resolution.x, j * resolution.y, resolution.x, resolution.y);
+                for (int i = (int)mapScrollPos.x; i < (int)mapScrollPos.x + Map.MAP_SCREEN_X; i++)
+                    for (int j = (int)mapScrollPos.y; j < (int)mapScrollPos.y + Map.MAP_SCREEN_Y; j++) {
+                        Rect caseRect = new Rect((i - (int)mapScrollPos.x) * resolution.x, (j - (int)mapScrollPos.y) * resolution.y, resolution.x, resolution.y);
 
                         // check if there is a MO on the case
                         MapObject mo = current.mapObjects.Find(MO => MO.mapCoords == new Vector2(i, j));
@@ -354,9 +393,9 @@ public class MapKreator : EditorWindow {
                                 selectedCoords = new Vector2(i, j);
 
                             // Square border
-                            EditorUtility.DrawSquare(caseRect, 3, new Color(0, 0, 0, 0.7f));
+                            UtilityEditor.DrawSquare(caseRect, 3, new Color(0, 0, 0, 0.7f));
                             // Square
-                            EditorUtility.DrawSquare(new Rect(caseRect.x + 1, caseRect.y + 1, caseRect.width - 2, caseRect.height - 2), 1, new Color(0.7f, 0.7f, 0.7f, 1));
+                            UtilityEditor.DrawSquare(new Rect(caseRect.x + 1, caseRect.y + 1, caseRect.width - 2, caseRect.height - 2), 1, new Color(0.7f, 0.7f, 0.7f, 1));
                         } else {
                             // Else, display nothing
                             if (GUI.Button(caseRect, "", InterfaceUtility.CenteredStyle) && Event.current.button == 0)
@@ -365,38 +404,38 @@ public class MapKreator : EditorWindow {
                     }
 
                 // Player start pos
-                if (World.Current.startMapID == current.ID) {
-                    Rect playerRect = new Rect(World.Current.startPlayerCoords.x * resolution.x, World.Current.startPlayerCoords.y * resolution.y, resolution.x, resolution.y);
+                if (World.Current.startMapID == current.ID && IsVisible(World.Current.startPlayerCoords)) {
+                    Rect playerRect = new Rect((World.Current.startPlayerCoords.x - (int)mapScrollPos.x) * resolution.x, (World.Current.startPlayerCoords.y - (int)mapScrollPos.y) * resolution.y, resolution.x, resolution.y);
 
                     // bg
                     EditorGUI.DrawRect(playerRect, new Color(0.2f, 0.2f, 0.2f, 0.7f));
                     // Square border
-                    EditorUtility.DrawSquare(playerRect, 3, new Color(0, 0, 0, 0.7f));
+                    UtilityEditor.DrawSquare(playerRect, 3, new Color(0, 0, 0, 0.7f));
                     // Square
-                    EditorUtility.DrawSquare(new Rect(playerRect.x + 1, playerRect.y + 1, playerRect.width - 2, playerRect.height - 2), 1, new Color(0.7f, 0.7f, 0.7f, 1));
+                    UtilityEditor.DrawSquare(new Rect(playerRect.x + 1, playerRect.y + 1, playerRect.width - 2, playerRect.height - 2), 1, new Color(0.7f, 0.7f, 0.7f, 1));
 
                     GUI.Label(playerRect, "S", InterfaceUtility.CenteredStyle);
                 }
 
                 if (selectedCoords != -Vector2.one) {
-                    Rect caseRect = new Rect(selectedCoords.x * resolution.x, selectedCoords.y * resolution.y, resolution.x, resolution.y);
+                    Rect caseRect = new Rect((selectedCoords.x - (int)mapScrollPos.x) * resolution.x, (selectedCoords.y - (int)mapScrollPos.y) * resolution.y, resolution.x, resolution.y);
                     // Square border
-                    EditorUtility.DrawSquare(caseRect, 3, new Color(0, 0, 0, 0.7f));
+                    UtilityEditor.DrawSquare(caseRect, 3, new Color(0, 0, 0, 0.7f));
                     // Square
-                    EditorUtility.DrawSquare(new Rect(caseRect.x + 1, caseRect.y + 1, caseRect.width - 2, caseRect.height - 2), 1, new Color(1, 1, 1, 1f));
+                    UtilityEditor.DrawSquare(new Rect(caseRect.x + 1, caseRect.y + 1, caseRect.width - 2, caseRect.height - 2), 1, new Color(1, 1, 1, 1f));
                 }
 
                 if (isDragging) {
-                    Vector2 currentCoords = new Vector2(Mathf.Clamp((int)((Event.current.mousePosition.x) / resolution.x), 0, (int)current.size.x), Mathf.Clamp((int)((Event.current.mousePosition.y) / resolution.y), 0, (int)current.size.y));
+                    Vector2 currentCoords = new Vector2(Mathf.Clamp((int)((Event.current.mousePosition.x) / resolution.x), 0, (int)current.Size.x), Mathf.Clamp((int)((Event.current.mousePosition.y) / resolution.y), 0, (int)current.Size.y)) + mapScrollPos;
 
                     // check if there is a MO on the case
                     MapObject mo = current.mapObjects.Find(MO => MO.mapCoords != currentCoords);
                     if (mo == null) {
                         Rect caseRect = new Rect(currentCoords.x * resolution.x, currentCoords.y * resolution.y, resolution.x, resolution.y);
                         // Square border
-                        EditorUtility.DrawSquare(caseRect, 4, new Color(0, 0, 0, 0.7f));
+                        UtilityEditor.DrawSquare(caseRect, 4, new Color(0, 0, 0, 0.7f));
                         // Square
-                        EditorUtility.DrawSquare(new Rect(caseRect.x + 1, caseRect.y + 1, caseRect.width - 2, caseRect.height - 2), 2, new Color(1, 1, 1, 0.7f));
+                        UtilityEditor.DrawSquare(new Rect(caseRect.x + 1, caseRect.y + 1, caseRect.width - 2, caseRect.height - 2), 2, new Color(1, 1, 1, 0.7f));
                     }
                 }
             }
@@ -406,30 +445,38 @@ public class MapKreator : EditorWindow {
             }
         }
 
-
-        int x = Mathf.Clamp((int)((Event.current.mousePosition.x) / resolution.x), 0, (int)current.size.x);
-        int y = Mathf.Clamp((int)((Event.current.mousePosition.y) / resolution.y), 0, (int)current.size.y);
+        int x = Mathf.Clamp((int)((Event.current.mousePosition.x) / resolution.x) + (int)mapScrollPos.x, 0, (int)current.Size.x);
+        int y = Mathf.Clamp((int)((Event.current.mousePosition.y) / resolution.y) + (int)mapScrollPos.y, 0, (int)current.Size.y);
             
         GUI.Label(new Rect(0, 0, 70, 20), "X: " + x + " Y: " + y, posDisplayStyle);
 
         GUI.EndGroup();
+
+        mapScrollPos.x = Mathf.RoundToInt(GUI.HorizontalScrollbar(new Rect(canvasRect.x, canvasRect.y + canvasRect.height + 2, canvasRect.width, 20), mapScrollPos.x, 1, 0, current.Size.x - Map.MAP_SCREEN_X + 1));
+        mapScrollPos.y = Mathf.RoundToInt(GUI.VerticalScrollbar(new Rect(canvasRect.x + canvasRect.width + 2, canvasRect.y, 20, canvasRect.height), mapScrollPos.y, 1, 0, current.Size.y - Map.MAP_SCREEN_Y + 1));
     }
     private void CanvasEvents(Rect _rect) {
         /** Keyboard Events
          */
         if (Event.current.type == EventType.KeyDown) {
-            if (Event.current.keyCode == KeyCode.LeftArrow) {
-                selectedCoords.x = Mathf.Max(0, selectedCoords.x - 1);
+            if (selectedCoords != -Vector2.one) {
+                if (Event.current.keyCode == KeyCode.LeftArrow)
+                    selectedCoords.x = Mathf.Max(0, selectedCoords.x - 1);
+                if (Event.current.keyCode == KeyCode.RightArrow)
+                    selectedCoords.x = Mathf.Min(current.Size.x - 1, selectedCoords.x + 1);
+                if (Event.current.keyCode == KeyCode.UpArrow)
+                    selectedCoords.y = Mathf.Max(0, selectedCoords.y - 1);
+                if (Event.current.keyCode == KeyCode.DownArrow)
+                    selectedCoords.y = Mathf.Min(current.Size.y - 1, selectedCoords.y + 1);
+
+                if (selectedCoords.x < mapScrollPos.x)                    mapScrollPos.x = selectedCoords.x;
+                if (selectedCoords.y < mapScrollPos.y)                    mapScrollPos.y = selectedCoords.y;
+                if (selectedCoords.x > mapScrollPos.x + Map.MAP_SCREEN_X) mapScrollPos.x = selectedCoords.x - Map.MAP_SCREEN_X;
+                if (selectedCoords.y > mapScrollPos.y + Map.MAP_SCREEN_Y) mapScrollPos.y = selectedCoords.y - Map.MAP_SCREEN_Y;
             }
-            if (Event.current.keyCode == KeyCode.RightArrow) {
-                selectedCoords.x = Mathf.Min(current.size.x - 1, selectedCoords.x + 1);
-            }
-            if (Event.current.keyCode == KeyCode.UpArrow) {
-                selectedCoords.y = Mathf.Max(0, selectedCoords.y - 1);
-            }
-            if (Event.current.keyCode == KeyCode.DownArrow) {
-                selectedCoords.y = Mathf.Min(current.size.y - 1, selectedCoords.y + 1);
-            }
+
+            if (Event.current.keyCode == KeyCode.Escape)
+                selectedCoords = -Vector2.one;
         }
 
         if (Event.current.type == EventType.KeyDown) {
@@ -516,7 +563,7 @@ public class MapKreator : EditorWindow {
         for (int j = -1; j <= 1; ++j) {
             if (i == 0 && j == 0)
                 continue;
-            if (x + j < 0 || y + i < 0 || x + j >= current.size.x || y + i >= current.size.y) {
+            if (x + j < 0 || y + i < 0 || x + j >= current.Size.x || y + i >= current.Size.y) {
                 l[count] = true;
                 count++;
                 continue;
@@ -678,7 +725,7 @@ public class MapKreator : EditorWindow {
         if (contagious) {
             for (int i = 1; i >= -1; --i)
                 for (int j = -1; j <= 1; ++j) {
-                    if ((i == 0 && j == 0) || x + j < 0 || y + i < 0 || x + j >= current.size.x || y + i >= current.size.y)
+                    if ((i == 0 && j == 0) || x + j < 0 || y + i < 0 || x + j >= current.Size.x || y + i >= current.Size.y)
                         continue;
 
                     Map.Tile tile = current.GetTile(layer, x + j, y + i);
@@ -714,7 +761,7 @@ public class MapKreator : EditorWindow {
         if (contagious) {
             for (int i = 1; i >= -1; --i)
             for (int j = -1; j <= 1; ++j) {
-                if ((i == 0 && j == 0) || x + j < 0 || y + i < 0 || x + j >= current.size.x || y + i >= current.size.y)
+                if ((i == 0 && j == 0) || x + j < 0 || y + i < 0 || x + j >= current.Size.x || y + i >= current.Size.y)
                     continue;
 
                 Map.Tile tile = current.GetTile(layer, x + j, y + i);
@@ -740,6 +787,14 @@ public class MapKreator : EditorWindow {
     public void Select(int _select) {
         selectedElement = _select;
 
+        mapScrollPos = Vector2.zero;
+
         World.Current.currentMap = elements[selectedElement];
+
+        currentMapSize = current.Size;
+    }
+
+    private bool IsVisible(Vector2 coords) {
+        return coords.x >= mapScrollPos.x && coords.x < mapScrollPos.x + Map.MAP_SCREEN_X && coords.y >= mapScrollPos.y && coords.y < mapScrollPos.y + Map.MAP_SCREEN_Y;
     }
 }

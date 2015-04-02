@@ -5,7 +5,7 @@ using System.Collections.Generic;
 /**
  * This class provides some useful functions
  */
-public class EditorUtility {
+public class UtilityEditor {
     /**
      *  GUI
      */

@@ -45,7 +45,7 @@ public class AttackKreator : EditorWindow {
     public void OnGUI() {
         GUILayout.BeginHorizontal();
         GUILayout.BeginVertical(GUILayout.Width(150));
-        int value = EditorUtility.DisplayList<DBAttack>(selectedElement, elements, ref _scrollPosList);
+        int value = UtilityEditor.DisplayList<DBAttack>(selectedElement, elements, ref _scrollPosList);
         if (selectedElement != value) {
             Select(value);
         }

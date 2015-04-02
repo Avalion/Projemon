@@ -1,47 +1,39 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Menu : IDisplayable {
+public class Menu {
     // Current is the menu with the focus
-    private static Menu Current = null;
+    public static Menu Current = null;
 
 
     // References
     public Menu parent = null;
-    private Vector2 selected;
 
-    // Display
-    public bool show;
+    private MenuDisplay display;
 
     public List<List<MenuElement>> elements = new List<List<MenuElement>>();
 
     public Rect position;
 
-    // Private
-    private Rect cursorPosition;
-
-
-
+    
     // Constructors
     public void Open(bool focus = true) {
-        show = true;
+        display = new GameObject("Menu").AddComponent<MenuDisplay>();
+        display.menu = this;
 
-        selected = GetFirstElementIndex();
+        display.selected = GetFirstElementIndex();
 
         if (focus) 
             Current = this;
     }
     public void Close() {
-        show = false;
+        GameObject.Destroy(display.gameObject);
 
         if (Current == this && parent != null)
             Current = parent;
     }
 
-    // Elements gestion
-    public void Add(MenuElement.Type _type, object _value, MenuElement.MenuAction _action, int _column, int _row) {
-        Add(new MenuElement(_type, _value, _action), _column, _row);
-    }
+    // Elements gestion 
     public void Add(MenuElement element, int _row, int _column) {
         while (elements.Count < _row)
             elements.Add(new List<MenuElement>());
@@ -81,22 +73,42 @@ public abstract class Menu : IDisplayable {
         return new Vector2(-1, -1);
     }
 
+    public void Clear() {
+        foreach (List<MenuElement> list in elements)
+            list.Clear();
+
+        elements.Clear();
+    }
+    public void Clear(int _row) {
+        elements[_row].Clear();
+    }
+}
+
+public class MenuDisplay : IDisplayable {
+    public Menu menu;
+
+    public Vector2 selected;
+
+    // Private
+    private Rect cursorPosition;
+
+
     // Display
     public override void Display() {
-        if (!show)
-            return;
-
-        GUILayout.BeginArea(position);
-        for (int row = 0; row < elements.Count; row++) {
-            if (elements[row].Count == 0)
+        GUILayout.BeginArea(menu.position);
+        for (int row = 0; row < menu.elements.Count; row++) {
+            if (menu.elements[row].Count == 0)
                 continue;
 
             GUILayout.BeginHorizontal();
-            for (int column = 0; column < elements[row].Count; column++) {
-                if (elements[row][column] == null)
+            for (int column = 0; column < menu.elements[row].Count; column++) {
+                if (menu.elements[row][column] == null)
                     continue;
 
-                elements[row][column].Display(selected == new Vector2(row, column));
+                menu.elements[row][column].Display(selected == new Vector2(row, column));
+
+                if (selected == new Vector2(row, column) && Menu.Current == menu && Event.current.type == EventType.Repaint)
+                    CalcCursorPos(GUILayoutUtility.GetLastRect());
             }
             GUILayout.EndHorizontal();
         }
@@ -107,32 +119,32 @@ public abstract class Menu : IDisplayable {
     public void Update() {
         if (InputManager.Current.GetKey(KeyCode.LeftArrow)) {
             int index = (int)selected.y - 1;
-            while (index > 0 && GetElement((int)selected.x, index) == null)
+            while (index > 0 && menu.GetElement((int)selected.x, index) == null)
                 --index;
             if (index != -1)
                 selected.y = index;
         } else if (InputManager.Current.GetKey(KeyCode.RightArrow)) {
             int index = (int)selected.y + 1;
-            while (index < elements[(int)selected.x].Count && GetElement((int)selected.x, index) == null)
+            while (index < menu.elements[(int)selected.x].Count && menu.GetElement((int)selected.x, index) == null)
                 --index;
             if (index != -1)
                 selected.y = index;
         } else if (InputManager.Current.GetKey(KeyCode.UpArrow)) {
             int index = (int)selected.x - 1;
-            while (index > 0 && (elements[index].Count == 0 || elements[index].Find(P => P != null) == null))
+            while (index > 0 && (menu.elements[index].Count == 0 || menu.elements[index].Find(P => P != null) == null))
                 --index;
             if (index != -1) {
                 selected.x = index;
-                if (GetElement((int)selected.x, (int)selected.y) == null) {
+                if (menu.GetElement((int)selected.x, (int)selected.y) == null) {
                     int indexmoins = (int)selected.x - 1;
                     int indexplus = (int)selected.x + 1;
-                    while (indexmoins > 0 && indexplus < elements[(int)selected.x].Count) {
-                        if (indexmoins > 0 && GetElement((int)selected.x, indexmoins) != null) {
+                    while (indexmoins > 0 && indexplus < menu.elements[(int)selected.x].Count) {
+                        if (indexmoins > 0 && menu.GetElement((int)selected.x, indexmoins) != null) {
                             selected.y = indexmoins;
                             break;
                         }
                         --indexmoins;
-                        if (indexplus < elements[(int)selected.x].Count && GetElement((int)selected.x, indexplus) != null) {
+                        if (indexplus < menu.elements[(int)selected.x].Count && menu.GetElement((int)selected.x, indexplus) != null) {
                             selected.y = indexplus;
                             break;
                         }
@@ -142,20 +154,20 @@ public abstract class Menu : IDisplayable {
             }
         } else if (InputManager.Current.GetKey(KeyCode.DownArrow)) {
             int index = (int)selected.x + 1;
-            while (index > 0 && (elements[index].Count == 0 || elements[index].Find(P => P != null) == null))
+            while (index > 0 && (menu.elements[index].Count == 0 || menu.elements[index].Find(P => P != null) == null))
                 ++index;
             if (index != -1) {
                 selected.x = index;
-                if (GetElement((int)selected.x, (int)selected.y) == null) {
+                if (menu.GetElement((int)selected.x, (int)selected.y) == null) {
                     int indexmoins = (int)selected.x - 1;
                     int indexplus = (int)selected.x + 1;
-                    while (indexmoins > 0 && indexplus < elements[(int)selected.x].Count) {
-                        if (indexmoins > 0 && GetElement((int)selected.x, indexmoins) != null) {
+                    while (indexmoins > 0 && indexplus < menu.elements[(int)selected.x].Count) {
+                        if (indexmoins > 0 && menu.GetElement((int)selected.x, indexmoins) != null) {
                             selected.y = indexmoins;
                             break;
                         }
                         --indexmoins;
-                        if (indexplus < elements[(int)selected.x].Count && GetElement((int)selected.x, indexplus) != null) {
+                        if (indexplus < menu.elements[(int)selected.x].Count && menu.GetElement((int)selected.x, indexplus) != null) {
                             selected.y = indexplus;
                             break;
                         }
@@ -167,15 +179,15 @@ public abstract class Menu : IDisplayable {
     }
 
     // Others
-    public Rect calcCursorPos(Rect _itemRect) {
+    public Rect CalcCursorPos(Rect _itemRect) {
         if (World.Current.InterfaceResources._cursor)
             Debug.LogWarning("no cursor defined");
 
         Vector2 cursorSize = new Vector2(World.Current.InterfaceResources._cursor.width, World.Current.InterfaceResources._cursor.height);
 
         cursorPosition = new Rect(
-                _itemRect.x + _itemRect.width - cursorSize.x * 0.4f,
-                _itemRect.y + _itemRect.height - cursorSize.y * 0.6f,
+                _itemRect.x + _itemRect.width - cursorSize.x * (0.4f + 0.1f * MathUtility.Lerp2),
+                _itemRect.y + _itemRect.height - cursorSize.y * (0.6f + 0.1f * MathUtility.Lerp2),
                 cursorSize.x,
                 cursorSize.y
             );

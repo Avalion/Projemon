@@ -445,8 +445,8 @@ public class MapKreator : EditorWindow {
             }
         }
 
-        int x = Mathf.Clamp((int)((Event.current.mousePosition.x) / resolution.x) + (int)mapScrollPos.x, 0, (int)current.Size.x);
-        int y = Mathf.Clamp((int)((Event.current.mousePosition.y) / resolution.y) + (int)mapScrollPos.y, 0, (int)current.Size.y);
+        int x = Mathf.Clamp((int)((Event.current.mousePosition.x) / resolution.x), 0, Map.MAP_SCREEN_X) + (int)mapScrollPos.x;
+        int y = Mathf.Clamp((int)((Event.current.mousePosition.y) / resolution.y), 0, Map.MAP_SCREEN_Y) + (int)mapScrollPos.y;
             
         GUI.Label(new Rect(0, 0, 70, 20), "X: " + x + " Y: " + y, posDisplayStyle);
 
@@ -454,6 +454,9 @@ public class MapKreator : EditorWindow {
 
         mapScrollPos.x = Mathf.RoundToInt(GUI.HorizontalScrollbar(new Rect(canvasRect.x, canvasRect.y + canvasRect.height + 2, canvasRect.width, 20), mapScrollPos.x, 1, 0, current.Size.x - Map.MAP_SCREEN_X + 1));
         mapScrollPos.y = Mathf.RoundToInt(GUI.VerticalScrollbar(new Rect(canvasRect.x + canvasRect.width + 2, canvasRect.y, 20, canvasRect.height), mapScrollPos.y, 1, 0, current.Size.y - Map.MAP_SCREEN_Y + 1));
+
+        if (!IsVisible(selectedCoords))
+            selectedCoords = -Vector2.one;
     }
     private void CanvasEvents(Rect _rect) {
         /** Keyboard Events
@@ -494,8 +497,8 @@ public class MapKreator : EditorWindow {
          */
         Vector2 resolution = new Vector2(_rect.width / (float)Map.MAP_SCREEN_X, _rect.height / (float)Map.MAP_SCREEN_Y);
 
-        int x = (int)((Event.current.mousePosition.x - _rect.x) / resolution.x);
-        int y = (int)((Event.current.mousePosition.y - _rect.y) / resolution.y);
+        int x = (int)((Event.current.mousePosition.x - _rect.x) / resolution.x) + (int)mapScrollPos.x;
+        int y = (int)((Event.current.mousePosition.y - _rect.y) / resolution.y) + (int)mapScrollPos.y;
 
         if (Event.current.type == EventType.MouseDown && Event.current.button == 0) {
             isDragging = true;
@@ -513,8 +516,8 @@ public class MapKreator : EditorWindow {
             #region Tiles
             if (isDraggingFinishing) {
                 if (drawRectMode) {
-                    int startx = (int)((startDragMousePosition.x - _rect.x) / resolution.x);
-                    int starty = (int)((startDragMousePosition.y - _rect.y) / resolution.y);
+                    int startx = (int)((startDragMousePosition.x - _rect.x) / resolution.x) + (int)mapScrollPos.x;
+                    int starty = (int)((startDragMousePosition.y - _rect.y) / resolution.y) + (int)mapScrollPos.y;
                     for (int i = (int)Mathf.Min(x, startx); i <= Mathf.Max(x, startx); i++) {
                         for (int j = (int)Mathf.Min(y, starty); j <= Mathf.Max(y, starty); j++) {
                             SetTile(currentLayer, i, j);
@@ -539,7 +542,7 @@ public class MapKreator : EditorWindow {
             #region MapObjects
             if (isDraggingFinishing) {
                 // check if there is a MO on the case
-                Vector2 currentCoords = new Vector2((int)((Event.current.mousePosition.x - _rect.x) / resolution.x), (int)((Event.current.mousePosition.y - _rect.y) / resolution.y));
+                Vector2 currentCoords = new Vector2(x, y);
                 MapObject mo = current.mapObjects.Find(MO => MO.mapCoords == currentCoords);
                 if (mo == null) {
                     mo = current.mapObjects.Find(MO => MO.mapCoords == selectedCoords);

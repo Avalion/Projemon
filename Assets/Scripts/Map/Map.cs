@@ -82,10 +82,18 @@ public class Map {
 
     public void SetSize(int width, int height) {
         _size = new Vector2(width, height);
-        //TODO : Set Tiles and Collisions !
-        tiles = new List<Tile>();
-        collisions = new bool[(int)Size.x, (int)Size.y];
 
+        if (tiles == null)
+            tiles = new List<Tile>();
+        else
+            tiles = tiles.FindAll(T => T.mapCoords.x < width && T.mapCoords.y < height);
+
+        bool[ , ] newcollisions = new bool[width, height];
+        for (int i = 0; i < width; i++)
+            for (int j= 0; j < height; j++)
+                newcollisions[i, j] = collisions != null && collisions.GetLength(0) < i && collisions.GetLength(1) > j ? collisions[i, j] : true;
+
+        collisions = newcollisions;
     }
 
     public Tile GetTile(int layer, int x, int y) {

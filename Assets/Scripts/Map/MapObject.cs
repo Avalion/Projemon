@@ -71,7 +71,7 @@ public class MapObject {
 
     [HideInInspector] public bool isMoving;
     [HideInInspector] public Vector2 currentMovement;
-    protected float lerp = 0;
+    [HideInInspector] public float lerp = 0;
 
     public List<MapObjectAction> actions = new List<MapObjectAction>();
     [HideInInspector] 
@@ -110,9 +110,12 @@ public class MapObject {
     }
 
     public void DisplayOnMap() {
+        Vector2 delta = (Player.Current.lerp * World.Current.m_scrolling);
+        delta = new Vector2(delta.x * Map.Resolution.x, delta.y * Map.Resolution.y);
+
         if (sprite != null) {
             float height = Sprite.height * (Map.Resolution.x / Sprite.width);
-            GUI.DrawTexture(new Rect(Map.Resolution.x * (mapCoords.x + currentMovement.x * lerp), Map.Resolution.y * (mapCoords.y + currentMovement.y * lerp + 1) - height + (isJumping ? Mathf.RoundToInt(Mathf.Sin(lerp * Mathf.PI) * Map.Resolution.y) : 0), Map.Resolution.x, height), Sprite);
+            GUI.DrawTexture(new Rect(Map.Resolution.x * (mapCoords.x + currentMovement.x * lerp - World.Current.m_coordsOffset.x) - delta.x, Map.Resolution.y * (mapCoords.y + currentMovement.y * lerp + 1 - World.Current.m_coordsOffset.y) - delta.y - height + (isJumping ? Mathf.RoundToInt(Mathf.Sin(lerp * Mathf.PI) * Map.Resolution.y) : 0), Map.Resolution.x, height), Sprite);
         }
     }
 

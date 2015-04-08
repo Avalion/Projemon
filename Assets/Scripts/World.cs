@@ -41,6 +41,12 @@ public class World : MonoBehaviour {
     [HideInInspector] public List<IDisplayable> haveToDisplay = new List<IDisplayable>();
 
 
+    // DisplayOptions
+    [HideInInspector] public Vector2 m_coordsOffset = Vector2.zero;
+    [HideInInspector] public Vector2 m_scrolling = Vector2.zero;
+    
+
+
     /* Initialize
      */
     public void Awake() {
@@ -119,6 +125,21 @@ public class World : MonoBehaviour {
             mo.OnUpdate();
 
         Player.Current.OnUpdate();
+        #endregion
+    }
+    public void LateUpdate() {
+        #region Map
+        Vector2 destination = Player.Current.mapCoords + Player.Current.currentMovement;
+        if (m_coordsOffset.x + m_scrolling.x > 0 && destination.x < m_coordsOffset.x + m_scrolling.x + 3) m_scrolling.x += -1;
+        if (m_coordsOffset.y + m_scrolling.y > 0 && destination.y < m_coordsOffset.y + m_scrolling.y + 3) m_scrolling.y += -1;
+        if (m_coordsOffset.x + m_scrolling.x < currentMap.Size.x - Map.MAP_SCREEN_X && destination.x > m_coordsOffset.x + m_scrolling.x + Map.MAP_SCREEN_X - 3) m_scrolling.x += 1;
+        if (m_coordsOffset.y + m_scrolling.y < currentMap.Size.y - Map.MAP_SCREEN_Y && destination.y > m_coordsOffset.y + m_scrolling.y + Map.MAP_SCREEN_Y - 3) m_scrolling.y += 1;
+
+        if (m_scrolling != Vector2.zero && !Player.Current.isMoving) {
+            m_coordsOffset += m_scrolling;
+            m_scrolling = Vector2.zero;
+            currentMap.UpdateVisibleList(m_coordsOffset);
+        }
         #endregion
     }
 

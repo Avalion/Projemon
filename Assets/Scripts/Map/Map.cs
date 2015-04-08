@@ -24,8 +24,6 @@ public class Map {
     private Vector2 _size = new Vector2(MAP_SCREEN_X, MAP_SCREEN_Y);
     public Vector2 Size { get { return _size; }}
 
-    public List<Tile> tiles = new List<Tile>();
-    public bool[,] collisions;
     public class Tile {
         // CONST
         public const int TILE_RESOLUTION = 32;
@@ -40,14 +38,14 @@ public class Map {
         public Vector2 originTileCoords;
 
         private Texture2D image = null;
-        public Texture2D Image { 
+        public Texture2D Image {
             get {
                 if (image == null)
                     LoadTexture();
                 return image;
             }
         }
-        
+
         public void LoadTexture() {
             Texture2D _origin = InterfaceUtility.GetTexture(Config.GetResourcePath(Map.IMAGE_FOLDER) + originTile);
             _origin.name = originTile;
@@ -55,6 +53,11 @@ public class Map {
             image = InterfaceUtility.SeparateTexture(_origin, (int)originTileCoords.x, (int)originTileCoords.y, TILE_RESOLUTION, TILE_RESOLUTION);
         }
     }
+
+    public List<Tile> tiles = new List<Tile>();
+    private List<Tile> VisibleTiles = new List<Tile>();
+    
+    public bool[,] collisions;
 
     public Map(int _id) {
         this.ID = _id;
@@ -67,15 +70,31 @@ public class Map {
 
         foreach (DBMapObject mo in DataBase.GetMapObjects(this.ID))
             mapObjects.Add(MapObject.Generate(mo));
+
+        UpdateVisibleList(Vector2.zero);
     }
 
+
     public void Display() {
-        foreach (Tile tile in tiles) {
+        Vector2 delta = (Player.Current.lerp * World.Current.m_scrolling);
+        delta = new Vector2(delta.x * Resolution.x, delta.y * Resolution.y);
+
+        foreach (Tile tile in VisibleTiles) {
             if (tile.Image != null)
-                GUI.DrawTexture(new Rect(Resolution.x * tile.mapCoords.x, Resolution.y * tile.mapCoords.y, Resolution.x, Resolution.y), tile.Image);
+                GUI.DrawTexture(new Rect(Resolution.x * (tile.mapCoords.x - World.Current.m_coordsOffset.x) - delta.x, Resolution.y * (tile.mapCoords.y - World.Current.m_coordsOffset.y) - delta.y, Resolution.x, Resolution.y), tile.Image);
         }
     }
 
+    public void UpdateVisibleList(Vector2 _startCoords) {
+        VisibleTiles = new List<Tile>();
+        foreach (Tile t in tiles) {
+            if (t.mapCoords.x >= Mathf.Max(_startCoords.x - 1, 0) && 
+                t.mapCoords.x <= Mathf.Min(_startCoords.x + MAP_SCREEN_X + 1, Size.x) &&
+                t.mapCoords.y >= Mathf.Max(_startCoords.y - 1, 0) && 
+                t.mapCoords.y <= Mathf.Min(_startCoords.y + MAP_SCREEN_Y + 1, Size.y))
+                VisibleTiles.Add(t);
+        }
+    }
     public void SortTiles() {
         tiles.Sort(delegate(Tile x, Tile y) { return x.layer.CompareTo(y.layer); });
     }

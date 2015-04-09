@@ -21,8 +21,15 @@ public class ActionTeleport : MapObjectAction {
 
     public override void Execute() {
         MapObject target = World.Current.GetMapObjectById(mapObjectId);
-        if(World.Current.currentMap.ID != mapID) World.Current.LoadMap(mapID);
 
+        if (World.Current.currentMap.ID != mapID) {
+            if (target != Player.Current) {
+                Debug.LogError("InternalException : A mapObject cannot be teleported to another map. Please use Interrupteurs instead.");
+                return;
+            }
+            World.Current.LoadMap(mapID, arrival);
+        }
+        
         target.mapCoords = arrival;
         target.orientation = orientation;
         

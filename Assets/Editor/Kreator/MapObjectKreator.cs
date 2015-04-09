@@ -288,7 +288,13 @@ public class MapObjectKreator : EditorWindow {
         GUILayout.Label("TODO : Display a popup with all States");
     }
     private void DisplayEditor(ActionTeleport a) {
-        GUILayout.Label("TODO : Choisir une map, lister les mapObjects associés et pouvoir choisir une position et une orientation");
+        a.mapObjectId = UtilityEditor.MapObjectField("Target : ", a.mapID);
+
+        GUILayout.Label("TODO : Choisir une map, pouvoir choisir une position et une orientation");
+
+        a.mapID = EditorGUILayout.IntField("Map", a.mapID);
+        a.arrival = EditorGUILayout.Vector2Field("Arrival", a.arrival);
+        a.orientation = (MapObject.Orientation)EditorGUILayout.EnumPopup(a.orientation);
     }
     private void DisplayEditor(ActionWait a) {
         a.duration = Mathf.Max(0, EditorGUILayout.FloatField("Time", a.duration));

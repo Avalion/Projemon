@@ -45,6 +45,19 @@ public class UtilityEditor {
         }
         return stringList;
     }
+    public static int MapObjectField(string label, int _mapObjectId) {
+        List<int> ids = new List<int>();
+        List<string> names = new List<string>();
+
+        foreach (MapObject mo in World.Current.currentMap.mapObjects) {
+            ids.Add(mo.mapObjectId);
+            names.Add(mo.mapObjectId + ": " + mo.name);
+        }
+
+        _mapObjectId = EditorGUILayout.IntPopup(label, _mapObjectId, names.ToArray(), ids.ToArray());
+        return _mapObjectId;
+    }
+
 
     /**
     *  Generic implementation of AssetDatabase

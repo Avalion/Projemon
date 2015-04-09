@@ -57,7 +57,7 @@ public class World : MonoBehaviour {
         InterfaceUtility.ClearAllCache();
 
         currentBGM = gameObject.AddComponent<AudioSource>();
-        currentMap = new Map(startMapID);
+        LoadMap(startMapID, startPlayerCoords);
 
         Player.Current.mapObjectId = -1;
         Player.Current.mapCoords = startPlayerCoords;
@@ -130,10 +130,10 @@ public class World : MonoBehaviour {
     public void LateUpdate() {
         #region Map
         Vector2 destination = Player.Current.mapCoords + Player.Current.currentMovement;
-        if (m_coordsOffset.x + m_scrolling.x > 0 && destination.x < m_coordsOffset.x + m_scrolling.x + 3) m_scrolling.x += -1;
-        if (m_coordsOffset.y + m_scrolling.y > 0 && destination.y < m_coordsOffset.y + m_scrolling.y + 3) m_scrolling.y += -1;
-        if (m_coordsOffset.x + m_scrolling.x < currentMap.Size.x - Map.MAP_SCREEN_X && destination.x > m_coordsOffset.x + m_scrolling.x + Map.MAP_SCREEN_X - 3) m_scrolling.x += 1;
-        if (m_coordsOffset.y + m_scrolling.y < currentMap.Size.y - Map.MAP_SCREEN_Y && destination.y > m_coordsOffset.y + m_scrolling.y + Map.MAP_SCREEN_Y - 3) m_scrolling.y += 1;
+        if (m_coordsOffset.x + m_scrolling.x > 0 && destination.x <= m_coordsOffset.x + m_scrolling.x + 2) m_scrolling.x += -1;
+        if (m_coordsOffset.y + m_scrolling.y > 0 && destination.y <= m_coordsOffset.y + m_scrolling.y + 2) m_scrolling.y += -1;
+        if (m_coordsOffset.x + m_scrolling.x < currentMap.Size.x - Map.MAP_SCREEN_X && destination.x >= m_coordsOffset.x + m_scrolling.x + Map.MAP_SCREEN_X - 3) m_scrolling.x += 1;
+        if (m_coordsOffset.y + m_scrolling.y < currentMap.Size.y - Map.MAP_SCREEN_Y && destination.y >= m_coordsOffset.y + m_scrolling.y + Map.MAP_SCREEN_Y - 3) m_scrolling.y += 1;
 
         if (m_scrolling != Vector2.zero && !Player.Current.isMoving) {
             m_coordsOffset += m_scrolling;
@@ -153,12 +153,21 @@ public class World : MonoBehaviour {
     /* Load
      */
     public void LoadMap(int mapId) {
+        LoadMap(mapId, Vector2.zero);
+    }
+    public void LoadMap(int mapId, Vector2 _arrival) {
         currentMap = null;
 
         Resources.UnloadUnusedAssets();
         InterfaceUtility.ClearAllCache();
 
         currentMap = new Map(mapId);
+
+        m_scrolling = Vector2.zero;
+        while (m_coordsOffset.x > 0 && _arrival.x <= m_coordsOffset.x + 2) m_coordsOffset.x += -1;
+        while (m_coordsOffset.y > 0 && _arrival.y <= m_coordsOffset.y + 2) m_coordsOffset.y += -1;
+        while (m_coordsOffset.x < currentMap.Size.x - Map.MAP_SCREEN_X && _arrival.x >= m_coordsOffset.x + Map.MAP_SCREEN_X - 3) m_coordsOffset.x += 1;
+        while (m_coordsOffset.y < currentMap.Size.y - Map.MAP_SCREEN_Y && _arrival.y >= m_coordsOffset.y + Map.MAP_SCREEN_Y - 3) m_coordsOffset.y += 1;
     }
 
     

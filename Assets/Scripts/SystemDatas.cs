@@ -87,7 +87,7 @@ public class SystemDatas {
                 DataBase.Delete<DBMapObjectAction>("mapObjectID = " + mo.mapObjectId);
 
                 foreach (MapObjectAction action in mo.actions)
-                    DataBase.Replace<DBMapObjectAction>(DBMapObjectAction.ConvertFrom(mo, action));
+                    DataBase.Insert<DBMapObjectAction>(DBMapObjectAction.ConvertFrom(mo, action));
             }
         }
     }

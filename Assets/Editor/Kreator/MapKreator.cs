@@ -306,12 +306,13 @@ public class MapKreator : EditorWindow {
     // Close
     public bool saved = false;
     public void Save() {
-        SystemDatas.SetMaps(elements);
-
         foreach (Map map in toDestroy)
             foreach (MapObject mo in map.mapObjects)
                 DataBase.SelectById<DBMapObject>(mo.mapObjectId).Delete();
+
         toDestroy.Clear();
+
+        SystemDatas.SetMaps(elements);
     }
     public void Dispose() {
         Save();

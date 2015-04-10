@@ -246,7 +246,7 @@ public class MapObjectKreator : EditorWindow {
     }
     private void DisplayEditor(ActionMessage a) {
         a.face = EditorGUILayout.ObjectField("Face", a.face, typeof(Texture2D), false) as Texture2D;
-        a.faceOnRight = EditorGUILayout.Toggle("Face On Right", a.faceOnRight);
+        if (a.face != null) a.faceOnRight = EditorGUILayout.Toggle("Face On Right", a.faceOnRight);
         a.message = EditorGUILayout.TextField("Message", a.message);
         a.maxDuration = EditorGUILayout.FloatField("Max Duration", a.maxDuration);
     }

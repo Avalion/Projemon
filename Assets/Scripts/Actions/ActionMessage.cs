@@ -38,17 +38,17 @@ public class ActionMessage : MapObjectAction {
     }
 
     public override string InLine() {
-        return "Message : " + message+".";
+        return "Message : " + message;
     }
     public override string Serialize() {
-        return GetType().ToString() + "|" + Serializer.Serialize<Texture2D>(face) + "|" + message + "|" + faceOnRight + "|" + maxDuration + "|" + (int)placement;
+        return GetType().ToString() + "|" + (face == null ? "" : Serializer.Serialize<Texture2D>(face)) + "|" + message + "|" + faceOnRight + "|" + maxDuration + "|" + (int)placement;
     }
     public override void Deserialize(string s) {
         string[] values = s.Split('|');
         if (values.Length != 6)
             throw new System.Exception("SerializationError : elements count doesn't match... " + s);
 
-        face = Serializer.Deserialize<Texture2D>(values[1]);
+        if (values[1] != "") face = Serializer.Deserialize<Texture2D>(values[1]);
         message = values[2];
         faceOnRight = bool.Parse(values[3]);
         maxDuration = float.Parse(values[4]);

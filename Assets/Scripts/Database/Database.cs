@@ -54,6 +54,10 @@ public class DataBase {
         ExecCommand(new DBState().Create());
         ExecCommand(new DBVariable().Create());
     }
+    private static void V1toV2() {
+        ExecCommand("ALTER TABLE " + new DBMonster().TableName() + " ADD evolveIn integer DEFAULT -1");
+        ExecCommand("ALTER TABLE " + new DBMonster().TableName() + " ADD evolveLvl integer DEFAULT -1");
+    }
 
     // Destructors
     public static void Close() {

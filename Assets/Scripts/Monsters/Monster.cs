@@ -114,6 +114,9 @@ public class Monster {
 
     public List<DBAttack> attacks = new List<DBAttack>();
 
+    // Evolution
+    public int evolvePattern = -1;
+    public int evolveLevel = -1;
 
     /* Experience
      */
@@ -127,6 +130,7 @@ public class Monster {
         }
     }
     public void LevelUp(bool force = false) {
+        // Stats up !
         lvl++;
         int tempLife = Random.Range((int)monsterPattern.lifeUp.x, (int)monsterPattern.lifeUp.y);
         maxLife += tempLife;
@@ -139,6 +143,7 @@ public class Monster {
         stat_luck += Random.Range((int)monsterPattern.luckUp.x, (int)monsterPattern.luckUp.y);
         stat_speed += Random.Range((int)monsterPattern.speedUp.x, (int)monsterPattern.speedUp.y);
 
+        // Learn Attacks !
         foreach (DBMonsterPattern.AttackLevelUp a in monsterPattern.attackLevelUp) {
             if (a.lvl == lvl) {
                 if (force) {
@@ -148,6 +153,13 @@ public class Monster {
                 } else {
                     // TODO : Display messages for learning Attacks.
                 }
+            }
+        }
+
+        // Evolve
+        if (evolvePattern != -1 && evolveLevel != -1) {
+            if (lvl >= evolveLevel) {
+                // TODO : EVOLVE !
             }
         }
     }

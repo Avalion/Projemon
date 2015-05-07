@@ -389,6 +389,8 @@ public class MapKreator : EditorWindow {
                         // check if there is a MO on the case
                         MapObject mo = current.mapObjects.Find(MO => MO.mapCoords == new Vector2(i, j));
                         if (mo != null) {
+                            EditorGUI.DrawRect(caseRect, new Color(0, 0, 0, 0.4f));
+                            
                             // Display the Sprite
                             if (GUI.Button(caseRect, mo.Sprite, InterfaceUtility.CenteredStyle))
                                 selectedCoords = new Vector2(i, j);

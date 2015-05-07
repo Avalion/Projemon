@@ -79,7 +79,8 @@ public class DBMapObject : SQLTable {
         DBMapObject m = new DBMapObject();
         m.mapId = _map.ID;
         m.mapCoords = _source.mapCoords;
-
+        m.ID = _source.mapObjectId;
+        
         m.name = _source.name;
 
         m.sprite = _source.spritePath;

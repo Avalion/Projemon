@@ -24,14 +24,14 @@ public class ActionAleaMessage : MapObjectAction {
     }
 
     public override string Serialize() {
-        return GetType().ToString() + "|" + face.name + "|" + faceOnRight;
+        return GetType().ToString() + "|" + (face == null ? "" : face.name) + "|" + faceOnRight;
     }
     public override void Deserialize(string s) {
         string[] values = s.Split('|');
         if (values.Length != 3)
             throw new System.Exception("SerializationError : elements count doesn't match... " + s);
 
-        face = face = InterfaceUtility.GetTexture(Config.GetResourcePath(ActionMessage.IMAGE_FOLDER) + values[1] + ".png");
-        faceOnRight = bool.Parse(values[3]);
+        face = InterfaceUtility.GetTexture(Config.GetResourcePath(ActionMessage.IMAGE_FOLDER) + values[1] + ".png");
+        faceOnRight = bool.Parse(values[2]);
     }
 }

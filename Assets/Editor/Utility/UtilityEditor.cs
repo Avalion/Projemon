@@ -38,18 +38,7 @@ public class UtilityEditor {
         else
             return value;
     }
-    public static T DisplayListPopup<T>(T _selected, List<T> _elements, params GUILayoutOption[] _options) where T : SQLTable {
-        List<string> names = new List<string>();
-        for (int i = 0; i < _elements.Count; ++i)
-            if (_elements[i] != null)
-                names.Add(_elements[i].ToString());
-
-        int index = _elements.IndexOf(_selected);
-
-        index = EditorGUILayout.Popup(index, names.ToArray());
     
-        return _elements[index];
-    }
     public static int DisplayTableIDPopup<T>(int _selected, List<T> _elements, params GUILayoutOption[] _options) where T : SQLTable {
         List<string> names = new List<string>();
         for (int i = 0; i < _elements.Count; ++i)
@@ -63,14 +52,7 @@ public class UtilityEditor {
         return _elements[index].ID;
     }
 
-    public static List<string> ToStringList<T>(List<T> list) {
-        List<string> stringList = new List<string>();
-        foreach (T t in list) {
-            stringList.Add(t.ToString());
-        }
-        return stringList;
-    }
-    public static int MapObjectField(string label, int _mapObjectId) {
+    public static int MapObjectField(string label, int _mapObjectId, bool includePlayer, params GUILayoutOption[] _options) {
         List<int> ids = new List<int>();
         List<string> names = new List<string>();
 
@@ -79,11 +61,24 @@ public class UtilityEditor {
             names.Add(mo.mapObjectId + ": " + mo.name);
         }
 
-        _mapObjectId = EditorGUILayout.IntPopup(label, _mapObjectId, names.ToArray(), ids.ToArray());
+        if (includePlayer) {
+            ids.Insert(0, -1);
+            names.Insert(0, "Player");
+        }
+
+        _mapObjectId = EditorGUILayout.IntPopup(label, _mapObjectId, names.ToArray(), ids.ToArray(), _options);
         return _mapObjectId;
     }
 
+    public static List<string> ToStringList<T>(List<T> list) {
+        List<string> stringList = new List<string>();
+        foreach (T t in list) {
+            stringList.Add(t.ToString());
+        }
+        return stringList;
+    }
 
+    
     /**
     *  Generic implementation of AssetDatabase
     */

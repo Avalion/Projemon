@@ -12,7 +12,9 @@ public class Player : Battler {
         get {
             if (current == null) {
                 current = new Player();
-                
+
+                current.mapObjectId = -1;
+
                 //TEMPORARY
                 CaptureItem scroll = new CaptureItem();
                 scroll.name = "Capture Scroll";

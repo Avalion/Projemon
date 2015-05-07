@@ -16,6 +16,8 @@ public class MapObjectKreator : EditorWindow {
     private Vector2 scrollPosList;
     private Vector2 scrollPosEdit;
 
+    private static GUIStyle UnityButton;
+    private static GUIStyle UnityActiveButton;
 
 
     public static void Open(MapObject mo) {
@@ -27,9 +29,16 @@ public class MapObjectKreator : EditorWindow {
         window.m_target = mo;
         window.Show();
 
+        InitStyles();
         InitLists(); 
 
         isOpen = true;
+    }
+
+    private static void InitStyles() {
+        UnityButton = new GUIStyle(GUI.skin.button);
+        UnityActiveButton = new GUIStyle(GUI.skin.button);
+        UnityActiveButton.normal.background = UnityActiveButton.active.background;
     }
     private static void InitLists() {
         sprites = new List<string>() { "" };
@@ -135,7 +144,32 @@ public class MapObjectKreator : EditorWindow {
         for (int i = 0; i < m_target.actions.Count; ++i) {
             MapObjectAction a = m_target.actions[i];
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button((a.waitForEnd ? "* " : "") + a.InLine(), GUILayout.MaxWidth(Screen.width / 3))) {
+            
+            GUI.enabled = (i != 0);
+            if (GUILayout.Button("^", GUILayout.Width(20))) {
+                m_target.actions.Insert(i - 1, a);
+                m_target.actions.RemoveAt(i + 1);
+                if (selectedElement == i)
+                    selectedElement--;
+                else if (selectedElement == i - 1)
+                    selectedElement++;
+                GUIUtility.ExitGUI();
+                return;
+            }
+            GUI.enabled = (i != m_target.actions.Count - 1);
+            if (GUILayout.Button("v", GUILayout.Width(20))) {
+                m_target.actions.Insert(i + 2, a);
+                m_target.actions.RemoveAt(i);
+                if (selectedElement == i)
+                    selectedElement++;
+                else if (selectedElement == i + 1)
+                    selectedElement--;
+                GUIUtility.ExitGUI();
+                return;
+            }
+            GUI.enabled = true;
+
+            if (GUILayout.Button((a.waitForEnd ? "* " : "") + a.InLine(), i == selectedElement ? UnityActiveButton : UnityButton, GUILayout.MaxWidth(Screen.width / 3))) {
                 selectedElement = i;
             }
             if (GUILayout.Button("X", GUILayout.Width(30))) {
@@ -153,6 +187,9 @@ public class MapObjectKreator : EditorWindow {
         if (value != 0) {
             m_target.actions.Add(System.Activator.CreateInstance(Types.GetType(actionTypes[value], "Assembly-CSharp")) as MapObjectAction);
             selectedElement = m_target.actions.Count - 1;
+
+            if (Types.GetType(actionTypes[value], "Assembly-CSharp") == typeof(ActionMove))
+                (m_target.actions[selectedElement] as ActionMove).targetId = m_target.mapObjectId;
         }
         
         GUILayout.EndVertical();
@@ -290,6 +327,8 @@ public class MapObjectKreator : EditorWindow {
         GUILayout.Label("TODO : Display a list of monsterPattern : cf DisplayEditor(ActionMove)");
     }
     private void DisplayEditor(ActionMove a) {
+        a.targetId = UtilityEditor.MapObjectField("Target", a.targetId, true);
+
         for (int i = 0; i < a.movements.Count; i++) {
             GUILayout.BeginHorizontal();
             GUILayout.Label(i + ":", GUILayout.Width(30));
@@ -324,9 +363,9 @@ public class MapObjectKreator : EditorWindow {
         GUILayout.Label("TODO : Display a popup with all States");
     }
     private void DisplayEditor(ActionTeleport a) {
-        a.mapObjectId = UtilityEditor.MapObjectField("Target : ", a.mapID);
+        a.mapObjectId = UtilityEditor.MapObjectField("Target : ", a.mapObjectId, false);
 
-        GUILayout.Label("TODO : Choisir une map, pouvoir choisir une position et une orientation");
+        GUILayout.Label("TODO : Choisir une map à afficher, pouvoir choisir une position et une orientation");
 
         a.mapID = EditorGUILayout.IntField("Map", a.mapID);
         a.arrival = EditorGUILayout.Vector2Field("Arrival", a.arrival);

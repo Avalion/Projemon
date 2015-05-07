@@ -6,7 +6,7 @@ using System.Collections.Generic;
  */
 public class ActionAleaMessage : MapObjectAction {
     public Texture2D face;
-    bool faceOnRight;
+    public bool faceOnRight;
 
     public static string[] m_messagesList = new string[] {
         "Je t'ai déjà dit ce que je savais !",
@@ -24,14 +24,14 @@ public class ActionAleaMessage : MapObjectAction {
     }
 
     public override string Serialize() {
-        return GetType().ToString() + "|" + Serializer.Serialize<Texture2D>(face) + "|" + faceOnRight;
+        return GetType().ToString() + "|" + face.name + "|" + faceOnRight;
     }
     public override void Deserialize(string s) {
         string[] values = s.Split('|');
         if (values.Length != 3)
             throw new System.Exception("SerializationError : elements count doesn't match... " + s);
 
-        face = Serializer.Deserialize<Texture2D>(values[1]);
+        face = face = InterfaceUtility.GetTexture(Config.GetResourcePath(ActionMessage.IMAGE_FOLDER) + values[1] + ".png");
         faceOnRight = bool.Parse(values[3]);
     }
 }

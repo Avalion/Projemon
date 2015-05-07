@@ -4,6 +4,8 @@
  * This action will display a Message
  */
 public class ActionMessage : MapObjectAction {
+    public const string IMAGE_FOLDER = "Faces";
+
     public Texture2D face;
     public string message = "";
     public bool faceOnRight = false;
@@ -41,14 +43,14 @@ public class ActionMessage : MapObjectAction {
         return "Message : " + message;
     }
     public override string Serialize() {
-        return GetType().ToString() + "|" + (face == null ? "" : Serializer.Serialize<Texture2D>(face)) + "|" + message + "|" + faceOnRight + "|" + maxDuration + "|" + (int)placement;
+        return GetType().ToString() + "|" + (face == null ? "" : face.name) + "|" + message + "|" + faceOnRight + "|" + maxDuration + "|" + (int)placement;
     }
     public override void Deserialize(string s) {
         string[] values = s.Split('|');
         if (values.Length != 6)
             throw new System.Exception("SerializationError : elements count doesn't match... " + s);
 
-        if (values[1] != "") face = Serializer.Deserialize<Texture2D>(values[1]);
+        if (values[1] != "") face = InterfaceUtility.GetTexture(Config.GetResourcePath(IMAGE_FOLDER) + values[1] + ".png");
         message = values[2];
         faceOnRight = bool.Parse(values[3]);
         maxDuration = float.Parse(values[4]);

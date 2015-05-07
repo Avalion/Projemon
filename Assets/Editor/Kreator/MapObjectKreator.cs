@@ -190,7 +190,7 @@ public class MapObjectKreator : EditorWindow {
             case "ActionAddMonster":
                 DisplayEditor((ActionAddMonster)_action); break;
             case "ActionAleaMessage":
-                break;
+                DisplayEditor((ActionAleaMessage)_action); break;
             case "ActionExecuteMapObjectActions":
                 DisplayEditor((ActionExecuteMapObjectActions)_action); break;
             case "ActionEXP":
@@ -231,6 +231,26 @@ public class MapObjectKreator : EditorWindow {
     private void DisplayEditor(ActionAddMonster a) { 
         GUILayout.Label("TODO : display a popup with all monsterpattern");
     }
+    private void DisplayEditor(ActionAleaMessage a) {
+        List<string> faces = SystemDatas.GetFaces();
+        faces.Insert(0, "No Image");
+
+        GUILayout.BeginHorizontal();
+        int current = a.face == null ? 0 : faces.IndexOf(a.face.name + ".png");
+        int choice = EditorGUILayout.Popup(current, faces.ToArray());
+        if (choice != current) {
+            if (choice == 0)
+                a.face = null;
+            else
+                a.face = InterfaceUtility.GetTexture(Config.GetResourcePath(ActionMessage.IMAGE_FOLDER) + faces[choice]);
+        }
+
+        if (a.face != null)
+            GUILayout.Label(a.face, GUILayout.Width(60), GUILayout.Height(60));
+        GUILayout.EndHorizontal();
+
+        if (a.face != null) a.faceOnRight = EditorGUILayout.Toggle("Face On Right", a.faceOnRight);
+    }
     private void DisplayEditor(ActionExecuteMapObjectActions a) {
         GUILayout.Label("TODO : Display a popup with all MapObject");
     }
@@ -245,7 +265,23 @@ public class MapObjectKreator : EditorWindow {
         GUILayout.Label("TODO : Display a popup with all Battler and its Monsters");
     }
     private void DisplayEditor(ActionMessage a) {
-        a.face = EditorGUILayout.ObjectField("Face", a.face, typeof(Texture2D), false) as Texture2D;
+        List<string> faces = SystemDatas.GetFaces();
+        faces.Insert(0, "No Image");
+
+        GUILayout.BeginHorizontal();
+        int current = a.face == null ? 0 : faces.IndexOf(a.face.name + ".png");
+        int choice = EditorGUILayout.Popup(current, faces.ToArray());
+        if (choice != current) {
+            if (choice == 0)
+                a.face = null;
+            else
+                a.face = InterfaceUtility.GetTexture(Config.GetResourcePath(ActionMessage.IMAGE_FOLDER) + faces[choice]);
+        }
+
+        if (a.face != null)
+            GUILayout.Label(a.face, GUILayout.Width(60), GUILayout.Height(60));
+        GUILayout.EndHorizontal();
+
         if (a.face != null) a.faceOnRight = EditorGUILayout.Toggle("Face On Right", a.faceOnRight);
         a.message = EditorGUILayout.TextField("Message", a.message);
         a.maxDuration = EditorGUILayout.FloatField("Max Duration", a.maxDuration);

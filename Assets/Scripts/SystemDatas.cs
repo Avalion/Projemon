@@ -43,6 +43,12 @@ public class SystemDatas {
             patterns.Add(Path.GetFileName(s));
         return patterns;
     }
+    public static List<string> GetFaces() {
+        List<string> faces = new List<string>();
+        foreach (string s in GetDirectoryFiles(Application.dataPath.Replace("Assets", "") + Config.GetResourcePath(ActionMessage.IMAGE_FOLDER)))
+            faces.Add(Path.GetFileName(s));
+        return faces;
+    }
     public static List<string> GetMusics() {
         List<string> patterns = new List<string>();
         foreach (string s in GetDirectoryFiles(Application.dataPath.Replace("Assets", "") + Config.GetResourcePath(ActionPlaySound.IMAGE_FOLDER)))

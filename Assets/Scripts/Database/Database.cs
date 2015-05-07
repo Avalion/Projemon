@@ -36,11 +36,12 @@ public class DataBase {
         ExecCommand(system.InsertInto());
     }
 
-    private static int CURRENT_DB_VERSION = 1;
+    private static int CURRENT_DB_VERSION = 2;
     private static void CheckVersion() {
         DBSystem system = SelectUnique<DBSystem>();
 
         if (system.dbversion < 1) V0toV1();
+        if (system.dbversion < 2) V1toV2();
 
         Update<DBSystem>("dbversion", CURRENT_DB_VERSION, "id=" + system.ID);
     }
@@ -55,8 +56,8 @@ public class DataBase {
         ExecCommand(new DBVariable().Create());
     }
     private static void V1toV2() {
-        ExecCommand("ALTER TABLE " + new DBMonster().TableName() + " ADD evolveIn integer DEFAULT -1");
-        ExecCommand("ALTER TABLE " + new DBMonster().TableName() + " ADD evolveLvl integer DEFAULT -1");
+        ExecCommand("ALTER TABLE " + new DBMonsterPattern().TableName() + " ADD evolveIn integer DEFAULT -1");
+        ExecCommand("ALTER TABLE " + new DBMonsterPattern().TableName() + " ADD evolveLvl integer DEFAULT -1");
     }
 
     // Destructors

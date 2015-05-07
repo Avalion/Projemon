@@ -35,9 +35,6 @@ public class DBMonster : SQLTable {
 
     public bool inTeam;
 
-    public int evolvePattern = -1;
-    public int evolveLevel = -1;
-
     public override void FromRow(SqliteDataReader reader) {
         int pos = 0;
         ID = reader.GetInt32(pos++);
@@ -65,13 +62,9 @@ public class DBMonster : SQLTable {
         attack4 = reader.GetInt32(pos++);
 
         inTeam = reader.GetBoolean(pos++);
-
-        evolvePattern = reader.GetInt32(pos++);
-        evolveLevel = reader.GetInt32(pos++);
-
     }
     public override string Fields() {
-        return "patternId, type, state, nickName, level, exp, maxLife, life, maxStamina, stamina, stat_might, stat_resistance, stat_luck, stat_speed, attackId1, attackId2, attackId3, attackId4, inTeam, evolveIn, evolveLvl";
+        return "patternId, type, state, nickName, level, exp, maxLife, life, maxStamina, stamina, stat_might, stat_resistance, stat_luck, stat_speed, attackId1, attackId2, attackId3, attackId4, inTeam";
     }
     public override string TypedFields() {
         return "patternId integer, " + 
@@ -92,9 +85,7 @@ public class DBMonster : SQLTable {
                "attackId2 integer DEFAULT -1, " +
                "attackId3 integer DEFAULT -1, " +
                "attackId4 integer DEFAULT -1, " + 
-               "inTeam boolean, " +
-               "evolveIn integer DEFAULT -1, " +
-               "evolveLvl integer DEFAULT -1";
+               "inTeam boolean";
     }
     public override string TableName() {
         return "T_Monster";
@@ -119,9 +110,7 @@ public class DBMonster : SQLTable {
             Stringize(attack2) + ", " +
             Stringize(attack3) + ", " +
             Stringize(attack4) + ", " + 
-            Stringize(inTeam) + ", " +
-            Stringize(evolvePattern) + ", " +
-            Stringize(evolveLevel);
+            Stringize(inTeam);
     }
     public override void Delete() {
         DataBase.DeleteByID<DBMonster>(ID);
@@ -163,9 +152,6 @@ public class DBMonster : SQLTable {
         } catch { m.attack4 = -1; }
 
         m.inTeam = Player.Current.monsters.Contains(_source);
-
-        m.evolvePattern = _source.evolvePattern;
-        m.evolveLevel = _source.evolveLevel;
 
         return m;
     }

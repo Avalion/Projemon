@@ -52,6 +52,15 @@ public class Map {
 
             image = InterfaceUtility.SeparateTexture(_origin, (int)originTileCoords.x, (int)originTileCoords.y, TILE_RESOLUTION, TILE_RESOLUTION);
         }
+
+        public int CompareTo(Tile other) {
+            if (layer != other.layer)
+                return layer.CompareTo(other.layer);
+            if (mapCoords.x != other.mapCoords.x)
+                return mapCoords.x.CompareTo(other.mapCoords.x);
+
+            return mapCoords.y.CompareTo(other.mapCoords.y);
+        }
     }
 
     public List<Tile> tiles = new List<Tile>();
@@ -148,6 +157,9 @@ public class Map {
         sw.WriteLine();
 
         List<Tile> toExport = tiles.FindAll(T => T.mapCoords.x < _size.x && T.mapCoords.y < _size.y);
+        // Sort !
+        toExport.Sort(delegate(Tile a, Tile b) { return a.CompareTo(b); });
+        
         sw.WriteLine(toExport.Count);
         foreach (Tile i in toExport) {
             sw.WriteLine(i.mapCoords.x + "#" + i.mapCoords.y + "#" + i.layer + "#" + i.originTile + "#" + i.originTileCoords.x + "#" + i.originTileCoords.y);

@@ -176,6 +176,22 @@ public class MonsterKreator : EditorWindow {
 
             GUILayout.Space(10);
 
+            bool evolveFoldout = mp.evolvePattern != -1;
+            evolveFoldout = GUILayout.Toggle(evolveFoldout, " Evolution");
+            if (evolveFoldout != (mp.evolvePattern != -1)) {
+                mp.evolvePattern = evolveFoldout ? (elements[selectedElement + 1] != null ? elements[selectedElement + 1].ID : 0) : -1;
+            }
+            if (evolveFoldout) {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Evolve in : ", GUILayout.Width(100));
+                mp.evolvePattern = UtilityEditor.DisplayTableIDPopup<DBMonsterPattern>(mp.evolvePattern, elements);
+                GUILayout.Label("At : ");
+                mp.evolveLevel = Mathf.Clamp(EditorGUILayout.IntField(mp.evolveLevel, GUILayout.Width(40)), 1, 99);
+                GUILayout.EndHorizontal();
+            }
+
+            GUILayout.Space(10);
+
             GUILayout.Label("- Stats", InterfaceUtility.TitleStyle);
             GUILayout.BeginHorizontal();
             GUILayout.Label("Life : ", GUILayout.Width(100));
@@ -185,9 +201,7 @@ public class MonsterKreator : EditorWindow {
             mp.lifeUp.x = EditorGUILayout.IntField((int)mp.lifeUp.x, GUILayout.Width(40));
             mp.lifeUp.y = EditorGUILayout.IntField((int)mp.lifeUp.y, GUILayout.Width(40));
             GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
+            
             GUILayout.Label("Stamina : ", GUILayout.Width(100));
             GUILayout.Label("Start : ");
             mp.start_stamina = EditorGUILayout.IntField(mp.start_stamina, GUILayout.Width(40));
@@ -205,9 +219,7 @@ public class MonsterKreator : EditorWindow {
             mp.mightUp.x = EditorGUILayout.IntField((int)mp.mightUp.x, GUILayout.Width(40));
             mp.mightUp.y = EditorGUILayout.IntField((int)mp.mightUp.y, GUILayout.Width(40));
             GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
+            
             GUILayout.Label("Resistance : ", GUILayout.Width(100));
             GUILayout.Label("Start : ");
             mp.start_resistance = EditorGUILayout.IntField(mp.start_resistance, GUILayout.Width(40));
@@ -225,9 +237,7 @@ public class MonsterKreator : EditorWindow {
             mp.luckUp.x = EditorGUILayout.IntField((int)mp.luckUp.x, GUILayout.Width(40));
             mp.luckUp.y = EditorGUILayout.IntField((int)mp.luckUp.y, GUILayout.Width(40));
             GUILayout.FlexibleSpace();
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
+            
             GUILayout.Label("Speed : ", GUILayout.Width(100));
             GUILayout.Label("Start : ");
             mp.start_speed = EditorGUILayout.IntField(mp.start_speed, GUILayout.Width(40));
@@ -236,9 +246,14 @@ public class MonsterKreator : EditorWindow {
             mp.speedUp.y = EditorGUILayout.IntField((int)mp.speedUp.y, GUILayout.Width(40));
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
-            
-            mp.capture_rate = EditorGUILayout.FloatField("Capture Rate", mp.capture_rate);
 
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Capture Rate : ", GUILayout.Width(100));
+            mp.capture_rate = EditorGUILayout.FloatField(mp.capture_rate, GUILayout.Width(40));
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(5);
+            
             if (attackList.Count == 0) {
                 GUILayout.Label("Please define attacks !", InterfaceUtility.ErroStyle);
             } else {

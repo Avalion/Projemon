@@ -30,6 +30,10 @@ public class DBMonsterPattern : SQLTable {
 
     public bool encountered;
 
+    public int evolvePattern = -1;
+    public int evolveLevel = -1;
+
+
     public int CalcExpRequired(int lvl) {
         int exp = 0;
         for (int i = 1; i <= lvl; i++)
@@ -83,6 +87,9 @@ public class DBMonsterPattern : SQLTable {
         }
 
         encountered = reader.GetBoolean(pos++);
+
+        evolvePattern = reader.GetInt32(pos++);
+        evolveLevel = reader.GetInt32(pos++);
     }
     public override string Fields() {
         return "name, type, " + 
@@ -94,10 +101,11 @@ public class DBMonsterPattern : SQLTable {
             "start_speed, speedUpX, speedUpY, " + 
             "capture_rate, " + 
             "expM1, expM2, expM3, " +
-
             "battleSprite, miniSprite, " + 
             "attackLeveled, " + 
-            "encountered";
+            "encountered, " + 
+            "evolveIn, " + 
+            "evolveLvl";
     }
     public override string TypedFields() {
         return "name text NOT NULL, type integer, " +
@@ -109,10 +117,11 @@ public class DBMonsterPattern : SQLTable {
             "start_speed integer, speedUpX integer, speedUpY integer, " + 
             "capture_rate integer, " + 
             "expM1 integer, expM2 integer, expM3 integer, " +   
-            
             "battleSprite text, miniSprite text, " + 
             "attackLeveled text, " + 
-            "encountered bool";
+            "encountered bool, " +
+            "evolveIn integer DEFAULT -1, " +
+            "evolveLvl integer DEFAULT -1";
     }
     public override string TableName() {
         return "T_MonsterPattern";
@@ -151,7 +160,10 @@ public class DBMonsterPattern : SQLTable {
             
             Stringize(attacks) + ", " + 
 
-            Stringize(encountered);
+            Stringize(encountered) + ", " +
+
+            Stringize(evolvePattern) + ", " +
+            Stringize(evolveLevel);
     }
     public override void Delete() {
          DataBase.DeleteByID<DBMonsterPattern>(ID);

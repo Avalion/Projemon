@@ -114,10 +114,6 @@ public class Monster {
 
     public List<DBAttack> attacks = new List<DBAttack>();
 
-    // Evolution
-    public int evolvePattern = -1;
-    public int evolveLevel = -1;
-
     /* Experience
      */
     public void Exp(int gain) {
@@ -157,8 +153,8 @@ public class Monster {
         }
 
         // Evolve
-        if (evolvePattern != -1 && evolveLevel != -1) {
-            if (lvl >= evolveLevel) {
+        if (monsterPattern.evolvePattern != -1 && monsterPattern.evolveLevel != -1) {
+            if (lvl >= monsterPattern.evolveLevel) {
                 // TODO : EVOLVE !
             }
         }

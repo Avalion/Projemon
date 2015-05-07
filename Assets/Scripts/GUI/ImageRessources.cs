@@ -10,6 +10,4 @@ public class ImageRessources {
     public GUIStyle menuAreaStyle = new GUIStyle();
     public GUIStyle menuElementStyle = new GUIStyle();
     public GUIStyle menuElementActiveStyle = new GUIStyle();
-
-
 }

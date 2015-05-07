@@ -38,6 +38,20 @@ public class UtilityEditor {
         else
             return value;
     }
+    public static int DisplayTableIDPopup<T>(int _selected, List<T> _elements, params GUILayoutOption[] _options) where T : SQLTable {
+        List<string> names = new List<string>();
+        for (int i = 0; i < _elements.Count; ++i)
+            names.Add(InterfaceUtility.IntString(i + 1, 3) + ": " + _elements[i].ToString());
+        
+        int index = _elements.FindIndex(D => D.ID == _selected);
+        
+        index = EditorGUILayout.Popup(index, names.ToArray());
+
+        if (_elements[index] == null)
+            return _selected;
+        else
+            return _elements[index].ID;
+    }
     public static List<string> ToStringList<T>(List<T> list) {
         List<string> stringList = new List<string>();
         foreach (T t in list) {

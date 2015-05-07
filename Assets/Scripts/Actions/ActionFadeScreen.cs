@@ -12,6 +12,7 @@ public class ActionFadeScreen : MapObjectAction {
         color = new Color(0,0,0,0);
         duration = 0;
     }
+
     public ActionFadeScreen(Color _color, float _duration, bool _waitForEnd = true) {
         color = _color;
         duration = _duration;

@@ -146,7 +146,7 @@ public class MapObjectKreator : EditorWindow {
             GUILayout.BeginHorizontal();
             
             GUI.enabled = (i != 0);
-            if (GUILayout.Button("^", GUILayout.Width(20))) {
+            if (GUILayout.Button("↑", GUILayout.Width(20))) {
                 m_target.actions.Insert(i - 1, a);
                 m_target.actions.RemoveAt(i + 1);
                 if (selectedElement == i)
@@ -157,7 +157,7 @@ public class MapObjectKreator : EditorWindow {
                 return;
             }
             GUI.enabled = (i != m_target.actions.Count - 1);
-            if (GUILayout.Button("v", GUILayout.Width(20))) {
+            if (GUILayout.Button("↓", GUILayout.Width(20))) {
                 m_target.actions.Insert(i + 2, a);
                 m_target.actions.RemoveAt(i);
                 if (selectedElement == i)

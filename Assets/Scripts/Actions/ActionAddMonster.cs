@@ -4,30 +4,39 @@
  * This action will add a monster to the collection
  */
 public class ActionAddMonster : MapObjectAction {
-    public int lvl;
+    public int lvl = 0;
 
-    private Monster m;
+    private int patternID = 0;
 
+    public ActionAddMonster() { }
     public ActionAddMonster(int _patternId, int _lvl) {
         lvl = _lvl;
 
-        m = Monster.Generate(DataBase.SelectById<DBMonsterPattern>(_patternId), lvl, lvl);
-        m.battler = Player.Current;
+        patternID = _patternId;
     }
 
     public override void Execute() {
-        MonsterCollection.AddToCollection(m);
-        
-        if (Player.Current.monsters.Count < Player.MAX_TEAM_NUMBER) {
-            Player.Current.monsters.Add(m);
+        DBMonsterPattern pattern = DataBase.SelectById<DBMonsterPattern>(patternID);
+        if (pattern == null) {
+            Terminate();
+            throw new System.Exception("Unexpected Behaviour : Trying to add a inexisting Monster type to the team...");
         }
+
+        Monster m = Monster.Generate(pattern, lvl, lvl);
+        m.battler = Player.Current;
+
+        MonsterCollection.AddToCollection(m);
+
+        if (Player.Current.monsters.Count < Player.MAX_TEAM_NUMBER)
+            Player.Current.monsters.Add(m);
         
         Terminate();
     }
 
 
     public override string InLine() {
-        return "Add Monster " + m.monsterPattern.name + " at level " + lvl + ".";
+        DBMonsterPattern pattern = DataBase.SelectById<DBMonsterPattern>(patternID);
+        return "Add Monster " + (pattern != null ? pattern.name : "[TO DEFINE]") + " at level " + lvl + ".";
     }
 
     public override string Serialize() {

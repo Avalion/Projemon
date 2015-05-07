@@ -15,7 +15,9 @@ public class ActionAleaMessage : MapObjectAction {
         "Heu... on s'est déjà salué...",
     };
 
-    
+
+    public ActionAleaMessage() {}
+
     public override void Execute() {
         World.Current.ExecuteActions(new ActionMessage[] { new ActionMessage(face, m_messagesList[Random.Range(0, m_messagesList.Length - 1)], faceOnRight) }, delegate() { Terminate(); });
     }

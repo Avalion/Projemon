@@ -37,11 +37,8 @@ public class ActionTeleport : MapObjectAction {
     }
 
     public override string InLine() {
-        DBMapObject moa = null;
-        try {
-            moa = DataBase.SelectById<DBMapObject>(mapObjectId);
-        } catch { }
-        return "Teleport " + (moa != null ? moa.name : "") + " to : " + arrival + ":" + orientation;
+        DBMapObject moa = DataBase.SelectById<DBMapObject>(mapObjectId);
+        return "Teleport " + (mapObjectId == -1 ? "Player" : (moa != null ? mapObjectId + ":" + moa.name : "[TO DEFINE]")) + " to : " + arrival + ":" + orientation;
     }
 
     public override string Serialize() {

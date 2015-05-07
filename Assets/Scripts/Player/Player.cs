@@ -18,12 +18,12 @@ public class Player : Battler {
                 //TEMPORARY
                 CaptureItem scroll = new CaptureItem();
                 scroll.name = "Capture Scroll";
-                current.actions.Add(new ActionAddItem(scroll, Player.Current));
+                current.actions.Add(new ActionAddItem(scroll));
 
                 Monster m = Monster.Generate(DataBase.SelectById<DBMonsterPattern>(0), 5, 5);
-
                 current.monsters.Add(m);
                 MonsterCollection.AddToCollection(m);
+                //*/
             }
             return current;
         }

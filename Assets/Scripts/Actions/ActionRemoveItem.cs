@@ -4,30 +4,28 @@
  * This action will remove an item to a battler
  */
 public class ActionRemoveItem : MapObjectAction {
+    public Item item;
 
-    Item item;
-    Battler target;
 
-    public ActionRemoveItem(Item _item, Battler _target) {
-        item = _item;
-        target = _target;       
+    public ActionRemoveItem() {}
+    public ActionRemoveItem(Item _item) {
+        item = _item;       
     }
 
     public override void Execute() {
-        if (target.inventory.ContainsKey(item.name)) {
-            target.inventory[item.name] -= 1;
-            if (target.inventory[item.name] == 0)
-                target.inventory.Remove(item.name);
+        if (Player.Current.inventory.ContainsKey(item.name)) {
+            Player.Current.inventory[item.name] -= 1;
+            if (Player.Current.inventory[item.name] == 0)
+                Player.Current.inventory.Remove(item.name);
         }
         Terminate();
     }
 
     public override string InLine() {
-        return "Remove Item " + item.name + " to " + target.name+".";
+        return "Remove Item " + (item != null ? item.name : "[TO DEFINE]") + " from Player.";
     }
     public override string Serialize() {
         // TODO : Serialize Items class
-        // TODO : Add MapObjectID when MapObject are into DB
         return GetType().ToString();
     }
     public override void Deserialize(string s) {
@@ -35,6 +33,5 @@ public class ActionRemoveItem : MapObjectAction {
         if (values.Length != 1)
             throw new System.Exception("SerializationError : elements count doesn't match... " + s);
         // TODO : Deserialize Item class
-        // TODO : Read and find MapObjectID when MapObject are into DB
     }
 }

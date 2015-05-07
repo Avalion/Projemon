@@ -29,11 +29,8 @@ public class ActionTransform : MapObjectAction {
     }
 
     public override string InLine() {
-        DBMapObject moa = null;
-        try {
-            moa = DataBase.SelectById<DBMapObject>(mapObjectId);
-        } catch { }
-        return "Modify sprite of " + (moa != null ? moa.name : "") + " to " + newSpritePath + ".";
+        DBMapObject moa = DataBase.SelectById<DBMapObject>(mapObjectId);
+        return "Modify sprite of " + (mapObjectId == -1 ? "Player" : (moa != null ? mapObjectId + ":" + moa.name : "[TO DEFINE]")) + " to " + newSpritePath + ".";
     }
 
     public override string Serialize() {

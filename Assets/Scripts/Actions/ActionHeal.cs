@@ -11,7 +11,6 @@ public class ActionHeal : MapObjectAction {
     public ActionHeal() {
         target = Player.Current;
     }
-
     public ActionHeal(Battler _target, int _targetMonster, int _healValue){
         target = _target;
         targetMonster = _targetMonster;

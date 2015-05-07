@@ -5,6 +5,7 @@ public class ActionSetState : MapObjectAction {
     
     public bool value = false;
 
+
     public ActionSetState() { }
     
     public override void Execute() {
@@ -15,7 +16,8 @@ public class ActionSetState : MapObjectAction {
     }
 
     public override string InLine() {
-        return "Set state " + stateId + ":" + DataBase.SelectById<DBVariable>(stateId).name + " to " + value.ToString();
+        DBState state = DataBase.SelectById<DBState>(stateId);
+        return "Set state " + (state != null ? stateId + ":" + state.name : "[TO DEFINE]") + " to " + value.ToString();
     }
 
     public override string Serialize() {

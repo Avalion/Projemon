@@ -118,7 +118,9 @@ public class DataBase {
         return r[0];
     }
     public static T SelectById<T>(int id) where T : SQLTable, new() {
-        return SelectUnique<T>("id=" + id);
+        try {
+            return SelectUnique<T>("id=" + id);
+        } catch { return null; }
     }
 
     public static int Count<T>(string where = "", int limit = -1) where T : SQLTable, new() {
@@ -194,13 +196,13 @@ public class DataBase {
         ExecCommand("VACUUM");
     }
 
-    // MapObject
-    public static List<DBMapObject> GetMapObjects(int mapId) {
-        return DataBase.Select<DBMapObject>("mapId = " + mapId);
+    // Getters
+    public static List<DBMapObject> GetMapObjects(int _mapId) {
+        return DataBase.Select<DBMapObject>("mapId = " + _mapId);
     }
 
-    public static List<DBMapObjectAction> GetMapObjectActions(int mapObjectId) {
-        List<DBMapObjectAction> result = DataBase.Select<DBMapObjectAction>("mapObjectId = " + mapObjectId);
+    public static List<DBMapObjectAction> GetMapObjectActions(int _mapObjectId) {
+        List<DBMapObjectAction> result = DataBase.Select<DBMapObjectAction>("mapObjectId = " + _mapObjectId);
         result.Sort(delegate(DBMapObjectAction a, DBMapObjectAction b) { return a.executeOrder.CompareTo(b.executeOrder); });
         return result;
     }

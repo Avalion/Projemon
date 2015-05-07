@@ -4,29 +4,32 @@
  * This action will add an item to a battler
  */
 public class ActionAddItem : MapObjectAction {
-    Item item;
-    Battler target;
-
-    public ActionAddItem(Item _item, Battler _target) {
+    public Item item = null;
+    
+    public ActionAddItem() { }
+    public ActionAddItem(Item _item) {
         item = _item;
-        target = _target;
     }
 
     public override void Execute() {
-        if (target.inventory.ContainsKey(item.name)) { 
-            target.inventory[item.name] += 1;
+        if (item == null) {
+            Terminate();
+            throw new System.Exception("Unexpected Behaviour : Trying to add a inexisting Item type to the team...");
+        }
+
+        if (Player.Current.inventory.ContainsKey(item.name)) {
+            Player.Current.inventory[item.name] += 1;
         } else {
-            target.inventory.Add(item.name, 1);
+            Player.Current.inventory.Add(item.name, 1);
         }
         Terminate();
     }
 
     public override string InLine() {
-        return "Add Item " + item.name + " to " + target.name + ".";
+        return "Add Item " + (item != null ? item.name : "[TO DEFINE]") + " to Player.";
     }
 
     public override string Serialize() {
-        // TODO : Serialize MapObject class
         // TODO : Serialize Item class
 
         return GetType().ToString();
@@ -36,7 +39,6 @@ public class ActionAddItem : MapObjectAction {
         if (values.Length != 1)
             throw new System.Exception("SerializationError : elements count doesn't match... " + s);
 
-        // TODO : Serialize MapObject class
         // TODO : Serialize Item class
 
     }

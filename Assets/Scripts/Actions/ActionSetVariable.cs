@@ -46,7 +46,8 @@ public class ActionSetVariable : MapObjectAction {
     }
 
     public override string InLine() {
-        return "Set variable " + varId + ":" + DataBase.SelectById<DBVariable>(varId).name + " to " + value;
+        DBVariable var = DataBase.SelectById<DBVariable>(varId);
+        return "Set variable " + (var != null ? varId + ":" + var.name : "[TO DEFINE]") + " to " + value.ToString();
     }
 
     public override string Serialize() {

@@ -17,10 +17,10 @@ public class ActionPlaySound : MapObjectAction {
 
     public override void Execute() {
         if (bgm) {
-            World.Current.currentBGM.Stop();
-            World.Current.currentBGM.clip = InterfaceUtility.GetAudio(soundPath);
-            if (World.Current.currentBGM.clip != null)
-                World.Current.currentBGM.Play();
+            if (soundPath == "")
+                World.Current.BGM = null;
+            else
+                World.Current.BGM = InterfaceUtility.GetAudio(soundPath);
             Terminate();
         } else {
             ActionPlaySoundDisplay display = new GameObject("action_Sound").AddComponent<ActionPlaySoundDisplay>();

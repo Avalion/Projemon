@@ -37,7 +37,7 @@ public class InterfaceUtility {
     }
 
     private static GUIStyle errorStyle = null;
-    public static GUIStyle ErroStyle {
+    public static GUIStyle ErrorStyle {
         get {
             if (errorStyle == null) {
                 errorStyle = new GUIStyle(GUI.skin.label);

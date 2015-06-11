@@ -7,12 +7,9 @@ public class ActionEXP : MapObjectAction {
     public int targetMonster = -1; //-1 to add exp for all the group
     public int expValue = 0;
 
-    public ActionEXP() {
-        target = Player.Current;
-    }
+    public ActionEXP() { }
 
-    public ActionEXP(Battler _target, int _targetMonster, int _expValue) {
-        target = _target;
+    public ActionEXP(int _targetMonster, int _expValue) {
         targetMonster = _targetMonster;
         expValue = _expValue;
     }

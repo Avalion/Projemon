@@ -255,7 +255,7 @@ public class MonsterKreator : EditorWindow {
             GUILayout.Space(5);
             
             if (attackList.Count == 0) {
-                GUILayout.Label("Please define attacks !", InterfaceUtility.ErroStyle);
+                GUILayout.Label("Please define attacks !", InterfaceUtility.ErrorStyle);
             } else {
                 _scrollPosAttackList = GUILayout.BeginScrollView(_scrollPosAttackList);
                 GUILayout.BeginHorizontal();

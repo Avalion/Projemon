@@ -6,14 +6,17 @@ public class Menu {
     public static Menu Current = null;
 
 
+    // Display
+    public Rect position;
+
     // References
     public Menu parent = null;
 
     private MenuDisplay display;
 
+    // Contents
     public List<List<MenuElement>> elements = new List<List<MenuElement>>();
 
-    public Rect position;
 
     
     // Constructors
@@ -23,11 +26,15 @@ public class Menu {
 
         display.selected = GetFirstElementIndex();
 
+        Player.Lock();
+
         if (focus) 
             Current = this;
     }
     public void Close() {
         GameObject.Destroy(display.gameObject);
+
+        Player.Unlock();
 
         if (Current == this && parent != null)
             Current = parent;

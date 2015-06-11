@@ -33,7 +33,37 @@ public class World : MonoBehaviour {
     // Define current Map
     [HideInInspector] public Map currentMap;
     // Define background Music
-    [HideInInspector] public AudioSource currentBGM;
+    public AudioClip BGM {
+        set {
+            currentBGM.Stop();
+            currentBGM.clip = value;
+            if (value != null)
+                currentBGM.Play();
+        }
+        get {
+            if (currentBGM == null)
+                return null;
+            return currentBGM.clip;
+        }
+    }
+    // Define background Music
+    public AudioClip BGS {
+        set {
+            currentBGS.Stop();
+            currentBGS.clip = value;
+            if (value != null)
+                currentBGS.Play();
+        }
+        get {
+            if (currentBGS == null)
+                return null;
+            return currentBGS.clip;
+        }
+    }
+    
+    private AudioSource currentBGM = null;
+    private AudioSource currentBGS = null;
+
     // Define camera Filter
     [HideInInspector] public Color currentFilter = new Color(0, 0, 0, 0);
 
@@ -57,6 +87,8 @@ public class World : MonoBehaviour {
         InterfaceUtility.ClearAllCache();
 
         currentBGM = gameObject.AddComponent<AudioSource>();
+        currentBGS = gameObject.AddComponent<AudioSource>();
+
         LoadMap(startMapID, startPlayerCoords);
 
         Player.Current.mapObjectId = -1;
@@ -67,6 +99,8 @@ public class World : MonoBehaviour {
 
         if (currentBGM.clip != null)
             currentBGM.Play();
+        if (currentBGS.clip != null)
+            currentBGS.Play();
 
         foreach (MapObject mo in currentMap.mapObjects)
             mo.OnStart();
@@ -100,6 +134,10 @@ public class World : MonoBehaviour {
         if (currentBGM.clip != null && !currentBGM.isPlaying) {
             currentBGM.Stop();
             currentBGM.Play();
+        }
+        if (currentBGS.clip != null && !currentBGS.isPlaying) {
+            currentBGS.Stop();
+            currentBGS.Play();
         }
         #endregion
 

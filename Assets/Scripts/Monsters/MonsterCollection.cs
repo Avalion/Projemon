@@ -23,14 +23,20 @@ public class MonsterCollection {
 
     // Get informations
     public static bool isEncountered(Monster m) {
-        return encounteredMonsters.Contains(m.monsterPattern.ID);
+        return isEncountered(m.monsterPattern);
+    }
+    public static bool isEncountered(DBMonsterPattern m) {
+        return encounteredMonsters.Contains(m.ID);
     }
     public static bool isAlreadyCaptured(Monster m) {
+        return isAlreadyCaptured(m.monsterPattern);
+    }
+    public static bool isAlreadyCaptured(DBMonsterPattern m) {
         foreach (Monster monster in Player.Current.monsters)
-            if (m.monsterPattern.ID == monster.monsterPattern.ID)
+            if (m.ID == monster.monsterPattern.ID)
                 return true;
         foreach (Monster monster in capturedMonsters)
-            if (m.monsterPattern.ID == monster.monsterPattern.ID)
+            if (m.ID == monster.monsterPattern.ID)
                 return true;
         return false;
     }

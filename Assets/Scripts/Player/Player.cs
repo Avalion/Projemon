@@ -37,7 +37,7 @@ public class Player : Battler {
         locked++;
     }
     public static void Unlock() {
-        locked = Mathf.Max(0, locked - 1);
+        if (locked > 0) locked -= 1;
     }
     public static void ForceUnlock() {
         locked = 0;

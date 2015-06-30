@@ -26,8 +26,16 @@ public class MapObject {
     public enum Layer { Under, Middle, Top }
     public Layer layer = Layer.Middle;
     public bool allowPassThrough = false;
+    public bool fixedOrientation = false;
 
-    public enum PossibleMovement { NULL, Left, Right, Up, Down, Forward, Backward, StrafeLeft, StrafeRight, TurnLeft, TurnRight, TurnUp, TurnDown, TurnLeftward, TurnRightward, TurnBackward, FollowPlayer, FleePlayer, LookPlayer }
+    public enum PossibleMovement { NULL, 
+        Left, Right, Up, Down, 
+        Forward, Backward, StrafeLeft, StrafeRight, 
+        TurnLeft, TurnRight, TurnUp, TurnDown, 
+        TurnLeftward, TurnRightward, TurnBackward, 
+        FollowPlayer, FleePlayer, LookPlayer,
+        AllowPassThrough, DontPassThrough, FixOrientation, CanOrientation
+    }
 
     public enum ExecutionCondition { NULL, Action, ActionFace, Contact, Automatique, Distance, DistanceFace }
     public ExecutionCondition execCondition = ExecutionCondition.Action;
@@ -141,34 +149,34 @@ public class MapObject {
         switch (_o) {
             case PossibleMovement.Left:
                 move = new Vector2(-1, 0);
-                orientation = Orientation.Left;
+                if (!fixedOrientation) orientation = Orientation.Left;
                 break;
             case PossibleMovement.TurnLeft:
-                orientation = Orientation.Left;
+                if (!fixedOrientation) orientation = Orientation.Left;
                 break;
 
             case PossibleMovement.Right:
                 move = new Vector2(1, 0);
-                orientation = Orientation.Right;
+                if (!fixedOrientation) orientation = Orientation.Right;
                 break;
             case PossibleMovement.TurnRight:
-                orientation = Orientation.Right;
+                if (!fixedOrientation) orientation = Orientation.Right;
                 break;
 
             case PossibleMovement.Up:
                 move = new Vector2(0, -1);
-                orientation = Orientation.Up;
+                if (!fixedOrientation) orientation = Orientation.Up;
                 break;
             case PossibleMovement.TurnUp:
-                orientation = Orientation.Up;
+                if (!fixedOrientation) orientation = Orientation.Up;
                 break;
 
             case PossibleMovement.Down:
                 move = new Vector2(0, 1);
-                orientation = Orientation.Down;
+                if (!fixedOrientation) orientation = Orientation.Down;
                 break;
             case PossibleMovement.TurnDown:
-                orientation = Orientation.Down;
+                if (!fixedOrientation) orientation = Orientation.Down;
                 break;
 
             case PossibleMovement.Forward:
@@ -186,13 +194,13 @@ public class MapObject {
                 break;
 
             case PossibleMovement.TurnLeftward:
-                orientation = orientation == Orientation.Up ? Orientation.Left : orientation == Orientation.Left ? Orientation.Down : orientation == Orientation.Down ? Orientation.Right : Orientation.Up;
+                if (!fixedOrientation) orientation = orientation == Orientation.Up ? Orientation.Left : orientation == Orientation.Left ? Orientation.Down : orientation == Orientation.Down ? Orientation.Right : Orientation.Up;
                 break;
             case PossibleMovement.TurnRightward:
-                orientation = orientation == Orientation.Up ? Orientation.Right : orientation == Orientation.Right ? Orientation.Down : orientation == Orientation.Down ? Orientation.Left : Orientation.Up;
+                if (!fixedOrientation) orientation = orientation == Orientation.Up ? Orientation.Right : orientation == Orientation.Right ? Orientation.Down : orientation == Orientation.Down ? Orientation.Left : Orientation.Up;
                 break;
             case PossibleMovement.TurnBackward:
-                orientation = orientation == Orientation.Up ? Orientation.Down : orientation == Orientation.Down ? Orientation.Up : orientation == Orientation.Left ? Orientation.Right : Orientation.Left;
+                if (!fixedOrientation) orientation = orientation == Orientation.Up ? Orientation.Down : orientation == Orientation.Down ? Orientation.Up : orientation == Orientation.Left ? Orientation.Right : Orientation.Left;
                 break;
             case PossibleMovement.FollowPlayer:
                 if(vector.magnitude == 1) { orientation = GetOrientation(vector); break; }
@@ -313,7 +321,7 @@ public class MapObject {
                 //        }
                 //    }
                 //}
-                orientation = GetOrientation(move);
+                if (!fixedOrientation) orientation = GetOrientation(move);
                 break;
             case PossibleMovement.FleePlayer:
                 if (Mathf.Abs(vector.x) >= Mathf.Abs(vector.y)) {
@@ -347,10 +355,22 @@ public class MapObject {
                         }
                     }
                 }
-                orientation = GetOrientation(move);
+                if (!fixedOrientation) orientation = GetOrientation(move);
                 break;
             case PossibleMovement.LookPlayer:
-                orientation = vector.x == Mathf.Max(Mathf.Abs(vector.x), Mathf.Abs(vector.y)) ? Orientation.Right : vector.x == - Mathf.Max(Mathf.Abs(vector.x), Mathf.Abs(vector.y)) ? Orientation.Left : vector.y == Mathf.Max(Mathf.Abs(vector.x), Mathf.Abs(vector.y)) ? Orientation.Down : Orientation.Up;
+                if (!fixedOrientation) orientation = vector.x == Mathf.Max(Mathf.Abs(vector.x), Mathf.Abs(vector.y)) ? Orientation.Right : vector.x == -Mathf.Max(Mathf.Abs(vector.x), Mathf.Abs(vector.y)) ? Orientation.Left : vector.y == Mathf.Max(Mathf.Abs(vector.x), Mathf.Abs(vector.y)) ? Orientation.Down : Orientation.Up;
+                break;
+            case PossibleMovement.AllowPassThrough:
+                allowPassThrough = true;
+                break;
+            case PossibleMovement.DontPassThrough:
+                allowPassThrough = false;
+                break;
+            case PossibleMovement.FixOrientation:
+                fixedOrientation = true;
+                break;
+            case PossibleMovement.CanOrientation:
+                fixedOrientation = false;
                 break;
             default :
                 break;

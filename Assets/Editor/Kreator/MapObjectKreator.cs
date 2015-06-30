@@ -123,11 +123,15 @@ public class MapObjectKreator : EditorWindow {
         GUILayout.EndHorizontal();
 
         GUILayout.BeginHorizontal();
-        GUILayout.Label("AllowPassThrough", GUILayout.Width(100));
+        GUILayout.Label("Allow Pass Through", GUILayout.Width(100));
         m_target.allowPassThrough = EditorGUILayout.Toggle(m_target.allowPassThrough);
         GUILayout.EndHorizontal();
 
-
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Fixed Orientation", GUILayout.Width(100));
+        m_target.fixedOrientation = EditorGUILayout.Toggle(m_target.fixedOrientation);
+        GUILayout.EndHorizontal();
+        
         GUILayout.EndVertical();
 
         // Map Object actions
@@ -338,6 +342,22 @@ public class MapObjectKreator : EditorWindow {
 
         for (int i = 0; i < a.movements.Count; i++) {
             GUILayout.BeginHorizontal();
+            GUI.enabled = (i != 0);
+            if (GUILayout.Button("↑", GUILayout.Width(20))) {
+                a.movements.Insert(i - 1, a.movements[i]);
+                a.movements.RemoveAt(i + 1);
+                GUIUtility.ExitGUI();
+                return;
+            }
+            GUI.enabled = (i != a.movements.Count - 1);
+            if (GUILayout.Button("↓", GUILayout.Width(20))) {
+                a.movements.Insert(i + 2, a.movements[i]);
+                a.movements.RemoveAt(i);
+                GUIUtility.ExitGUI();
+                return;
+            }
+            GUI.enabled = true;
+
             GUILayout.Label(i + ":", GUILayout.Width(30));
             a.movements[i] = (MapObject.PossibleMovement)EditorGUILayout.EnumPopup(a.movements[i]);
             if (GUILayout.Button("X", GUILayout.Width(30)))

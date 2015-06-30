@@ -389,6 +389,48 @@ public class MapKreator : EditorWindow {
                         // check if there is a MO on the case
                         MapObject mo = current.mapObjects.Find(MO => MO.mapCoords == new Vector2(i, j));
                         if (mo != null) {
+
+                            Rect r = new Rect(caseRect);
+                            if (mo.execCondition == MapObject.ExecutionCondition.Action) {
+                                EditorGUI.DrawRect(new Rect(r.x - r.width / 2, r.y + r.height / 3, r.width, r.height / 3), new Color(1f, 0.2f, 0.2f, 0.2f)); // left
+                                EditorGUI.DrawRect(new Rect(r.x + r.width / 2, r.y + r.height / 3, r.width, r.height / 3), new Color(1f, 0.2f, 0.2f, 0.2f)); // right
+                                EditorGUI.DrawRect(new Rect(r.x + r.width / 3, r.y - r.height / 2, r.width / 3, r.height), new Color(1f, 0.2f, 0.2f, 0.2f)); // up
+                                EditorGUI.DrawRect(new Rect(r.x + r.width / 3, r.y + r.height / 2, r.width / 3, r.height), new Color(1f, 0.2f, 0.2f, 0.2f)); // down
+                            } else if (mo.execCondition == MapObject.ExecutionCondition.ActionFace) {
+                                if (mo.orientation == MapObject.Orientation.Down)
+                                    EditorGUI.DrawRect(new Rect(r.x + r.width / 3, r.y + r.height / 2, r.width / 3, r.height), new Color(1f, 0.2f, 0.2f, 0.2f)); // down
+                                else if (mo.orientation == MapObject.Orientation.Up)
+                                    EditorGUI.DrawRect(new Rect(r.x + r.width / 3, r.y - r.height / 2, r.width / 3, r.height), new Color(1f, 0.2f, 0.2f, 0.2f)); // up
+                                else if (mo.orientation == MapObject.Orientation.Left)
+                                    EditorGUI.DrawRect(new Rect(r.x - r.width / 2, r.y + r.height / 3, r.width, r.height / 3), new Color(1f, 0.2f, 0.2f, 0.2f)); // left
+                                else if (mo.orientation == MapObject.Orientation.Right)
+                                    EditorGUI.DrawRect(new Rect(r.x + r.width / 2, r.y + r.height / 3, r.width, r.height / 3), new Color(1f, 0.2f, 0.2f, 0.2f)); // right
+                            } else if (mo.execCondition == MapObject.ExecutionCondition.Contact) {
+                                EditorGUI.DrawRect(new Rect(r.x - r.width / 2, r.y + r.height / 3, r.width, r.height / 3), new Color(0.2f, 0.2f, 1f, 0.2f)); // left
+                                EditorGUI.DrawRect(new Rect(r.x + r.width / 2, r.y + r.height / 3, r.width, r.height / 3), new Color(0.2f, 0.2f, 1f, 0.2f)); // right
+                                EditorGUI.DrawRect(new Rect(r.x + r.width / 3, r.y - r.height / 2, r.width / 3, r.height), new Color(0.2f, 0.2f, 1f, 0.2f)); // up
+                                EditorGUI.DrawRect(new Rect(r.x + r.width / 3, r.y + r.height / 2, r.width / 3, r.height), new Color(0.2f, 0.2f, 1f, 0.2f)); // down
+                            } else if (mo.execCondition == MapObject.ExecutionCondition.Distance) {
+                                for (int i2 = (int)mapScrollPos.x; i2 < (int)mapScrollPos.x + Map.MAP_SCREEN_X; i2++)
+                                    for (int j2 = (int)mapScrollPos.y; j2 < (int)mapScrollPos.y + Map.MAP_SCREEN_Y; j2++) {
+                                        Vector2 distance = mo.mapCoords - new Vector2(i2, j2);
+                                        if (Mathf.Abs(distance.x) + Mathf.Abs(distance.y) <= mo.actionDistance)
+                                            EditorGUI.DrawRect(new Rect((i2 - (int)mapScrollPos.x) * resolution.x, (j2 - (int)mapScrollPos.y) * resolution.y, resolution.x, resolution.y), new Color(1f, 0.2f, 0.2f, 0.2f));
+                                    }
+                            } else if (mo.execCondition == MapObject.ExecutionCondition.DistanceFace) {
+                                if (mo.orientation == MapObject.Orientation.Down)
+                                    EditorGUI.DrawRect(new Rect(r.x + r.width / 3, r.y + r.height / 2, r.width / 3, r.height * mo.actionDistance), new Color(1f, 0.2f, 0.2f, 0.2f)); // down
+                                else if (mo.orientation == MapObject.Orientation.Up)
+                                    EditorGUI.DrawRect(new Rect(r.x + r.width / 3, r.y - r.height * (mo.actionDistance - 0.5f), r.width / 3, r.height * mo.actionDistance), new Color(1f, 0.2f, 0.2f, 0.2f)); // up
+                                else if (mo.orientation == MapObject.Orientation.Left)
+                                    EditorGUI.DrawRect(new Rect(r.x - r.width * (mo.actionDistance - 0.5f), r.y + r.height / 3, r.width * mo.actionDistance, r.height / 3), new Color(1f, 0.2f, 0.2f, 0.2f)); // left
+                                else if (mo.orientation == MapObject.Orientation.Right)
+                                    EditorGUI.DrawRect(new Rect(r.x + r.width / 2, r.y + r.height / 3, r.width * mo.actionDistance, r.height / 3), new Color(1f, 0.2f, 0.2f, 0.2f)); // right
+                            }
+
+                            
+                                
+
                             EditorGUI.DrawRect(caseRect, new Color(0, 0, 0, 0.4f));
                             
                             // Display the Sprite
@@ -396,9 +438,9 @@ public class MapKreator : EditorWindow {
                                 selectedCoords = new Vector2(i, j);
 
                             // Square border
-                            UtilityEditor.DrawSquare(caseRect, 3, new Color(0, 0, 0, 0.7f));
+                            UtilityEditor.DrawEmptyRect(caseRect, 3, new Color(0, 0, 0, 0.7f));
                             // Square
-                            UtilityEditor.DrawSquare(new Rect(caseRect.x + 1, caseRect.y + 1, caseRect.width - 2, caseRect.height - 2), 1, new Color(0.7f, 0.7f, 0.7f, 1));
+                            UtilityEditor.DrawEmptyRect(new Rect(caseRect.x + 1, caseRect.y + 1, caseRect.width - 2, caseRect.height - 2), 1, new Color(0.7f, 0.7f, 0.7f, 1));
                         } else {
                             // Else, display nothing
                             if (GUI.Button(caseRect, "", InterfaceUtility.CenteredStyle) && Event.current.button == 0)
@@ -413,9 +455,9 @@ public class MapKreator : EditorWindow {
                     // bg
                     EditorGUI.DrawRect(playerRect, new Color(0.2f, 0.2f, 0.2f, 0.7f));
                     // Square border
-                    UtilityEditor.DrawSquare(playerRect, 3, new Color(0, 0, 0, 0.7f));
+                    UtilityEditor.DrawEmptyRect(playerRect, 3, new Color(0, 0, 0, 0.7f));
                     // Square
-                    UtilityEditor.DrawSquare(new Rect(playerRect.x + 1, playerRect.y + 1, playerRect.width - 2, playerRect.height - 2), 1, new Color(0.7f, 0.7f, 0.7f, 1));
+                    UtilityEditor.DrawEmptyRect(new Rect(playerRect.x + 1, playerRect.y + 1, playerRect.width - 2, playerRect.height - 2), 1, new Color(0.7f, 0.7f, 0.7f, 1));
 
                     GUI.Label(playerRect, "S", InterfaceUtility.CenteredStyle);
                 }
@@ -423,9 +465,9 @@ public class MapKreator : EditorWindow {
                 if (selectedCoords != -Vector2.one) {
                     Rect caseRect = new Rect((selectedCoords.x - (int)mapScrollPos.x) * resolution.x, (selectedCoords.y - (int)mapScrollPos.y) * resolution.y, resolution.x, resolution.y);
                     // Square border
-                    UtilityEditor.DrawSquare(caseRect, 3, new Color(0, 0, 0, 0.7f));
+                    UtilityEditor.DrawEmptyRect(caseRect, 3, new Color(0, 0, 0, 0.7f));
                     // Square
-                    UtilityEditor.DrawSquare(new Rect(caseRect.x + 1, caseRect.y + 1, caseRect.width - 2, caseRect.height - 2), 1, new Color(1, 1, 1, 1f));
+                    UtilityEditor.DrawEmptyRect(new Rect(caseRect.x + 1, caseRect.y + 1, caseRect.width - 2, caseRect.height - 2), 1, new Color(1, 1, 1, 1f));
                 }
 
                 if (isDragging) {
@@ -436,9 +478,9 @@ public class MapKreator : EditorWindow {
                     if (mo == null) {
                         Rect caseRect = new Rect(currentCoords.x * resolution.x, currentCoords.y * resolution.y, resolution.x, resolution.y);
                         // Square border
-                        UtilityEditor.DrawSquare(caseRect, 4, new Color(0, 0, 0, 0.7f));
+                        UtilityEditor.DrawEmptyRect(caseRect, 4, new Color(0, 0, 0, 0.7f));
                         // Square
-                        UtilityEditor.DrawSquare(new Rect(caseRect.x + 1, caseRect.y + 1, caseRect.width - 2, caseRect.height - 2), 2, new Color(1, 1, 1, 0.7f));
+                        UtilityEditor.DrawEmptyRect(new Rect(caseRect.x + 1, caseRect.y + 1, caseRect.width - 2, caseRect.height - 2), 2, new Color(1, 1, 1, 0.7f));
                     }
                 }
             }

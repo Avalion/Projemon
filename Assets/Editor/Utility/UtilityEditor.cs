@@ -9,17 +9,11 @@ public class UtilityEditor {
     /**
      *  GUI
      */
-    public static void DrawEmptyRect(Rect _r, Color _color, int _size) {
+    public static void DrawEmptyRect(Rect _r, int _size, Color _color) {
         EditorGUI.DrawRect(new Rect(_r.x, _r.y, _r.width, _size), _color);
         EditorGUI.DrawRect(new Rect(_r.x, _r.y, _size, _r.height), _color);
         EditorGUI.DrawRect(new Rect(_r.x + _r.width - _size, _r.y, _size, _r.height), _color);
         EditorGUI.DrawRect(new Rect(_r.x, _r.y + _r.height - _size, _r.width, _size), _color);
-    }
-    public static void DrawSquare(Rect _zone, int _size, Color c) {
-        EditorGUI.DrawRect(new Rect(_zone.x, _zone.y, _size, _zone.height), c);
-        EditorGUI.DrawRect(new Rect(_zone.x, _zone.y, _zone.width, _size), c);
-        EditorGUI.DrawRect(new Rect(_zone.x + _zone.width - _size, _zone.y, _size, _zone.height), c);
-        EditorGUI.DrawRect(new Rect(_zone.x, _zone.y + _zone.height - _size, _zone.width, _size), c);
     }
 
     /**

@@ -29,8 +29,10 @@ public class MapObject {
 
     public enum PossibleMovement { NULL, Left, Right, Up, Down, Forward, Backward, StrafeLeft, StrafeRight, TurnLeft, TurnRight, TurnUp, TurnDown, TurnLeftward, TurnRightward, TurnBackward, FollowPlayer, FleePlayer, LookPlayer }
 
-    public enum ExecutionCondition { NULL, Action, ActionFace, Contact, Automatique }
+    public enum ExecutionCondition { NULL, Action, ActionFace, Contact, Automatique, Distance, DistanceFace }
     public ExecutionCondition execCondition = ExecutionCondition.Action;
+    public int actionDistance = 4;
+
 
     public string spritePath = "";
     public Texture2D sprite;
@@ -383,6 +385,14 @@ public class MapObject {
                     Player.Current.orientation == Orientation.Up    && orientation == Orientation.Down  && Player.Current.mapCoords == mapCoords + new Vector2(0, 1) ||
                     Player.Current.orientation == Orientation.Left  && orientation == Orientation.Right && Player.Current.mapCoords == mapCoords + new Vector2( 1,0) ||
                     Player.Current.orientation == Orientation.Right && orientation == Orientation.Left  && Player.Current.mapCoords == mapCoords + new Vector2(-1,0));
+            case ExecutionCondition.Distance:
+                Vector2 distance = Player.Current.mapCoords - mapCoords;
+                return Mathf.Abs(distance.x) + Mathf.Abs(distance.y) <= actionDistance;
+            case ExecutionCondition.DistanceFace:
+                return (orientation == Orientation.Up    && Player.Current.mapCoords.x == mapCoords.x && Utility.IsBetween((Player.Current.mapCoords - mapCoords).y, -actionDistance, 0) ||
+                        orientation == Orientation.Down  && Player.Current.mapCoords.x == mapCoords.x && Utility.IsBetween((Player.Current.mapCoords - mapCoords).y, 0, actionDistance) ||
+                        orientation == Orientation.Right && Player.Current.mapCoords.y == mapCoords.y && Utility.IsBetween((Player.Current.mapCoords - mapCoords).y, 0, actionDistance) ||
+                        orientation == Orientation.Left  && Player.Current.mapCoords.y == mapCoords.y && Utility.IsBetween((Player.Current.mapCoords - mapCoords).y, -actionDistance, 0));
         }
 
         return false;
@@ -406,8 +416,15 @@ public class MapObject {
         m.allowPassThrough = _source.allowPassThrough;
 
         // Generate actions
-        foreach (DBMapObjectAction action in DataBase.GetMapObjectActions(m.mapObjectId))
-            m.actions.Add(MapObjectAction.Generate(action));
+        foreach (DBMapObjectAction action in DataBase.GetMapObjectActions(m.mapObjectId)) {
+            MapObjectAction moa = MapObjectAction.Generate(action);
+            if (moa == null) {
+                Debug.LogError("===> Skipping this action.");
+                continue;
+            }
+            
+            m.actions.Add(moa);
+        }
 
         return m;
     }

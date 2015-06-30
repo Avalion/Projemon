@@ -114,6 +114,12 @@ public class Utility {
         return retour;
     }
 
+    /** verifiaction macro
+     */
+    public static bool IsBetween(float value, float min, float max) {
+        return value <= max && value >= min;
+    }
+
 
     /** GameObjects
     */

@@ -30,10 +30,10 @@ public class Battle : MonoBehaviour {
     private GUIStyle monsterBoxStyle = new GUIStyle();
     private GUIStyle monsterBoxCurrentStyle = new GUIStyle();
 
-    private List<string> message = new List<string>();
+    private List<string> messages = new List<string>();
     public string Message { 
-        get { return message.Count > 0 ? message[0] : ""; }
-        set { if (value == "") message.RemoveAt(0); else message.Add(value); time = Time.time; }
+        get { return messages.Count > 0 ? messages[0] : ""; }
+        set { if (value == "") messages.RemoveAt(0); else messages.Add(value); time = Time.time; }
     }
     private static float time;
 

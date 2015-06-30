@@ -1,4 +1,5 @@
-﻿/**
+﻿using UnityEngine;
+/**
  * This abstract class patterns the differents Actions a MapObject can launch.
  * 
  *  /!\ Actions have to be terminated
@@ -28,12 +29,19 @@ public abstract class MapObjectAction {
     private static MapObjectAction Generate(string s) {
         string type = s.Substring(0, s.IndexOf('|'));
         MapObjectAction action = ((MapObjectAction)System.Activator.CreateInstance(System.Type.GetType(type)));
-        action.Deserialize(s);
+        try {
+            action.Deserialize(s);
+        } catch (System.Exception e) {
+            Debug.LogError("SerializationError : An error occured while trying to generate an " + type + " : " + e.Message);
+            return null;
+        }
 
         return action;
     }
     public static MapObjectAction Generate(DBMapObjectAction _source) {
         MapObjectAction action = Generate(_source.serialized);
+        if (action == null)
+            return null;
         action.actionId = _source.ID;
         return action;
     }

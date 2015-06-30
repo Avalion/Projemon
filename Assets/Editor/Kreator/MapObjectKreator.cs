@@ -139,6 +139,13 @@ public class MapObjectKreator : EditorWindow {
         m_target.execCondition = (MapObject.ExecutionCondition)EditorGUILayout.EnumPopup(m_target.execCondition);
         GUILayout.EndHorizontal();
 
+        if (m_target.execCondition == MapObject.ExecutionCondition.Distance || m_target.execCondition == MapObject.ExecutionCondition.DistanceFace) {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Distance", GUILayout.Width(170));
+            m_target.actionDistance = EditorGUILayout.IntField(m_target.actionDistance);
+            GUILayout.EndHorizontal();
+        }
+
         scrollPosList = GUILayout.BeginScrollView(scrollPosList);
         GUILayout.BeginVertical();
         for (int i = 0; i < m_target.actions.Count; ++i) {
@@ -351,7 +358,7 @@ public class MapObjectKreator : EditorWindow {
         if (index < 0) { index = 0; }
         a.soundPath = sounds[EditorGUILayout.Popup(index, sounds.ToArray())];
         GUILayout.EndHorizontal();
-        a.bgm = EditorGUILayout.Toggle("BGM", a.bgm);
+        a.mode = (ActionPlaySound.SoundType)EditorGUILayout.EnumPopup("Mode", a.mode);
     }
     private void DisplayEditor(ActionSetVariable a) {
         GUILayout.Label("TODO : Display a popup with all Variables and modes");

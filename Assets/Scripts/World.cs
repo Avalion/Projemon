@@ -93,7 +93,9 @@ public class World : MonoBehaviour {
 
         Player.Current.mapObjectId = -1;
         Player.Current.mapCoords = startPlayerCoords;
-        
+
+        Player.Current.name = "Player";
+
         // TEMPORARY
         Player.Current.sprite = InterfaceUtility.GetTexture(Config.GetResourcePath(MapObject.IMAGE_FOLDER) + "perso_00.png");
 
@@ -287,24 +289,23 @@ public class World : MonoBehaviour {
 
         if (currentMap.GetTile(0, (int)_destination.x, (int)_destination.y) == null)
             return false;
+        
+        List<MapObject> mapObjects = new List<MapObject>(currentMap.mapObjects);
+        mapObjects.Add(Player.Current);
+        if (mapObjects.Contains(o)) mapObjects.Remove(o);
 
         // If there is already an Event on this
-        foreach (MapObject mo in currentMap.mapObjects) {
-            if (mo.mapCoords == _destination) {
+        foreach (MapObject mo in mapObjects) {
+            if (mo.mapCoords == _destination ||
+                mo.mapCoords + mo.currentMovement == _destination
+                ) {
+
                 o.OnCollision();
                 mo.OnCollision();
-
+            
                 if (mo.layer != o.layer || mo.allowPassThrough)
                     continue;
 
-                return false;
-            }
-            if (mo.mapCoords + mo.currentMovement == _destination) {
-                o.OnCollision();
-                mo.OnCollision();
-
-                if (mo.layer != o.layer || mo.allowPassThrough)
-                    continue;
                 return false;
             }
         }

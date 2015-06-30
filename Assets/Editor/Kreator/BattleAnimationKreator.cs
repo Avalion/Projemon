@@ -258,15 +258,15 @@ public class BattleAnimationKreator : EditorWindow {
         foreach (BattleAnimation.ImageInstance i in current.instances.FindAll(I => I.frame == currentFrame)) {
             if (!isPlaying) {
                 if (i == selectedInstance)
-                    UtilityEditor.DrawEmptyRect(MathUtility.ExtendRect(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), 2), InterfaceUtility.HexaToColor("#0000FFFF"), 2);
+                    UtilityEditor.DrawEmptyRect(MathUtility.ExtendRect(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), 2), 2, InterfaceUtility.HexaToColor("#0000FFFF"));
                 else
-                    UtilityEditor.DrawEmptyRect(MathUtility.ExtendRect(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), 1), InterfaceUtility.HexaToColor("#4444FFCC"), 1);
+                    UtilityEditor.DrawEmptyRect(MathUtility.ExtendRect(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), 1), 1, InterfaceUtility.HexaToColor("#4444FFCC"));
             }
             i.Display(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)));
         }
         if (!isPlaying && displayPrecedent) {
             foreach (BattleAnimation.ImageInstance i in current.instances.FindAll(I => I.frame == currentFrame - 1)) {
-                UtilityEditor.DrawEmptyRect(MathUtility.ExtendRect(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), 1), InterfaceUtility.HexaToColor("#CCCCFF44"), 1);
+                UtilityEditor.DrawEmptyRect(MathUtility.ExtendRect(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), 1), 1, InterfaceUtility.HexaToColor("#CCCCFF44"));
                 
                 i.Display(i.GetPixelRect(new Rect(0, 0, canvasRect.width, canvasRect.height)), i.alpha * 0.3f);
             }

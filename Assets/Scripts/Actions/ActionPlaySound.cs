@@ -6,21 +6,29 @@
 public class ActionPlaySound : MapObjectAction {
     public const string IMAGE_FOLDER = "Musics";
     public string soundPath;
-    
-    public bool bgm = false;
+
+    public enum SoundType { Sound, BGS, BGM };
+
+    public SoundType mode = SoundType.Sound;
 
     public ActionPlaySound() {}
-    public ActionPlaySound(string _soundPath, bool _bgm = false, bool _waitForEnd = false) {
-        bgm = _bgm;
+    public ActionPlaySound(string _soundPath, SoundType _mode = SoundType.Sound, bool _waitForEnd = false) {
+        mode = _mode;
         waitForEnd = _waitForEnd;
     }
 
     public override void Execute() {
-        if (bgm) {
+        if (mode == SoundType.BGM) {
             if (soundPath == "")
                 World.Current.BGM = null;
             else
                 World.Current.BGM = InterfaceUtility.GetAudio(soundPath);
+            Terminate();
+        } else if (mode == SoundType.BGS) {
+            if (soundPath == "")
+                World.Current.BGS = null;
+            else
+                World.Current.BGS = InterfaceUtility.GetAudio(soundPath);
             Terminate();
         } else {
             ActionPlaySoundDisplay display = new GameObject("action_Sound").AddComponent<ActionPlaySoundDisplay>();
@@ -30,11 +38,11 @@ public class ActionPlaySound : MapObjectAction {
     }
 
     public override string InLine() {
-        return "Play " + (bgm ? "BGM : " : "BGS : ") + soundPath + ".";
+        return "Play " + mode + " : " + soundPath + ".";
     }
 
     public override string Serialize() {
-        return GetType().ToString() + "|" + soundPath + "|" + bgm;
+        return GetType().ToString() + "|" + soundPath + "|" + (int)mode;
     }
     public override void Deserialize(string s) {
         string[] values = s.Split('|');
@@ -42,7 +50,7 @@ public class ActionPlaySound : MapObjectAction {
             throw new System.Exception("SerializationError : elements count doesn't match... " + s);
 
         soundPath = values[1];
-        bgm = bool.Parse(values[2]);
+        mode = (SoundType)int.Parse(values[2]);
     }
 }
 

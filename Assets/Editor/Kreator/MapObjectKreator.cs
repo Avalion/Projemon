@@ -358,7 +358,7 @@ public class MapObjectKreator : EditorWindow {
             }
             GUI.enabled = true;
 
-            GUILayout.Label(i + ":", GUILayout.Width(30));
+            GUILayout.Label(i + ":", GUILayout.Width(22));
             a.movements[i] = (MapObject.PossibleMovement)EditorGUILayout.EnumPopup(a.movements[i]);
             if (GUILayout.Button("X", GUILayout.Width(30)))
                 a.movements.RemoveAt(i);

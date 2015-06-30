@@ -7,6 +7,7 @@ using System.Collections.Generic;
 public class Player : Battler {
     public const int MAX_TEAM_NUMBER = 6;
 
+    // Singleton
     private static Player current = null;
     public static Player Current {
         get {
@@ -14,6 +15,8 @@ public class Player : Battler {
                 current = new Player();
 
                 current.mapObjectId = -1;
+
+                current.name = "Player";
 
                 //TEMPORARY
                 CaptureItem scroll = new CaptureItem();

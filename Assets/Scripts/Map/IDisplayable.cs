@@ -4,6 +4,8 @@
  * This abstract class patterns a displayable élement. It will be displayed by the class World.
  */
 public abstract class IDisplayable : MonoBehaviour, System.IDisposable {
+    public int m_layer = 0;
+    
     public void Awake() {
         World.Current.haveToDisplay.Add(this);
     }

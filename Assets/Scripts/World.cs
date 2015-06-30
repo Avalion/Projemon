@@ -91,10 +91,7 @@ public class World : MonoBehaviour {
 
         LoadMap(startMapID, startPlayerCoords);
 
-        Player.Current.mapObjectId = -1;
         Player.Current.mapCoords = startPlayerCoords;
-
-        Player.Current.name = "Player";
 
         // TEMPORARY
         Player.Current.sprite = InterfaceUtility.GetTexture(Config.GetResourcePath(MapObject.IMAGE_FOLDER) + "perso_00.png");
@@ -128,6 +125,7 @@ public class World : MonoBehaviour {
         GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), InterfaceUtility.ColorToTexture(currentFilter));
 
         // Display other displayable objects
+        haveToDisplay.Sort(delegate(IDisplayable a, IDisplayable b) { return a.m_layer.CompareTo(b.m_layer); });
         foreach (IDisplayable d in haveToDisplay)
             d.Display();
     }

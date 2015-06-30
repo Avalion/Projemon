@@ -32,7 +32,7 @@ public class DBMonsterPattern : SQLTable {
 
     public int evolvePattern = -1;
     public int evolveLevel = -1;
-
+    public int evolveStatsNbLvlSimulate = 4;
 
     public int CalcExpRequired(int lvl) {
         int exp = 0;

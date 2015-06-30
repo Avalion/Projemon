@@ -4,6 +4,7 @@
  * This action will display a Message
  */
 public class ActionMessage : MapObjectAction {
+    public const int MESSAGE_HEIGHT = 200;
     public const string IMAGE_FOLDER = "Faces";
 
     public Texture2D face;
@@ -112,19 +113,19 @@ public class ActionMessageDisplay : IDisplayable {
     }
 
     public override void Display() {
-        Rect area = new Rect(0, 0, Screen.width, 200);
+        Rect area = new Rect(0, 0, Screen.width, ActionMessage.MESSAGE_HEIGHT);
         if (action.placement == ActionMessage.Placement.Top)
             area.y = 0;
         else if (action.placement == ActionMessage.Placement.Middle)
-            area.y = Screen.height / 2 - 100;
+            area.y = (Screen.height - ActionMessage.MESSAGE_HEIGHT) / 2;
         else if (action.placement == ActionMessage.Placement.Bottom)
-            area.y = Screen.height - 200;
+            area.y = Screen.height - ActionMessage.MESSAGE_HEIGHT;
 
         GUILayout.BeginArea(area);
         InterfaceUtility.BeginBox();
         GUILayout.BeginHorizontal(GUILayout.MaxWidth(Screen.width));
         if (action.face != null && !action.faceOnRight) {
-            GUILayout.Label("", headStyle, GUILayout.Width(170), GUILayout.Height(170));
+            GUILayout.Label("", headStyle, GUILayout.Width(ActionMessage.MESSAGE_HEIGHT - 30), GUILayout.Height(ActionMessage.MESSAGE_HEIGHT - 30));
             GUILayout.Space(20);
         }
         string m = action.message;

@@ -113,6 +113,8 @@ public class ActionMessageDisplay : IDisplayable {
     }
 
     public override void Display() {
+        // TODO : replace KeyWords or KeyCharacters by their values (variable, ou variable analysé (nom de MapObject ou de MonsterPattern ou de Monster)
+
         Rect area = new Rect(0, 0, Screen.width, ActionMessage.MESSAGE_HEIGHT);
         if (action.placement == ActionMessage.Placement.Top)
             area.y = 0;

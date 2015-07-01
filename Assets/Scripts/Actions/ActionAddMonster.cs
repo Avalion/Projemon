@@ -6,7 +6,7 @@
 public class ActionAddMonster : MapObjectAction {
     public int lvl = 0;
 
-    private int patternID = 0;
+    public int patternID = 0;
 
     public ActionAddMonster() { }
     public ActionAddMonster(int _patternId, int _lvl) {

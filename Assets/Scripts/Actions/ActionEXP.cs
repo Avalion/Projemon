@@ -4,6 +4,8 @@
  * This action will add exp to a monster or a group of monsters
  */
 public class ActionEXP : MapObjectAction {
+    // TODO : get id from variable !
+    // TODO : get exp from variable !
     public int targetMonster = -1; //-1 to add exp for all the group
     public int expValue = 0;
 

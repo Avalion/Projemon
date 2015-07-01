@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class ActionMonsterBattle : MapObjectAction {
     [System.Serializable]
     public class EncounterMonster {
-        public DBMonsterPattern pattern;
+        public int patternId;
         
         public int lvlMin;
         public int lvlMax;
@@ -29,7 +29,7 @@ public class ActionMonsterBattle : MapObjectAction {
 
         List<Monster> list = new List<Monster>();
         foreach (EncounterMonster pattern in monsters)
-            list.Add(Monster.Generate(pattern.pattern, pattern.lvlMin, pattern.lvlMax));
+            list.Add(Monster.Generate(DataBase.SelectById<DBMonsterPattern>(pattern.patternId), pattern.lvlMin, pattern.lvlMax));
 
         Battler battler = new Battler() { name = "Wild Monster" };
         battler.monsters = list;
@@ -37,7 +37,7 @@ public class ActionMonsterBattle : MapObjectAction {
     }
 
     public override string InLine() {
-        return "Battle wild monsters : " + (monsters.Count > 0 ? monsters[0].pattern.name : "") + (monsters.Count > 1 ? "(...)" : "") + ".";
+        return "Battle wild monsters : " + (monsters.Count > 0 ? DataBase.SelectById<DBMonsterPattern>(monsters[0].patternId).name : "") + (monsters.Count > 1 ? "(...)" : "") + ".";
     }
     public override string Serialize() {
         // TODO : Serialize list of EncounterMonster

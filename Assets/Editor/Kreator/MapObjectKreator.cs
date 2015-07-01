@@ -276,8 +276,10 @@ public class MapObjectKreator : EditorWindow {
     private void DisplayEditor(ActionAddItem a) { 
         GUILayout.Label("TODO : Display a popup with all items");
     }
-    private void DisplayEditor(ActionAddMonster a) { 
-        GUILayout.Label("TODO : display a popup with all monsterpattern");
+    private void DisplayEditor(ActionAddMonster a) {
+        a.patternID = UtilityEditor.MonsterPatternField("MonsterPattern", a.patternID);
+
+        a.lvl = EditorGUILayout.IntField("Level", a.lvl);
     }
     private void DisplayEditor(ActionAleaMessage a) {
         List<string> faces = SystemDatas.GetFaces();
@@ -300,17 +302,21 @@ public class MapObjectKreator : EditorWindow {
         if (a.face != null) a.faceOnRight = EditorGUILayout.Toggle("Face On Right", a.faceOnRight);
     }
     private void DisplayEditor(ActionExecuteMapObjectActions a) {
-        GUILayout.Label("TODO : Display a popup with all MapObject");
+        a.mapObjectId = UtilityEditor.MapObjectField("Target", a.mapObjectId, false);
     }
     private void DisplayEditor(ActionEXP a) {
-        GUILayout.Label("TODO : Display a popup with all Battler and its Monsters");
+        a.targetMonster = Mathf.Clamp(EditorGUILayout.IntField("Monster", a.targetMonster), -1, 6);
+
+        a.expValue = EditorGUILayout.IntField("Exp value", a.expValue);
     }
     private void DisplayEditor(ActionFadeScreen a) {
         a.color = EditorGUILayout.ColorField("Color", a.color);
         a.duration = EditorGUILayout.FloatField("Duration", a.duration);
     }
     private void DisplayEditor(ActionHeal a) {
-        GUILayout.Label("TODO : Display a popup with all Battler and its Monsters");
+        a.targetMonster = Mathf.Clamp(EditorGUILayout.IntField("Monster", a.targetMonster), -1, 6);
+
+        a.healValue = EditorGUILayout.IntField("Heal value", a.healValue);
     }
     private void DisplayEditor(ActionMessage a) {
         List<string> faces = SystemDatas.GetFaces();
@@ -335,7 +341,43 @@ public class MapObjectKreator : EditorWindow {
         a.maxDuration = EditorGUILayout.FloatField("Max Duration", a.maxDuration);
     }
     private void DisplayEditor(ActionMonsterBattle a) {
-        GUILayout.Label("TODO : Display a list of monsterPattern : cf DisplayEditor(ActionMove)");
+        for (int i = 0; i < a.monsters.Count; i++) {
+            GUILayout.BeginHorizontal();
+            GUI.enabled = (i != 0);
+            if (GUILayout.Button("↑", GUILayout.Width(20))) {
+                a.monsters.Insert(i - 1, a.monsters[i]);
+                a.monsters.RemoveAt(i + 1);
+                GUIUtility.ExitGUI();
+                return;
+            }
+            GUI.enabled = (i != a.monsters.Count - 1);
+            if (GUILayout.Button("↓", GUILayout.Width(20))) {
+                a.monsters.Insert(i + 2, a.monsters[i]);
+                a.monsters.RemoveAt(i);
+                GUIUtility.ExitGUI();
+                return;
+            }
+            GUI.enabled = true;
+
+            GUILayout.Label(i + ":", GUILayout.Width(22));
+            a.monsters[i].patternId = UtilityEditor.MonsterPatternField("", a.monsters[i].patternId);
+            GUILayout.Label("Lvl", GUILayout.Width(30));
+            a.monsters[i].lvlMin = EditorGUILayout.IntField(a.monsters[i].lvlMin, GUILayout.Width(40));
+            GUILayout.Label("-", GUILayout.Width(10));
+            a.monsters[i].lvlMax = EditorGUILayout.IntField(a.monsters[i].lvlMax, GUILayout.Width(40));
+
+            if (GUILayout.Button("X", GUILayout.Width(30)))
+                a.monsters.RemoveAt(i);
+            GUILayout.EndHorizontal();
+        }
+
+        GUILayout.BeginHorizontal();
+        GUILayout.FlexibleSpace();
+        GUI.enabled = a.monsters.Count < 6;
+        if (GUILayout.Button("+"))
+            a.monsters.Add(new ActionMonsterBattle.EncounterMonster());
+        GUI.enabled = true;
+        GUILayout.EndHorizontal();
     }
     private void DisplayEditor(ActionMove a) {
         int value = UtilityEditor.MapObjectField("Target", a.targetId, true);
@@ -385,14 +427,52 @@ public class MapObjectKreator : EditorWindow {
         GUILayout.EndHorizontal();
         a.mode = (ActionPlaySound.SoundType)EditorGUILayout.EnumPopup("Mode", a.mode);
     }
-    private void DisplayEditor(ActionSetVariable a) {
-        GUILayout.Label("TODO : Display a popup with all Variables and modes");
-    }
     private void DisplayEditor(ActionRemoveItem a) {
         GUILayout.Label("TODO : Display a popup with all items");
     }
     private void DisplayEditor(ActionSetState a) {
-        GUILayout.Label("TODO : Display a popup with all States");
+        GUILayout.BeginHorizontal();
+        a.stateId = UtilityEditor.StateField("State", a.stateId);
+        a.value = EditorGUILayout.Toggle(a.value);
+        GUILayout.EndHorizontal();
+    }
+    private void DisplayEditor(ActionSetVariable a) {
+        a.varId = UtilityEditor.VariableField("Variable", a.varId);
+
+        a.setMode = (ActionSetVariable.SetMode)EditorGUILayout.EnumPopup("Set Mode", a.setMode);
+        
+        GUI.changed = false;
+        a.mode = (ActionSetVariable.Mode)EditorGUILayout.EnumPopup("Mode", a.mode);
+        if (GUI.changed) {
+            a.value = -1;
+            a.value2 = -1;
+            a.linked = null;
+        }
+
+        switch (a.mode) {
+            case ActionSetVariable.Mode.Random:
+                GUILayout.BeginHorizontal();
+                GUILayout.Label("Min", GUILayout.Width(50));
+                a.value = EditorGUILayout.IntField(a.value);
+                GUILayout.Label("Max", GUILayout.Width(50));
+                a.value2 = EditorGUILayout.IntField(a.value2);
+                GUILayout.EndHorizontal();
+                break;
+            case ActionSetVariable.Mode.Variable:
+                a.value = UtilityEditor.VariableField("Source", a.value); break;
+            case ActionSetVariable.Mode.MOPositionX:
+            case ActionSetVariable.Mode.MOPositionY:
+            case ActionSetVariable.Mode.MOOrientation:
+                a.value = UtilityEditor.MapObjectField("MapObject", a.value, true); break;
+            case ActionSetVariable.Mode.Gold:
+            case ActionSetVariable.Mode.TeamCount:
+            case ActionSetVariable.Mode.CollectionCount:
+            case ActionSetVariable.Mode.EncouteredCount:
+                break;
+            case ActionSetVariable.Mode.MonsterLevel:
+                a.value = Mathf.Clamp(EditorGUILayout.IntField("Monster", a.value), 0, 6);
+                break;
+        }
     }
     private void DisplayEditor(ActionTeleport a) {
         a.mapObjectId = UtilityEditor.MapObjectField("Target : ", a.mapObjectId, false);

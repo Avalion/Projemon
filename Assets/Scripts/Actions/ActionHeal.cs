@@ -4,31 +4,30 @@
  * This action will heal a monster or a group of monsters
  */
 public class ActionHeal : MapObjectAction {
-    public int targetMonster;//-1 to heal all the group
-    public Battler target;
-    public int healValue;
+    // TODO : get id from variable !
+    // TODO : get healValue from variable !
+    public int targetMonster = -1; // -1 to heal all the group
+    public int healValue = 0;
 
     public ActionHeal() {
-        target = Player.Current;
     }
-    public ActionHeal(Battler _target, int _targetMonster, int _healValue){
-        target = _target;
+    public ActionHeal(int _targetMonster, int _healValue){
         targetMonster = _targetMonster;
         healValue = _healValue;
     }
 
     public override void Execute() {
         if (targetMonster == -1) {
-            foreach (Monster m in target.monsters)
+            foreach (Monster m in Player.Current.monsters)
                 m.Damage(m, -healValue);
         } else {
-            target.monsters[targetMonster].Damage(target.monsters[targetMonster], -healValue);
+            Player.Current.monsters[targetMonster].Damage(Player.Current.monsters[targetMonster], -healValue);
         }
         Terminate();
     }
 
     public override string InLine() {
-        return "Heal " + (targetMonster == -1 ? "all the group " : target.monsters[targetMonster].monsterName) + " of " + healValue + " pv.";
+        return "Heal " + (targetMonster == -1 ? "all the group " : targetMonster + "°") + " of " + healValue + " pv.";
     }
 
     public override string Serialize() {

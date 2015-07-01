@@ -46,9 +46,15 @@ public class UtilityEditor {
         return _elements[index].ID;
     }
 
+    
     public static int MapObjectField(string label, int _mapObjectId, bool includePlayer, params GUILayoutOption[] _options) {
         List<int> ids = new List<int>();
         List<string> names = new List<string>();
+
+        if (World.Current.currentMap == null) {
+            GUILayout.Label("Exception : No map selected...", InterfaceUtility.ErrorStyle);
+            return -2;
+        }
 
         foreach (MapObject mo in World.Current.currentMap.mapObjects) {
             ids.Add(mo.mapObjectId);
@@ -63,6 +69,49 @@ public class UtilityEditor {
         _mapObjectId = EditorGUILayout.IntPopup(label, _mapObjectId, names.ToArray(), ids.ToArray(), _options);
         return _mapObjectId;
     }
+    public static int MonsterPatternField(string label, int _varId, params GUILayoutOption[] _options) {
+        List<int> ids = new List<int>();
+        List<string> names = new List<string>();
+
+        foreach (DBMonsterPattern monster in DataBase.Select<DBMonsterPattern>()) {
+            ids.Add(monster.ID);
+            names.Add(monster.ID + ": " + monster.name);
+        }
+
+        if (label == "")
+            return EditorGUILayout.IntPopup(_varId, names.ToArray(), ids.ToArray(), _options);
+        else
+            return EditorGUILayout.IntPopup(label, _varId, names.ToArray(), ids.ToArray(), _options);
+    }
+    public static int StateField(string label, int _stateId, params GUILayoutOption[] _options) {
+        List<int> ids = new List<int>();
+        List<string> names = new List<string>();
+
+        foreach (DBState state in DataBase.Select<DBState>()) {
+            ids.Add(state.ID);
+            names.Add(state.ID + ": " + state.name);
+        }
+
+        if (label == "")
+            return EditorGUILayout.IntPopup(_stateId, names.ToArray(), ids.ToArray(), _options);
+        else
+            return EditorGUILayout.IntPopup(label, _stateId, names.ToArray(), ids.ToArray(), _options);
+    }
+    public static int VariableField(string label, int _varId, params GUILayoutOption[] _options) {
+        List<int> ids = new List<int>();
+        List<string> names = new List<string>();
+
+        foreach (DBVariable state in DataBase.Select<DBVariable>()) {
+            ids.Add(state.ID);
+            names.Add(state.ID + ": " + state.name);
+        }
+
+        if (label == null)
+            return EditorGUILayout.IntPopup(label, _varId, names.ToArray(), ids.ToArray(), _options);
+        else
+            return EditorGUILayout.IntPopup(label, _varId, names.ToArray(), ids.ToArray(), _options);
+    }
+
 
     public static List<string> ToStringList<T>(List<T> list) {
         List<string> stringList = new List<string>();

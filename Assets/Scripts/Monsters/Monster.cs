@@ -137,7 +137,8 @@ public class Monster {
         luckUp = Random.Range((int)monsterPattern.luckUp.x, (int)monsterPattern.luckUp.y);
         speedUp = Random.Range((int)monsterPattern.speedUp.x, (int)monsterPattern.speedUp.y);
 
-        DisplayUtility.DisplayLevelUpWindow(this, lifeUp, staminaUp, mightUp, resUp, luckUp, speedUp);
+        if (!force)
+            DisplayUtility.DisplayLevelUpWindow(this, lifeUp, staminaUp, mightUp, resUp, luckUp, speedUp);
 
         maxLife += lifeUp;
         maxStamina += staminaUp;
@@ -165,8 +166,8 @@ public class Monster {
             if (lvl >= monsterPattern.evolveLevel) {
                 for (int i = 0; i < monsterPattern.evolveStatsNbLvlSimulate; ++i) {
                     maxLife += Random.Range((int)monsterPattern.lifeUp.x, (int)monsterPattern.lifeUp.y);
-			        maxStamina += Random.Range((int)monsterPattern.staminaUp.x, (int)monsterPattern.staminaUp.y);
-			        stat_might += Random.Range((int)monsterPattern.mightUp.x, (int)monsterPattern.mightUp.y);
+                    maxStamina += Random.Range((int)monsterPattern.staminaUp.x, (int)monsterPattern.staminaUp.y);
+                    stat_might += Random.Range((int)monsterPattern.mightUp.x, (int)monsterPattern.mightUp.y);
                     stat_resistance += Random.Range((int)monsterPattern.resistanceUp.x, (int)monsterPattern.resistanceUp.y);
                     stat_luck += Random.Range((int)monsterPattern.luckUp.x, (int)monsterPattern.luckUp.y);
                     stat_speed += Random.Range((int)monsterPattern.speedUp.x, (int)monsterPattern.speedUp.y);
@@ -176,7 +177,7 @@ public class Monster {
             }
         }
 
-		life = REFILL_LIFE_LVL_UP ? maxLife : life + lifeUp;
+        life = REFILL_LIFE_LVL_UP ? maxLife : life + lifeUp;
         stamina = REFILL_STAMINA_LVL_UP ? maxStamina : stamina + staminaUp;
     }
 

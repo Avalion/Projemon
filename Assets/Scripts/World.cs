@@ -277,7 +277,6 @@ public class World : MonoBehaviour {
     public MapObject GetMapObjectById(int _mapObjectId) {
         if (_mapObjectId == -1)
             return Player.Current;
-
         return currentMap.mapObjects.Find(MO => MO.mapObjectId == _mapObjectId);
     } 
     

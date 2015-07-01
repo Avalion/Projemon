@@ -25,6 +25,12 @@ public class DisplayUtility {
         }
 
         public override void Display() {
+            // TODO : Handle to quit only one. Add an Event Validate and pass it to false at the first use each frame
+            if (InputManager.Current.GetKeyDown(KeyCode.Return)) {
+                DestroyImmediate(gameObject);
+                return;
+            }
+            
             GUILayout.BeginArea(Rect);
             InterfaceUtility.BeginBox(GUILayout.Width(Rect.width), GUILayout.Height(Rect.height));
 

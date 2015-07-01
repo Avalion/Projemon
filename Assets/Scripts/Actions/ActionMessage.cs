@@ -41,7 +41,7 @@ public class ActionMessage : MapObjectAction {
     }
 
     public override string InLine() {
-        return "Message : " + message;
+        return "Message : " + (message.Length > 25 ? message.Substring(0,25) + "(...)" : message);
     }
     public override string Serialize() {
         return GetType().ToString() + "|" + (face == null ? "" : face.name) + "|" + message + "|" + faceOnRight + "|" + maxDuration + "|" + (int)placement;

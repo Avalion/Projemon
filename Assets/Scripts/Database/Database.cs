@@ -215,4 +215,15 @@ public class DataBase {
     public static bool GetState(int _id) { return SelectById<DBState>(_id).value; }
     public static bool GetState(string _name) { return SelectUnique<DBState>("name=" + _name).value; }
     public static void SetState(int _id, bool _value) { Update<DBState>("value", _value, "id=" + _id); }
+
+    // Utility
+    public static string GetUniqueMapObjectName(string pattern) {
+        int n = 0;
+        while (true) {
+            string name = pattern + (n > 0 ? " " + n : "");
+            if (Select<DBMapObject>("name=" + name).Count == 0)
+                return name;
+            n++;
+        }
+    }
 }

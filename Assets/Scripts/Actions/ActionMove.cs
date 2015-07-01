@@ -6,15 +6,16 @@ using System.Collections.Generic;
  */
 public class ActionMove : MapObjectAction {
     public int targetId;
-    public MapObject target;
+    public MapObject target = null;
     public List<MapObject.PossibleMovement> movements = new List<MapObject.PossibleMovement>();
 
     public ActionMove() {
-        target = Player.Current;
+        targetId = -1;
         movements.Add(MapObject.PossibleMovement.NULL);
     }
     public ActionMove(MapObject _target, List<MapObject.PossibleMovement> _movements, bool _waitForEnd = true) {
         target = _target;
+        targetId = _target.mapObjectId;
         movements = _movements;
         waitForEnd = _waitForEnd;
         movements.Add(MapObject.PossibleMovement.NULL);
@@ -29,6 +30,8 @@ public class ActionMove : MapObjectAction {
     }
 
     public override string InLine() {
+        if (target == null)
+            target = World.Current.GetMapObjectById(targetId);
         return target.name + " move : " + movements[0].ToString() + (movements.Count > 1 ? "(...)" : "")+".";
     }
 
@@ -45,6 +48,7 @@ public class ActionMove : MapObjectAction {
             throw new System.Exception("SerializationError : elements count doesn't match... " + s);
 
         targetId = int.Parse(values[1]);
+        
         movements.Clear();
         for (int i = 2; i < values.Length; ++i)
             movements.Add((MapObject.PossibleMovement)int.Parse(values[i]));

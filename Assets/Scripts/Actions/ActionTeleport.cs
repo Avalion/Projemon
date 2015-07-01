@@ -11,6 +11,8 @@ public class ActionTeleport : MapObjectAction {
 
     public ActionTeleport() {
         mapObjectId = Player.Current.mapObjectId;
+		if (World.Current.currentMap != null)
+        	mapID = World.Current.currentMap.ID;
     }
     public ActionTeleport(MapObject _target, MapObject.Orientation _orientation, int _mapID, Vector2 _arrival) {
         mapObjectId = _target.mapObjectId;

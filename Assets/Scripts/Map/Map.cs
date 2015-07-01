@@ -83,7 +83,6 @@ public class Map {
         UpdateVisibleList(Vector2.zero);
     }
 
-
     public void Display() {
         Vector2 delta = (Player.Current.lerp * World.Current.m_scrolling);
         delta = new Vector2(delta.x * Resolution.x, delta.y * Resolution.y);

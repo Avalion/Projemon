@@ -338,7 +338,12 @@ public class MapObjectKreator : EditorWindow {
         GUILayout.Label("TODO : Display a list of monsterPattern : cf DisplayEditor(ActionMove)");
     }
     private void DisplayEditor(ActionMove a) {
-        a.targetId = UtilityEditor.MapObjectField("Target", a.targetId, true);
+        int value = UtilityEditor.MapObjectField("Target", a.targetId, true);
+        if (value != a.targetId) {
+            a.targetId = value;
+            a.target = World.Current.GetMapObjectById(a.targetId);
+        }
+        
 
         for (int i = 0; i < a.movements.Count; i++) {
             GUILayout.BeginHorizontal();

@@ -265,6 +265,11 @@ public class Map {
         sr.Dispose();
     }
 
+    public static bool Exists(int id) {
+        string filePath = Config.GetConfigPath(IMAGE_FOLDER) + id + ".txt";
+        return File.Exists(filePath);
+    }
+
     public void ImportName() {
         string filePath = Config.GetConfigPath(IMAGE_FOLDER) + ID + ".txt";
 

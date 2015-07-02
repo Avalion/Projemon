@@ -61,6 +61,11 @@ public class Map {
 
             return mapCoords.y.CompareTo(other.mapCoords.y);
         }
+
+        public void Dispose() {
+            Texture2D.Destroy(image);
+            image = null;
+        }
     }
 
     public List<Tile> tiles = new List<Tile>();
@@ -71,8 +76,10 @@ public class Map {
     public Map(int _id) {
         this.ID = _id;
 
-        SetSize(50, 30);
+        ImportName();
+    }
 
+    public void Load() {
         Import();
 
         SortTiles();
@@ -82,6 +89,24 @@ public class Map {
 
         UpdateVisibleList(Vector2.zero);
     }
+
+    public void Dispose() {
+        VisibleTiles.Clear();
+        
+        foreach (Tile t in tiles) {
+            t.Dispose();
+        }
+        tiles.Clear();
+        tiles = null;
+
+        foreach (MapObject obj in mapObjects) {
+            obj.Dispose();
+        }
+        mapObjects.Clear();
+        mapObjects = null;
+    }
+
+
 
     public void Display() {
         Vector2 delta = (Player.Current.lerp * World.Current.m_scrolling);
@@ -235,6 +260,26 @@ public class Map {
         } catch { }
         line = sr.ReadLine();
 
+
+        sr.Close();
+        sr.Dispose();
+    }
+
+    public void ImportName() {
+        string filePath = Config.GetConfigPath(IMAGE_FOLDER) + ID + ".txt";
+
+        if (!File.Exists(filePath))
+            throw new System.Exception("Try to load a map with inexistant ID : " + ID);
+
+        StreamReader sr = new StreamReader(filePath);
+
+        // Read title
+        sr.ReadLine();
+        sr.ReadLine();
+        sr.ReadLine();
+
+        // Read file info
+        name = sr.ReadLine();
 
         sr.Close();
         sr.Dispose();

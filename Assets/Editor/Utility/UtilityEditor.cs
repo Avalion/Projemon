@@ -46,7 +46,18 @@ public class UtilityEditor {
         return _elements[index].ID;
     }
 
-    
+
+    public static int MapField(string label, int _mapId, params GUILayoutOption[] _options) {
+        List<int> ids = new List<int>();
+        List<string> names = new List<string>();
+
+        foreach (Map mo in SystemDatas.GetMaps()) {
+            ids.Add(mo.ID);
+            names.Add(InterfaceUtility.IntString(mo.ID + 1, 3) + ": " + mo.name);
+        }
+
+        return EditorGUILayout.IntPopup(label, _mapId, names.ToArray(), ids.ToArray(), _options);
+    }
     public static int MapObjectField(string label, int _mapObjectId, bool includePlayer, params GUILayoutOption[] _options) {
         List<int> ids = new List<int>();
         List<string> names = new List<string>();
@@ -66,8 +77,7 @@ public class UtilityEditor {
             names.Insert(0, "Player");
         }
 
-        _mapObjectId = EditorGUILayout.IntPopup(label, _mapObjectId, names.ToArray(), ids.ToArray(), _options);
-        return _mapObjectId;
+        return EditorGUILayout.IntPopup(label, _mapObjectId, names.ToArray(), ids.ToArray(), _options);
     }
     public static int MonsterPatternField(string label, int _varId, params GUILayoutOption[] _options) {
         List<int> ids = new List<int>();
@@ -75,7 +85,7 @@ public class UtilityEditor {
 
         foreach (DBMonsterPattern monster in DataBase.Select<DBMonsterPattern>()) {
             ids.Add(monster.ID);
-            names.Add(monster.ID + ": " + monster.name);
+            names.Add(InterfaceUtility.IntString(monster.ID + 1, 3) + ": " + monster.name);
         }
 
         if (label == "")
@@ -89,7 +99,7 @@ public class UtilityEditor {
 
         foreach (DBState state in DataBase.Select<DBState>()) {
             ids.Add(state.ID);
-            names.Add(state.ID + ": " + state.name);
+            names.Add(InterfaceUtility.IntString(state.ID + 1, 3) + ": " + state.name);
         }
 
         if (label == "")
@@ -101,9 +111,9 @@ public class UtilityEditor {
         List<int> ids = new List<int>();
         List<string> names = new List<string>();
 
-        foreach (DBVariable state in DataBase.Select<DBVariable>()) {
-            ids.Add(state.ID);
-            names.Add(state.ID + ": " + state.name);
+        foreach (DBVariable var in DataBase.Select<DBVariable>()) {
+            ids.Add(var.ID);
+            names.Add(InterfaceUtility.IntString(var.ID + 1, 3) + ": " + var.name);
         }
 
         if (label == null)

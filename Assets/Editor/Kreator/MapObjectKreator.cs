@@ -475,13 +475,13 @@ public class MapObjectKreator : EditorWindow {
         }
     }
     private void DisplayEditor(ActionTeleport a) {
-        a.mapObjectId = UtilityEditor.MapObjectField("Target : ", a.mapObjectId, false);
+        a.mapObjectId = UtilityEditor.MapObjectField("Target : ", a.mapObjectId, true);
 
-        GUILayout.Label("TODO : Choisir une map à afficher, pouvoir choisir une position et une orientation");
+        a.mapID = UtilityEditor.MapField("Map", a.mapID);
+        GUILayout.Label("TODO : afficher la map, pouvoir choisir une position et une orientation");
 
-        a.mapID = EditorGUILayout.IntField("Map", a.mapID);
         a.arrival = EditorGUILayout.Vector2Field("Arrival", a.arrival);
-        a.orientation = (MapObject.Orientation)EditorGUILayout.EnumPopup(a.orientation);
+        a.orientation = (MapObject.Orientation)EditorGUILayout.EnumPopup("Orientation", a.orientation);
     }
     private void DisplayEditor(ActionWait a) {
         a.duration = Mathf.Max(0, EditorGUILayout.FloatField("Time", a.duration));

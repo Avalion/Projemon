@@ -194,12 +194,16 @@ public class World : MonoBehaviour {
         LoadMap(mapId, Vector2.zero);
     }
     public void LoadMap(int mapId, Vector2 _arrival) {
-        currentMap = null;
+        if (currentMap != null) {
+            currentMap.Dispose();
+            currentMap = null;
+        }
 
         Resources.UnloadUnusedAssets();
         InterfaceUtility.ClearAllCache();
 
         currentMap = new Map(mapId);
+        currentMap.Load();
 
         m_scrolling = Vector2.zero;
         while (m_coordsOffset.x > 0 && _arrival.x <= m_coordsOffset.x + 2) m_coordsOffset.x += -1;

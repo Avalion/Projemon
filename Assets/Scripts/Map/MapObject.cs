@@ -84,8 +84,7 @@ public class MapObject {
     [HideInInspector] public float lerp = 0;
 
     public List<MapObjectAction> actions = new List<MapObjectAction>();
-    [HideInInspector] 
-    public bool isRunning = false;
+    [HideInInspector] public bool isRunning = false;
 
 
     public void OnStart() {
@@ -447,5 +446,13 @@ public class MapObject {
         }
 
         return m;
+    }
+
+    public void Dispose() {
+        Texture2D.Destroy(sprite);
+        sprite = null;
+
+        actions.Clear();
+        actions = null;
     }
 }

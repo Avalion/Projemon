@@ -837,9 +837,11 @@ public class MapKreator : EditorWindow {
 
         mapScrollPos = Vector2.zero;
 
-        World.Current.currentMap = elements[selectedElement];
+        World.Current.currentMap = current;
 
         currentMapSize = current.Size;
+
+        current.Load();
     }
 
     private bool IsVisible(Vector2 coords) {

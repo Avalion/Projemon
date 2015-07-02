@@ -72,7 +72,6 @@ public class SystemDatas {
     }
 
     public static List<Map> GetMaps() {
-        // TODO : Optimize this !!!!!
         List<Map> maps = new List<Map>();
         foreach (string s in GetDirectoryFiles(Config.GetConfigPath(Map.IMAGE_FOLDER)))
             maps.Add(new Map(int.Parse(Path.GetFileNameWithoutExtension(s))));

@@ -320,6 +320,7 @@ public class InterfaceUtility {
 
         try {
             Texture2D tex = Resources.LoadAssetAtPath(_relativePath, typeof(Texture2D)) as Texture2D;
+            tex.wrapMode = TextureWrapMode.Clamp;
             if (Application.isPlaying) loaded.Add(_relativePath, tex);
             return tex;
         } catch { Debug.LogError("File not found at " + _relativePath); }
@@ -332,6 +333,7 @@ public class InterfaceUtility {
             return inverted[serializedId];
         
         Texture2D tex = new Texture2D(_texture.width, _texture.height);
+        tex.wrapMode = TextureWrapMode.Clamp;
 
         Color[] pixels = _texture.GetPixels();
         Color[] newPixels = _texture.GetPixels();
@@ -360,6 +362,7 @@ public class InterfaceUtility {
             return separated[serializedId];
         
         Texture2D tex = new Texture2D(_resolutionX, _resolutionY);
+        tex.wrapMode = TextureWrapMode.Clamp;
         tex.name = serializedId;
         
         Color[] _pixels = _texture.GetPixels(x * _resolutionX, _texture.height - (y + 1) * _resolutionY, _resolutionX, _resolutionY);

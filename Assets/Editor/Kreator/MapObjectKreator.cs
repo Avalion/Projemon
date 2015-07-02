@@ -5,7 +5,9 @@ using System.Collections.Generic;
 public class MapObjectKreator : EditorWindow {
     public static bool isOpen = false;
     
-    private MapObject m_target = null;
+    private MapObject target = null;
+
+    private Map displayMap = null;
 
     private int selectedElement = -1;
 
@@ -26,7 +28,7 @@ public class MapObjectKreator : EditorWindow {
         MapObjectKreator window = EditorWindow.GetWindow<MapObjectKreator>();
         window.minSize = new Vector2(1000, 500);
         window.maxSize = new Vector2(1000, 501);
-        window.m_target = mo;
+        window.target = mo;
         window.Show();
 
         InitStyles();
@@ -69,7 +71,7 @@ public class MapObjectKreator : EditorWindow {
     }
 
     public void OnGUI() {
-        if (m_target == null) {
+        if (target == null) {
             Close();
             return;
         }
@@ -82,30 +84,30 @@ public class MapObjectKreator : EditorWindow {
         
         
         GUILayout.BeginHorizontal();
-        GUILayout.Label(m_target.Sprite, InterfaceUtility.CenteredStyle, GUILayout.Width(70), GUILayout.Height(70));
+        GUILayout.Label(target.Sprite, InterfaceUtility.CenteredStyle, GUILayout.Width(70), GUILayout.Height(70));
 
         GUILayout.BeginVertical();
         GUILayout.Space(5);
         
         GUILayout.BeginHorizontal();
         GUILayout.Label("Name", GUILayout.Width(100));
-        m_target.name = EditorGUILayout.TextField(m_target.name);
+        target.name = EditorGUILayout.TextField(target.name);
         GUILayout.EndHorizontal();
         
         GUILayout.Space(5);
         
         GUILayout.BeginHorizontal();
         GUILayout.Label("Sprite", GUILayout.Width(100));
-        string val = sprites[EditorGUILayout.Popup((m_target.sprite == null ? 0 : sprites.IndexOf(m_target.spritePath)), sprites.ToArray())];
-        if (val != m_target.spritePath) {
-            m_target.spritePath = val;
-            m_target.sprite = null;
+        string val = sprites[EditorGUILayout.Popup((target.sprite == null ? 0 : sprites.IndexOf(target.spritePath)), sprites.ToArray())];
+        if (val != target.spritePath) {
+            target.spritePath = val;
+            target.sprite = null;
         }
         GUILayout.EndHorizontal();
         
         GUILayout.BeginHorizontal();
         GUILayout.Label("Orientation", GUILayout.Width(100));
-        m_target.orientation = (MapObject.Orientation)EditorGUILayout.EnumPopup(m_target.orientation);
+        target.orientation = (MapObject.Orientation)EditorGUILayout.EnumPopup(target.orientation);
         GUILayout.EndHorizontal();
 
         GUILayout.Space(5);
@@ -114,22 +116,22 @@ public class MapObjectKreator : EditorWindow {
 
         GUILayout.BeginHorizontal();
         GUILayout.Label("Layer", GUILayout.Width(100));
-        m_target.layer = (MapObject.Layer)EditorGUILayout.EnumPopup(m_target.layer);
+        target.layer = (MapObject.Layer)EditorGUILayout.EnumPopup(target.layer);
         GUILayout.EndHorizontal();
 
         GUILayout.BeginHorizontal();
         GUILayout.Label("Speed", GUILayout.Width(100));
-        m_target.speed = (MapObject.MovementSpeed)EditorGUILayout.EnumPopup(m_target.speed);
+        target.speed = (MapObject.MovementSpeed)EditorGUILayout.EnumPopup(target.speed);
         GUILayout.EndHorizontal();
 
         GUILayout.BeginHorizontal();
         GUILayout.Label("Allow Pass Through", GUILayout.Width(100));
-        m_target.allowPassThrough = EditorGUILayout.Toggle(m_target.allowPassThrough);
+        target.allowPassThrough = EditorGUILayout.Toggle(target.allowPassThrough);
         GUILayout.EndHorizontal();
 
         GUILayout.BeginHorizontal();
         GUILayout.Label("Fixed Orientation", GUILayout.Width(100));
-        m_target.fixedOrientation = EditorGUILayout.Toggle(m_target.fixedOrientation);
+        target.fixedOrientation = EditorGUILayout.Toggle(target.fixedOrientation);
         GUILayout.EndHorizontal();
         
         GUILayout.EndVertical();
@@ -140,26 +142,26 @@ public class MapObjectKreator : EditorWindow {
         
         GUILayout.BeginHorizontal();
         GUILayout.Label("ExecCondition", GUILayout.Width(170));
-        m_target.execCondition = (MapObject.ExecutionCondition)EditorGUILayout.EnumPopup(m_target.execCondition);
+        target.execCondition = (MapObject.ExecutionCondition)EditorGUILayout.EnumPopup(target.execCondition);
         GUILayout.EndHorizontal();
 
-        if (m_target.execCondition == MapObject.ExecutionCondition.Distance || m_target.execCondition == MapObject.ExecutionCondition.DistanceFace) {
+        if (target.execCondition == MapObject.ExecutionCondition.Distance || target.execCondition == MapObject.ExecutionCondition.DistanceFace) {
             GUILayout.BeginHorizontal();
             GUILayout.Label("Distance", GUILayout.Width(170));
-            m_target.actionDistance = EditorGUILayout.IntField(m_target.actionDistance);
+            target.actionDistance = EditorGUILayout.IntField(target.actionDistance);
             GUILayout.EndHorizontal();
         }
 
         scrollPosList = GUILayout.BeginScrollView(scrollPosList);
         GUILayout.BeginVertical();
-        for (int i = 0; i < m_target.actions.Count; ++i) {
-            MapObjectAction a = m_target.actions[i];
+        for (int i = 0; i < target.actions.Count; ++i) {
+            MapObjectAction a = target.actions[i];
             GUILayout.BeginHorizontal();
             
             GUI.enabled = (i != 0);
             if (GUILayout.Button("↑", GUILayout.Width(20))) {
-                m_target.actions.Insert(i - 1, a);
-                m_target.actions.RemoveAt(i + 1);
+                target.actions.Insert(i - 1, a);
+                target.actions.RemoveAt(i + 1);
                 if (selectedElement == i)
                     selectedElement--;
                 else if (selectedElement == i - 1)
@@ -167,10 +169,10 @@ public class MapObjectKreator : EditorWindow {
                 GUIUtility.ExitGUI();
                 return;
             }
-            GUI.enabled = (i != m_target.actions.Count - 1);
+            GUI.enabled = (i != target.actions.Count - 1);
             if (GUILayout.Button("↓", GUILayout.Width(20))) {
-                m_target.actions.Insert(i + 2, a);
-                m_target.actions.RemoveAt(i);
+                target.actions.Insert(i + 2, a);
+                target.actions.RemoveAt(i);
                 if (selectedElement == i)
                     selectedElement++;
                 else if (selectedElement == i + 1)
@@ -184,7 +186,7 @@ public class MapObjectKreator : EditorWindow {
                 selectedElement = i;
             }
             if (GUILayout.Button("X", GUILayout.Width(30))) {
-                m_target.actions.Remove(a);
+                target.actions.Remove(a);
                 if (selectedElement == i)
                     selectedElement = -1;
                 GUIUtility.ExitGUI();
@@ -196,11 +198,11 @@ public class MapObjectKreator : EditorWindow {
 
         int value = EditorGUILayout.Popup(0, actionTypes);
         if (value != 0) {
-            m_target.actions.Add(System.Activator.CreateInstance(Types.GetType(actionTypes[value], "Assembly-CSharp")) as MapObjectAction);
-            selectedElement = m_target.actions.Count - 1;
+            target.actions.Add(System.Activator.CreateInstance(Types.GetType(actionTypes[value], "Assembly-CSharp")) as MapObjectAction);
+            selectedElement = target.actions.Count - 1;
 
             if (Types.GetType(actionTypes[value], "Assembly-CSharp") == typeof(ActionMove))
-                (m_target.actions[selectedElement] as ActionMove).targetId = m_target.mapObjectId;
+                (target.actions[selectedElement] as ActionMove).targetId = target.mapObjectId;
         }
         
         GUILayout.EndVertical();
@@ -211,8 +213,8 @@ public class MapObjectKreator : EditorWindow {
         GUILayout.BeginVertical();
         scrollPosEdit = GUILayout.BeginScrollView(scrollPosEdit);
         GUILayout.BeginVertical();
-        if (selectedElement >= 0 && selectedElement < m_target.actions.Count) {
-            EditDisplay(m_target.actions[selectedElement]);
+        if (selectedElement >= 0 && selectedElement < target.actions.Count) {
+            EditDisplay(target.actions[selectedElement]);
         }
         GUILayout.EndVertical();
         GUILayout.EndScrollView();
@@ -477,10 +479,58 @@ public class MapObjectKreator : EditorWindow {
     private void DisplayEditor(ActionTeleport a) {
         a.mapObjectId = UtilityEditor.MapObjectField("Target : ", a.mapObjectId, true);
 
+        GUI.changed = false;
         a.mapID = UtilityEditor.MapField("Map", a.mapID);
-        GUILayout.Label("TODO : afficher la map, pouvoir choisir une position et une orientation");
+        if (GUI.changed) {
+            displayMap.Dispose();
+            displayMap = null;
+        }
 
-        a.arrival = EditorGUILayout.Vector2Field("Arrival", a.arrival);
+        if (displayMap == null && Map.Exists(a.mapID)) {
+            displayMap = new Map(a.mapID);
+            displayMap.Load();
+        }
+
+        if (displayMap != null) {
+            int width = Mathf.RoundToInt(Screen.width / 3f) - 10;
+            int height = Mathf.RoundToInt(width * 9 / 16f);
+
+            GUI.BeginGroup(GUILayoutUtility.GetRect(width, height));
+
+            Vector2 resolution = new Vector2(width / (int)displayMap.Size.x, height / (int)displayMap.Size.y);
+
+            // Map
+            for (int layer = 0; layer < 3; layer++) {
+                foreach (Map.Tile tile in displayMap.GetTiles(layer)) {
+                    if (tile.Image != null) {
+                        GUI.DrawTexture(new Rect(resolution.x * tile.mapCoords.x, resolution.y * tile.mapCoords.y, resolution.x, resolution.y), tile.Image);
+                        if (GUI.Button(new Rect(resolution.x * tile.mapCoords.x, resolution.y * tile.mapCoords.y, resolution.x, resolution.y), "", InterfaceUtility.EmptyStyle)) {
+                            a.arrival = tile.mapCoords;
+                        }
+                    }
+                }
+            }
+            for (int i = 1; i < displayMap.Size.x; i++)
+                EditorGUI.DrawRect(new Rect(i * resolution.x - 1, 0, 1, height), Color.black);
+            for (int i = 1; i < displayMap.Size.y; i++)
+                EditorGUI.DrawRect(new Rect(0, i * resolution.y - 1, width, 1), Color.black);
+
+            foreach (MapObject mo in displayMap.mapObjects) {
+                UtilityEditor.DrawEmptyRect(new Rect(resolution.x * mo.mapCoords.x, resolution.y * mo.mapCoords.y, resolution.x - 1, resolution.y - 1), Mathf.RoundToInt(resolution.x / 5f), Color.gray);
+            }
+
+            UtilityEditor.DrawEmptyRect(new Rect(resolution.x * a.arrival.x, resolution.y * a.arrival.y, resolution.x - 1, resolution.y - 1), Mathf.RoundToInt(resolution.x / 4f), Color.red);
+
+            GUI.EndGroup();
+        }
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Arrival", GUILayout.Width(80));
+        GUILayout.Label("X", GUILayout.Width(20));
+        a.arrival.x = Mathf.Clamp(EditorGUILayout.IntField((int)a.arrival.x), 0, displayMap.Size.x);
+        GUILayout.Label("Y", GUILayout.Width(20));
+        a.arrival.y = Mathf.Clamp(EditorGUILayout.IntField((int)a.arrival.y), 0, displayMap.Size.y);
+        GUILayout.EndHorizontal();
         a.orientation = (MapObject.Orientation)EditorGUILayout.EnumPopup("Orientation", a.orientation);
     }
     private void DisplayEditor(ActionWait a) {

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Text.RegularExpressions;
 
 /**
  * This action will display a Message
@@ -57,6 +58,12 @@ public class ActionMessage : MapObjectAction {
         maxDuration = float.Parse(values[4]);
         placement = (Placement)int.Parse(values[5]);
     }
+
+    public static string Decode(string _message) {
+        // TODO : replace KeyWords or KeyCharacters by their values (variable, ou variable analysé (nom de MapObject ou de MonsterPattern ou de Monster)
+
+        return _message;
+    }
 }
 
 public class ActionMessageDisplay : IDisplayable {
@@ -71,6 +78,9 @@ public class ActionMessageDisplay : IDisplayable {
 
     public float timeCount = 0;
 
+    private string formatedMessage = "";
+
+
     public void Start() {
         if (duration < 0)
             duration = 0.05f * action.message.Length;
@@ -82,6 +92,8 @@ public class ActionMessageDisplay : IDisplayable {
         messageStyle.normal.textColor = Color.white;
         headStyle = new GUIStyle();
         headStyle.normal.background = action.face;
+
+        formatedMessage = ActionMessage.Decode(action.message);
     }
 
     public void Update() {
@@ -113,8 +125,6 @@ public class ActionMessageDisplay : IDisplayable {
     }
 
     public override void Display() {
-        // TODO : replace KeyWords or KeyCharacters by their values (variable, ou variable analysé (nom de MapObject ou de MonsterPattern ou de Monster)
-
         Rect area = new Rect(0, 0, Screen.width, ActionMessage.MESSAGE_HEIGHT);
         if (action.placement == ActionMessage.Placement.Top)
             area.y = 0;
@@ -130,7 +140,7 @@ public class ActionMessageDisplay : IDisplayable {
             GUILayout.Label("", headStyle, GUILayout.Width(ActionMessage.MESSAGE_HEIGHT - 30), GUILayout.Height(ActionMessage.MESSAGE_HEIGHT - 30));
             GUILayout.Space(20);
         }
-        string m = action.message;
+        string m = formatedMessage;
         m = m.Substring(0, Mathf.RoundToInt(lerp * m.Length));
         GUILayout.Label(m, messageStyle);
         if (action.face != null && action.faceOnRight) {

@@ -3,10 +3,10 @@
 public class ActionSetVariable : MapObjectAction {
     public int varId = -1;
 
-    // TODO : MonsterIndex (get from PatternID), 
-    //        MonsterPattern (get from Player.monsters index), 
-    //        MonsterExp (get from Player.monsters index) !
-    public enum Mode { Value, Random, Variable, MOPositionX, MOPositionY, MOOrientation, Gold, TeamCount, CollectionCount, EncouteredCount, MonsterLevel }
+    public enum Mode { Value, Random, Variable, 
+                       MOPositionX, MOPositionY, MOOrientation, Gold, 
+                       TeamCount, CollectionCount, EncouteredCount, 
+                       MonsterLevel, MonsterPattern, MonsterIndex, MonsterExpRequired }
     public Mode mode = Mode.Value;
 
     public enum SetMode { Set, Add, Minus, Mult, Divide, Mod }
@@ -54,6 +54,12 @@ public class ActionSetVariable : MapObjectAction {
                 realValue = MonsterCollection.encounteredMonsters.Count; break;
             case Mode.MonsterLevel:   if (Player.Current.monsters.Count < value) throw new System.Exception("UnexpectedError: couldn't refer to monster n°" + value + ". Please Encapsulate this in a IfCondition."); 
                 realValue = Player.Current.monsters[value].lvl; break;
+            case Mode.MonsterPattern: if (Player.Current.monsters.Count < value) throw new System.Exception("UnexpectedError: couldn't refer to monster n°" + value + ". Please Encapsulate this in a IfCondition.");
+                realValue = Player.Current.monsters[value].monsterPattern.ID; break;
+            case Mode.MonsterExpRequired: if (Player.Current.monsters.Count < value) throw new System.Exception("UnexpectedError: couldn't refer to monster n°" + value + ". Please Encapsulate this in a IfCondition.");
+                realValue = Player.Current.monsters[value].expRequired[Player.Current.monsters[value].lvl] - Player.Current.monsters[value].exp; break;
+            case Mode.MonsterIndex:
+                realValue = Player.Current.monsters.FindIndex(M => M.monsterPattern.ID == value); break;
         }
 
         switch (setMode) {
@@ -73,6 +79,8 @@ public class ActionSetVariable : MapObjectAction {
 
 
         DataBase.SetVariable(varId, realValue);
+
+        Terminate();
     }
 
     public override string InLine() {

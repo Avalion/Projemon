@@ -13,6 +13,8 @@ public class ActionSetState : MapObjectAction {
             return;
 
         DataBase.SetState(stateId, value);
+
+        Terminate();
     }
 
     public override string InLine() {

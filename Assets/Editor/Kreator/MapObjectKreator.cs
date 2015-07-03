@@ -472,8 +472,11 @@ public class MapObjectKreator : EditorWindow {
             case ActionSetVariable.Mode.EncouteredCount:
                 break;
             case ActionSetVariable.Mode.MonsterLevel:
-                a.value = Mathf.Clamp(EditorGUILayout.IntField("Monster", a.value), 0, 6);
-                break;
+            case ActionSetVariable.Mode.MonsterPattern:
+            case ActionSetVariable.Mode.MonsterExpRequired:
+                a.value = Mathf.Clamp(EditorGUILayout.IntField("Monster", a.value), 0, 6); break;
+            case ActionSetVariable.Mode.MonsterIndex:
+                a.value = UtilityEditor.MonsterPatternField("Pattern", a.value); break;
         }
     }
     private void DisplayEditor(ActionTeleport a) {

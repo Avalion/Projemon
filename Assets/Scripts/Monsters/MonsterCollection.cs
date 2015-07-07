@@ -11,7 +11,6 @@ public class MonsterCollection {
             encounteredMonsters.Add(m.ID);
 
         m.encountered = true;
-        DataBase.Update<DBMonsterPattern>("encoutered", true, "id=" + m.ID);
     }
     public static void AddToCollection(Monster m) {
         Encounter(m.monsterPattern);
@@ -42,6 +41,15 @@ public class MonsterCollection {
     }
 
     // Get Lists from DB
+    public static void Save() {
+        foreach (int patternId in encounteredMonsters)
+            DataBase.Update<DBMonsterPattern>("encountered", true, "id=" + patternId);
+
+        DataBase.Delete<DBMonster>();
+        foreach (Monster monster in capturedMonsters) {
+            DataBase.Insert<DBMonster>(DBMonster.ConvertFrom(monster));
+        }
+    }
     public static void Load() {
         encounteredMonsters = new List<int>();
         capturedMonsters = new List<Monster>();

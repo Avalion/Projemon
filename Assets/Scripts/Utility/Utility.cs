@@ -25,10 +25,7 @@ public class Utility {
         sw.Close();
     }
 
-    /** 
-     *   convert hexa color code ( ex : #000000 ) to unityengine color
-     *  @param _value hexa color value
-     *  @return Color 
+    /** Color as Strings
      */
     public static string ConvertColorToHexa(Color32 _color) {
         //We use Color32 because ToString("x") is not working with Color.
@@ -120,6 +117,25 @@ public class Utility {
         return value <= max && value >= min;
     }
 
+    /** Types
+     */
+    public static Color GetColorFromType(Monster.Type _type) {
+        switch (_type) {
+            case Monster.Type.Water: return new Color(0.6f, 0.6f, 1f, 0.7f);
+            case Monster.Type.Fire: return new Color(1f, 0.2f, 0.2f, 0.7f);
+            case Monster.Type.Earth: return new Color(0.7f, 0.3f, 0.1f, 0.7f);
+            case Monster.Type.Air: return new Color(0.8f, 0.8f, 0.8f, 0.7f);
+            case Monster.Type.Elec: return new Color(1f, 1f, 0.6f, 0.7f);
+            case Monster.Type.Plant: return new Color(0.6f, 1f, 0.6f, 0.7f);
+            case Monster.Type.Shadow: return new Color(0.5f, 0.2f, 0.4f, 0.7f);
+            case Monster.Type.Life: return new Color(1f, 0.9f, 0.8f, 0.7f);
+            case Monster.Type.Death: return new Color(0.2f, 0.2f, 0.2f, 0.7f);
+            case Monster.Type.Stone: return new Color(0.4f, 0.4f, 0.4f, 0.7f);
+            case Monster.Type.Ice: return new Color(0.7f, 0.8f, 1f, 0.7f);
+            case Monster.Type.Metal: return new Color(0.6f, 0.6f, 0.6f, 0.7f);
+            default: return Color.black;
+        }
+    }
 
     /** GameObjects
     */

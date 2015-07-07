@@ -102,10 +102,9 @@ public class SystemDatas {
      */ 
     public static void Save() {
         // Write Player position, infos and current map
-
-
+        
         // Write monster collection
-
+        MonsterCollection.Save();
 
         // Write Event list and variables values
     }

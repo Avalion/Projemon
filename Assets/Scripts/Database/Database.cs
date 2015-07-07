@@ -65,7 +65,7 @@ public class DataBase {
         if (IsConnected) {
             m_dbConnection.Close();
         }
-
+        
         m_dbConnection = null;
     }
 
@@ -187,6 +187,8 @@ public class DataBase {
             cmd.CommandText = "SELECT last_insert_rowid();";
             SqliteDataReader reader = cmd.ExecuteReader();
             int r = reader.Read() ? reader.GetInt32(0) : -1;
+            reader.Close();
+            reader = null;
             cmd = null;
             return r;
         } catch (System.Exception e) { throw new System.Exception("SQL error with InsertLastId.", e); }
@@ -211,10 +213,12 @@ public class DataBase {
     public static int GetVariable(int _id) { return SelectById<DBVariable>(_id).value; }
     public static int GetVariable(string _name) { return SelectUnique<DBVariable>("name=" + _name).value; }
     public static void SetVariable(int _id, int _value) { Update<DBVariable>("value", _value, "id=" + _id); }
+    public static void SetVariable(int _id, string _name) { Update<DBVariable>("name", _name, "id=" + _id); }
 
     public static bool GetState(int _id) { return SelectById<DBState>(_id).value; }
     public static bool GetState(string _name) { return SelectUnique<DBState>("name=" + _name).value; }
     public static void SetState(int _id, bool _value) { Update<DBState>("value", _value, "id=" + _id); }
+    public static void SetState(int _id, string _name) { Update<DBState>("name", _name, "id=" + _id); }
 
     // Utility
     public static string GetUniqueMapObjectName(string pattern) {

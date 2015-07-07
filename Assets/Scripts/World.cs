@@ -185,7 +185,7 @@ public class World : MonoBehaviour {
         DataBase.Close();
     }
     public void OnApplicationQuit() {
-        DataBase.Close();
+        DataBase.Close(); 
     }
 
     /* Load

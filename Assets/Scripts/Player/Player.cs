@@ -23,7 +23,7 @@ public class Player : Battler {
                 scroll.name = "Capture Scroll";
                 current.actions.Add(new ActionAddItem(scroll));
 
-                Monster m = Monster.Generate(DataBase.SelectById<DBMonsterPattern>(0), 5, 5);
+                Monster m = Monster.Generate(GameData.GetPattern(0), 5, 5);
                 current.monsters.Add(m);
                 MonsterCollection.AddToCollection(m);
                 //*/

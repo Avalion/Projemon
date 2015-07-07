@@ -39,37 +39,4 @@ public class MonsterCollection {
                 return true;
         return false;
     }
-
-    // Get Lists from DB
-    public static void Save() {
-        foreach (int patternId in encounteredMonsters)
-            DataBase.Update<DBMonsterPattern>("encountered", true, "id=" + patternId);
-
-        DataBase.Delete<DBMonster>();
-        foreach (Monster monster in capturedMonsters) {
-            DataBase.Insert<DBMonster>(DBMonster.ConvertFrom(monster));
-        }
-    }
-    public static void Load() {
-        encounteredMonsters = new List<int>();
-        capturedMonsters = new List<Monster>();
-        Player.Current.monsters = new List<Monster>();
-        
-        List<DBMonsterPattern> patterns = DataBase.Select<DBMonsterPattern>("encountered=1");
-        foreach (DBMonsterPattern m in patterns) {
-            Encounter(m);
-        }
-
-        List<DBMonster> collection = DataBase.Select<DBMonster>();
-        foreach (DBMonster m in collection) {
-            Monster monster = Monster.Generate(m);
-            AddToCollection(monster);
-
-            if (m.inTeam) {
-                if (Player.Current.monsters.Count < Player.MAX_TEAM_NUMBER) {
-                    Player.Current.monsters.Add(monster);
-                }
-            }
-        }
-    }
 }

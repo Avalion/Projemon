@@ -48,12 +48,12 @@ public class VariableViewer : EditorWindow {
             str = GUILayout.TextField(state.name);
             if (str != state.name) {
                 state.name = str;
-                DataBase.SetState(state.ID, str);
+                DataBaseEditorUtility.SetState(state.ID, str);
             }
             boolval = EditorGUILayout.Toggle(state.value);
             if (boolval != state.value) {
                 state.value = boolval;
-                DataBase.SetState(state.ID, boolval);
+                DataBaseEditorUtility.SetState(state.ID, boolval);
             }
             GUILayout.EndHorizontal();
         }
@@ -71,12 +71,12 @@ public class VariableViewer : EditorWindow {
             str = GUILayout.TextField(variable.name);
             if (str != variable.name) {
                 variable.name = str;
-                DataBase.SetVariable(variable.ID, str);
+                DataBaseEditorUtility.SetVariable(variable.ID, str);
             }
             intval = EditorGUILayout.IntField(variable.value);
             if (intval != variable.value) {
                 variable.value = intval;
-                DataBase.SetVariable(variable.ID, intval);
+                DataBaseEditorUtility.SetVariable(variable.ID, intval);
             }
             GUILayout.EndHorizontal();
         }

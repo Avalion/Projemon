@@ -197,37 +197,5 @@ public class DataBase {
     public static void Vacuum() {
         ExecCommand("VACUUM");
     }
-
-    // Getters
-    public static List<DBMapObject> GetMapObjects(int _mapId) {
-        return DataBase.Select<DBMapObject>("mapId = " + _mapId);
-    }
-
-    public static List<DBMapObjectAction> GetMapObjectActions(int _mapObjectId) {
-        List<DBMapObjectAction> result = DataBase.Select<DBMapObjectAction>("mapObjectId = " + _mapObjectId);
-        result.Sort(delegate(DBMapObjectAction a, DBMapObjectAction b) { return a.executeOrder.CompareTo(b.executeOrder); });
-        return result;
-    }
-
-    // Variables And States
-    public static int GetVariable(int _id) { return SelectById<DBVariable>(_id).value; }
-    public static int GetVariable(string _name) { return SelectUnique<DBVariable>("name=" + _name).value; }
-    public static void SetVariable(int _id, int _value) { Update<DBVariable>("value", _value, "id=" + _id); }
-    public static void SetVariable(int _id, string _name) { Update<DBVariable>("name", _name, "id=" + _id); }
-
-    public static bool GetState(int _id) { return SelectById<DBState>(_id).value; }
-    public static bool GetState(string _name) { return SelectUnique<DBState>("name=" + _name).value; }
-    public static void SetState(int _id, bool _value) { Update<DBState>("value", _value, "id=" + _id); }
-    public static void SetState(int _id, string _name) { Update<DBState>("name", _name, "id=" + _id); }
-
-    // Utility
-    public static string GetUniqueMapObjectName(string pattern) {
-        int n = 0;
-        while (true) {
-            string name = pattern + (n > 0 ? " " + n : "");
-            if (Select<DBMapObject>("name=" + name).Count == 0)
-                return name;
-            n++;
-        }
-    }
+    
 }

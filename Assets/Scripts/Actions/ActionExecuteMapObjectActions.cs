@@ -19,8 +19,8 @@ public class ActionExecuteMapObjectActions : MapObjectAction {
     }
 
     public override string InLine() {
-        DBMapObject moa = DataBase.SelectById<DBMapObject>(mapObjectId);
-        return "Execute " + (mapObjectId == -1 ? "Player" : (moa != null ? mapObjectId + ":" + moa.name : "[TO DEFINE]")) + " actions.";
+        MapObject mo = World.Current.GetMapObjectById(mapObjectId);
+        return "Execute " + (mapObjectId == -1 ? "Player" : (mo != null ? mapObjectId + ":" + mo.name : "[TO DEFINE]")) + " actions.";
     }
 
     public override string Serialize() {

@@ -29,7 +29,7 @@ public class ActionMonsterBattle : MapObjectAction {
 
         List<Monster> list = new List<Monster>();
         foreach (EncounterMonster pattern in monsters)
-            list.Add(Monster.Generate(DataBase.SelectById<DBMonsterPattern>(pattern.patternId), pattern.lvlMin, pattern.lvlMax));
+            list.Add(Monster.Generate(GameData.GetPattern(pattern.patternId), pattern.lvlMin, pattern.lvlMax));
 
         Battler battler = new Battler() { name = "Wild Monster" };
         battler.monsters = list;
@@ -37,7 +37,9 @@ public class ActionMonsterBattle : MapObjectAction {
     }
 
     public override string InLine() {
-        return "Battle wild monsters : " + (monsters.Count > 0 ? DataBase.SelectById<DBMonsterPattern>(monsters[0].patternId).name : "") + (monsters.Count > 1 ? "(...)" : "") + ".";
+        // In line is an Editor feature. Database is available
+        DBMonsterPattern pattern = DataBase.SelectById<DBMonsterPattern>(monsters[0].patternId);
+        return "Battle wild monsters : " + (monsters.Count > 0 && pattern != null ? pattern.name : "") + (monsters.Count > 1 ? "(...)" : "") + ".";
     }
     public override string Serialize() {
         // TODO : Serialize list of EncounterMonster

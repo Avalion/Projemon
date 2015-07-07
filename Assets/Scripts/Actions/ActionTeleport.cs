@@ -39,22 +39,22 @@ public class ActionTeleport : MapObjectAction {
     }
 
     public override string InLine() {
+        // In line is an Editor feature. Database is available
         DBMapObject moa = DataBase.SelectById<DBMapObject>(mapObjectId);
         return "Teleport " + (mapObjectId == -1 ? "Player" : (moa != null ? mapObjectId + ":" + moa.name : "[TO DEFINE]")) + " to : " + arrival + ":" + orientation;
     }
 
     public override string Serialize() {
-        // TODO : Add MapObjectID when MapObject are into DB
-        return GetType().ToString() + "|" + (int)orientation + "|" + mapID + "|" + arrival.x + "|" + arrival.y; 
+        return GetType().ToString() + "|" + mapObjectId + "|" + (int)orientation + "|" + mapID + "|" + arrival.x + "|" + arrival.y; 
     }
     public override void Deserialize(string s) {
         string[] values = s.Split('|');
-        if (values.Length != 5)
+        if (values.Length != 6)
             throw new System.Exception("SerializationError : elements count doesn't match... " + s);
 
-        // TODO : Read and find MapObjectID when MapObject are into DB
-        orientation = (MapObject.Orientation)int.Parse(values[1]);
-        mapID = int.Parse(values[2]);
-        arrival = new Vector2(float.Parse(values[3]), float.Parse(values[4]));
+        mapObjectId = int.Parse(values[1]);
+        orientation = (MapObject.Orientation)int.Parse(values[2]);
+        mapID = int.Parse(values[3]);
+        arrival = new Vector2(float.Parse(values[4]), float.Parse(values[5]));
     }
 }

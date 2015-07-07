@@ -265,7 +265,7 @@ public class Monster {
     public static Monster Generate(DBMonster _source) {
         Monster m = new Monster();
 
-        m.monsterPattern = DataBase.SelectById<DBMonsterPattern>(_source.patternId);
+        m.monsterPattern = GameData.GetPattern(_source.patternId);
         m.monsterName = _source.nickName;
 
         m.type = _source.type;
@@ -290,10 +290,11 @@ public class Monster {
         m.miniSprite = InterfaceUtility.GetTexture(Config.GetResourcePath(IMAGE_FOLDER) + m.monsterPattern.miniSprite);
 
         try {
-            m.attacks.Add(DataBase.SelectById<DBAttack>(_source.attack1));
-            m.attacks.Add(DataBase.SelectById<DBAttack>(_source.attack2));
-            m.attacks.Add(DataBase.SelectById<DBAttack>(_source.attack3));
-            m.attacks.Add(DataBase.SelectById<DBAttack>(_source.attack4));
+            m.attacks.Add(GameData.GetAttack(_source.attack1));
+            m.attacks.Add(GameData.GetAttack(_source.attack2));
+            m.attacks.Add(GameData.GetAttack(_source.attack3));
+            m.attacks.Add(GameData.GetAttack(_source.attack4));
+            
         } catch { }
 
         return m;

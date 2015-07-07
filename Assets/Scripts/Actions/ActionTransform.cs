@@ -29,6 +29,7 @@ public class ActionTransform : MapObjectAction {
     }
 
     public override string InLine() {
+        // In line is an Editor feature. Database is available
         DBMapObject moa = DataBase.SelectById<DBMapObject>(mapObjectId);
         return "Modify sprite of " + (mapObjectId == -1 ? "Player" : (moa != null ? mapObjectId + ":" + moa.name : "[TO DEFINE]")) + " to " + newSpritePath + ".";
     }

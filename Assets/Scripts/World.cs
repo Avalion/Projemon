@@ -80,7 +80,7 @@ public class World : MonoBehaviour {
     /* Initialize
      */
     public void Awake() {
-        if (!DataBase.IsConnected) DataBase.Connect(Application.dataPath + "/database.sql");
+        GameData.Load("");
     }
 
     public void Start() {
@@ -182,10 +182,10 @@ public class World : MonoBehaviour {
     }
 
     public void OnDestroy() {
-        DataBase.Close();
+        GameData.Dispose();
     }
     public void OnApplicationQuit() {
-        DataBase.Close(); 
+        GameData.Dispose();
     }
 
     /* Load

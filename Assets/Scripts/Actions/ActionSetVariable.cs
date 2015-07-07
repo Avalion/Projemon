@@ -31,7 +31,7 @@ public class ActionSetVariable : MapObjectAction {
             case Mode.Random:
                 realValue = Random.Range(value, value2); break;
             case Mode.Variable:
-                realValue = DataBase.GetVariable(value); break;
+                realValue = GameData.GetVariable(value); break;
             case Mode.MOPositionX:
                 if (linked == null) linked = World.Current.GetMapObjectById(value);
                 if (linked == null) throw new System.Exception("UnexpectedError: Couldn't refer to a null MapObject");  
@@ -78,12 +78,13 @@ public class ActionSetVariable : MapObjectAction {
         }
 
 
-        DataBase.SetVariable(varId, realValue);
+        GameData.SetVariable(varId, realValue);
 
         Terminate();
     }
 
     public override string InLine() {
+        // In line is an Editor feature. Database is available
         DBVariable var = DataBase.SelectById<DBVariable>(varId);
         string message = "Set variable " + (var != null ? varId + ":" + var.name : "[TO DEFINE]") + " to [" + mode.ToString() + "]";
         switch (mode) {

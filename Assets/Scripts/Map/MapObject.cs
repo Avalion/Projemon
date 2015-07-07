@@ -435,7 +435,7 @@ public class MapObject {
         m.allowPassThrough = _source.allowPassThrough;
 
         // Generate actions
-        foreach (DBMapObjectAction action in DataBase.GetMapObjectActions(m.mapObjectId)) {
+        foreach (DBMapObjectAction action in GameData.LoadMapObjectActions(m.mapObjectId)) {
             MapObjectAction moa = MapObjectAction.Generate(action);
             if (moa == null) {
                 Debug.LogError("===> Skipping this action.");

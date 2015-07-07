@@ -255,7 +255,7 @@ public class MapKreator : EditorWindow {
                     GUI.enabled = mo != Player.Current;
                     if (GUILayout.Button(mo != null ? "Editer" : "Créer")) {
                         if (mo == null) {
-                            DBMapObject dbmo = new DBMapObject() { mapId = current.ID, mapCoords = selectedCoords, name = DataBase.GetUniqueMapObjectName("MapObject") };
+                            DBMapObject dbmo = new DBMapObject() { mapId = current.ID, mapCoords = selectedCoords, name = DataBaseEditorUtility.GetUniqueMapObjectName("MapObject") };
                             DataBase.Insert<DBMapObject>(dbmo);
                             dbmo.ID = DataBase.GetLastInsertId();
                             mo = MapObject.Generate(dbmo);
@@ -841,7 +841,14 @@ public class MapKreator : EditorWindow {
 
         currentMapSize = current.Size;
 
-        current.Load();
+
+        current.Import();
+
+        current.SortTiles();
+
+        current.mapObjects = DataBaseEditorUtility.GetMapObjects(current.ID);
+
+        current.UpdateVisibleList(Vector2.zero);
     }
 
     private bool IsVisible(Vector2 coords) {

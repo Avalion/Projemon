@@ -84,7 +84,7 @@ public class Map {
 
         SortTiles();
 
-        foreach (DBMapObject mo in DataBase.GetMapObjects(this.ID))
+        foreach (DBMapObject mo in GameData.LoadMapObjects(ID))
             mapObjects.Add(MapObject.Generate(mo));
 
         UpdateVisibleList(Vector2.zero);

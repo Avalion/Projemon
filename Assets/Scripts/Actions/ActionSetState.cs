@@ -12,7 +12,7 @@ public class ActionSetState : MapObjectAction {
         if (stateId < 0)
             return;
 
-        DataBase.SetState(stateId, value);
+        GameData.SetState(stateId, value);
 
         Terminate();
     }

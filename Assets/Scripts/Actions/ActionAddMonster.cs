@@ -16,7 +16,7 @@ public class ActionAddMonster : MapObjectAction {
     }
 
     public override void Execute() {
-        DBMonsterPattern pattern = DataBase.SelectById<DBMonsterPattern>(patternID);
+        DBMonsterPattern pattern = GameData.GetPattern(patternID);
         if (pattern == null) {
             Terminate();
             throw new System.Exception("Unexpected Behaviour : Trying to add a inexisting Monster type to the team...");
@@ -35,6 +35,7 @@ public class ActionAddMonster : MapObjectAction {
 
 
     public override string InLine() {
+		// In line is an Editor feature. Database is available
         DBMonsterPattern pattern = DataBase.SelectById<DBMonsterPattern>(patternID);
         return "Add Monster " + (pattern != null ? pattern.name : "[TO DEFINE]") + " at level " + lvl + ".";
     }

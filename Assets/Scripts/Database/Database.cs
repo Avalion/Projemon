@@ -1,6 +1,7 @@
 ﻿using Mono.Data.Sqlite;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
 
 public class DataBase {
     private static SqliteConnection m_dbConnection = null;
@@ -10,20 +11,24 @@ public class DataBase {
 
     // Constructors
     public static void Connect(string _filename) {
+        if (_filename == "") return;
+        
         if (IsConnected)
             Close();
 
         m_connectionString = "Version=3; Journal Mode=Off; Synchronous=OFF; temp store=3; Cache Size=10000; Page Size=4096; Data Source=" + _filename;
 
         try {
-            bool haveToBeInitialized = !File.Exists(_filename);
+            if (!Directory.Exists(Path.GetDirectoryName(_filename)))
+                Directory.CreateDirectory(Path.GetDirectoryName(_filename));
+
+            if (!File.Exists(_filename))
+                File.Copy(Application.dataPath + "/database.sql", _filename);
             
             if (m_dbConnection == null) m_dbConnection = new SqliteConnection(m_connectionString);
             if (m_dbConnection.State == 0) m_dbConnection.Open();
 
-            if (haveToBeInitialized)
-                Initialize();
-
+            
             CheckVersion();
         }
         catch (System.Exception e) { throw new System.Exception("SQL error with connectionString=" + m_connectionString, e); }
@@ -40,13 +45,16 @@ public class DataBase {
     private static void CheckVersion() {
         DBSystem system = SelectUnique<DBSystem>();
 
-        if (system.dbversion < 1) V0toV1();
-        if (system.dbversion < 2) V1toV2();
+        if (system.dbversion == 0)
+            V0();
+        else {
+            if (system.dbversion < 2) V1toV2();
+        }
 
         Update<DBSystem>("dbversion", CURRENT_DB_VERSION, "id=" + system.ID);
     }
 
-    private static void V0toV1() {
+    private static void V0() {
         ExecCommand(new DBMonster().Create());
         ExecCommand(new DBMonsterPattern().Create());
         ExecCommand(new DBAttack().Create());

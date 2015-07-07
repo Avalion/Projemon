@@ -3,13 +3,10 @@ using UnityEditor;
 using System.Collections.Generic;
 
 public class VariableViewer : EditorWindow {
-    public const int NB_COLUMNS = 2;
+    public const int NB_COLUMNS = 4;
 
-    public List<DBState> states = new List<DBState>();
     public Vector2 scrollpos_state;
-    public List<DBVariable> variables = new List<DBVariable>();
     public Vector2 scrollpos_var;
-    public List<DBMonsterPattern> patterns = new List<DBMonsterPattern>();
     public Vector2 scrollpos_monsterCollection;
     public List<DBMonster> monsters = new List<DBMonster>();
     public Vector2 scrollpos_monsterCaptured;
@@ -28,7 +25,7 @@ public class VariableViewer : EditorWindow {
     }
 
     [MenuItem("Tools/ElementsViewer", true)]
-    public static bool InitOK() { return !Application.isPlaying; }
+    public static bool InitOK() { return Application.isPlaying; }
 
     public void OnEnable() {
         Refresh();
@@ -45,7 +42,7 @@ public class VariableViewer : EditorWindow {
         GUILayout.Label("States", InterfaceUtility.TitleStyle);
         scrollpos_state = GUILayout.BeginScrollView(scrollpos_state);
 
-        foreach (DBState state in states) {
+        foreach (DBState state in GameData.dbStates) {
             GUILayout.BeginHorizontal();
             GUILayout.Label(InterfaceUtility.IntString(state.ID, 3) + " : ");
             str = GUILayout.TextField(state.name);
@@ -68,7 +65,7 @@ public class VariableViewer : EditorWindow {
         GUILayout.Label("Variables", InterfaceUtility.TitleStyle);
         scrollpos_var = GUILayout.BeginScrollView(scrollpos_var);
 
-        foreach (DBVariable variable in variables) {
+        foreach (DBVariable variable in GameData.dbVariables) {
             GUILayout.BeginHorizontal();
             GUILayout.Label(InterfaceUtility.IntString(variable.ID, 3) + " : ", GUILayout.Width(40));
             str = GUILayout.TextField(variable.name);
@@ -92,7 +89,7 @@ public class VariableViewer : EditorWindow {
         GUILayout.Label("Patterns", InterfaceUtility.TitleStyle);
         scrollpos_var = GUILayout.BeginScrollView(scrollpos_var);
         
-        foreach (DBMonsterPattern pattern in patterns) {
+        foreach (DBMonsterPattern pattern in GameData.dbMonsterPatterns) {
             GUILayout.BeginHorizontal();
             
             Color c = GUI.color;
@@ -140,7 +137,7 @@ public class VariableViewer : EditorWindow {
 
             GUILayout.BeginHorizontal();
             if (selectedMonster.attack1 != -1) {
-                DBAttack attack = DataBase.SelectById<DBAttack>(selectedMonster.attack1);
+                DBAttack attack = GameData.GetAttack(selectedMonster.attack1);
                 GUI.color = Utility.GetColorFromType(attack.type);
                 GUILayout.Label(attack.name + " (" + attack.staminaCost + ") : " + attack.power + "(" + attack.accuracy + "%)");
             } else {
@@ -148,7 +145,7 @@ public class VariableViewer : EditorWindow {
                 GUILayout.Label("");
             }
             if (selectedMonster.attack2 != -1) {
-                DBAttack attack = DataBase.SelectById<DBAttack>(selectedMonster.attack2);
+                DBAttack attack = GameData.GetAttack(selectedMonster.attack2);
                 GUI.color = Utility.GetColorFromType(attack.type);
                 GUILayout.Label(attack.name + " (" + attack.staminaCost + ") : " + attack.power + "(" + attack.accuracy + "%)");
             } else {
@@ -158,7 +155,7 @@ public class VariableViewer : EditorWindow {
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             if (selectedMonster.attack3 != -1) {
-                DBAttack attack = DataBase.SelectById<DBAttack>(selectedMonster.attack3);
+                DBAttack attack = GameData.GetAttack(selectedMonster.attack3);
                 GUI.color = Utility.GetColorFromType(attack.type);
                 GUILayout.Label(attack.name + " (" + attack.staminaCost + ") : " + attack.power + "(" + attack.accuracy + "%)");
             } else {
@@ -166,7 +163,7 @@ public class VariableViewer : EditorWindow {
                 GUILayout.Label("");
             }
             if (selectedMonster.attack4 != -1) {
-                DBAttack attack = DataBase.SelectById<DBAttack>(selectedMonster.attack4);
+                DBAttack attack = GameData.GetAttack(selectedMonster.attack4);
                 GUI.color = Utility.GetColorFromType(attack.type);
                 GUILayout.Label(attack.name + " (" + attack.staminaCost + ") : " + attack.power + "(" + attack.accuracy + "%)");
             } else {
@@ -180,12 +177,6 @@ public class VariableViewer : EditorWindow {
     }
 
     public void Refresh() {
-        if (!DataBase.IsConnected) 
-            DataBase.Connect(Application.dataPath + "/database.sql");
-        
-        states = DataBase.Select<DBState>();
-        variables = DataBase.Select<DBVariable>();
-        patterns = DataBase.Select<DBMonsterPattern>();
         Select(selectedPattern);
     }
 

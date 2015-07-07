@@ -57,6 +57,9 @@ public class MonsterKreator : EditorWindow {
         attackList = DataBase.Select<DBAttack>();
     }
 
+    [MenuItem("Creation/Monsters &M", true)]
+    public static bool InitOK() { return !Application.isPlaying; }
+
     public static void InitStyles() {
     }
 

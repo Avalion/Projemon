@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class MapKreator : EditorWindow {
     public static List<Map> elements = new List<Map>();
     public int selectedElement = 0;
-    Map current {
+    private Map current {
         get { return elements[selectedElement]; }
     }
 
@@ -35,13 +35,13 @@ public class MapKreator : EditorWindow {
     private Vector2 selectedCoords = -Vector2.one;
 
     // Display
-    public bool displayAllLayers = true;
-    public bool isDragging = false;
-    public Vector2 startDragMousePosition;
-    public bool drawRectMode = true;
-    public GUIStyle posDisplayStyle = new GUIStyle();
+    private bool displayAllLayers = true;
+    private bool isDragging = false;
+    private Vector2 startDragMousePosition;
+    private bool drawRectMode = true;
+    private GUIStyle posDisplayStyle = new GUIStyle();
     
-    bool forceMode = false;
+    private bool forceMode = false;
 
     private Vector2 currentMapSize;
 
@@ -77,6 +77,9 @@ public class MapKreator : EditorWindow {
 
         window.saved = false;
     }
+
+    [MenuItem("Creation/Maps &L", true)]
+    public static bool InitOK() { return !Application.isPlaying; }
 
     public void InitStyles() {
         posDisplayStyle = new GUIStyle();

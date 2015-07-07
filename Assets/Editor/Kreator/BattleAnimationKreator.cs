@@ -72,7 +72,10 @@ public class BattleAnimationKreator : EditorWindow {
         if (selectedFolder != "")
             UpdateImages();
     }
-    
+
+    [MenuItem("Creation/Battle Animations &B", true)]
+    public static bool InitOK() { return !Application.isPlaying; }
+
     public static void InitStyles() {
         imageStyle = new GUIStyle();
         imageStyle.padding = new RectOffset(5, 5, 3, 3);

@@ -62,6 +62,7 @@ public class MapObjectKreator : EditorWindow {
             typeof(ActionMove).ToString(), 
             typeof(ActionPlaySound).ToString(), 
             typeof(ActionRemoveItem).ToString(), 
+            typeof(ActionSave).ToString(),
             typeof(ActionSetState).ToString(),
             typeof(ActionSetVariable).ToString(), 
             typeof(ActionTeleport).ToString(), 
@@ -259,6 +260,8 @@ public class MapObjectKreator : EditorWindow {
                 DisplayEditor((ActionPlaySound)_action); break;
             case "ActionRemoveItem":
                 DisplayEditor((ActionRemoveItem)_action); break;
+            case "ActionSave":
+                DisplayEditor((ActionSave)_action); break;
             case "ActionSetState":
                 DisplayEditor((ActionSetState)_action); break;
             case "ActionSetVariable":
@@ -431,6 +434,9 @@ public class MapObjectKreator : EditorWindow {
     }
     private void DisplayEditor(ActionRemoveItem a) {
         GUILayout.Label("TODO : Display a popup with all items");
+    }
+    private void DisplayEditor(ActionSave a) {
+        
     }
     private void DisplayEditor(ActionSetState a) {
         GUILayout.BeginHorizontal();

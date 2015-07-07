@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+/**
+ * Warning ! This class is just a controller using Database script, but allowing this function only in the Editor project !
+ */
 public class DataBaseEditorUtility {
 
     // Getters

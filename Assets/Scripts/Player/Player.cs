@@ -22,10 +22,6 @@ public class Player : Battler {
                 CaptureItem scroll = new CaptureItem();
                 scroll.name = "Capture Scroll";
                 current.actions.Add(new ActionAddItem(scroll));
-
-                Monster m = Monster.Generate(GameData.GetPattern(0), 5, 5);
-                current.monsters.Add(m);
-                MonsterCollection.AddToCollection(m);
                 //*/
             }
             return current;

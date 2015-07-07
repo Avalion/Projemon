@@ -27,6 +27,9 @@ public class VariableViewer : EditorWindow {
         InterfaceUtility.ClearAllCache();
     }
 
+    [MenuItem("Tools/ElementsViewer", true)]
+    public static bool InitOK() { return !Application.isPlaying; }
+
     public void OnEnable() {
         Refresh();
     }
@@ -178,7 +181,7 @@ public class VariableViewer : EditorWindow {
 
     public void Refresh() {
         if (!DataBase.IsConnected) 
-            DataBase.Connect(Application.dataPath + (Application.isPlaying ? "/current.sql" : "/database.sql"));
+            DataBase.Connect(Application.dataPath + "/database.sql");
         
         states = DataBase.Select<DBState>();
         variables = DataBase.Select<DBVariable>();

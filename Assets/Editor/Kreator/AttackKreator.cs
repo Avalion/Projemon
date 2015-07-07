@@ -41,6 +41,9 @@ public class AttackKreator : EditorWindow {
         battleAnimations = SystemDatas.GetBattleAnimations();
     }
 
+    [MenuItem("Creation/Attacks &A", true)]
+    public static bool InitOK() { return !Application.isPlaying; }
+
     // Display
     public void OnGUI() {
         GUILayout.BeginHorizontal();

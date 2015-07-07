@@ -41,7 +41,7 @@ public class DataBase {
         ExecCommand(system.InsertInto());
     }
 
-    private static int CURRENT_DB_VERSION = 2;
+    private static int CURRENT_DB_VERSION = 3;
     private static void CheckVersion() {
         DBSystem system = SelectUnique<DBSystem>();
 
@@ -49,6 +49,7 @@ public class DataBase {
             V0();
         else {
             if (system.dbversion < 2) V1toV2();
+            if (system.dbversion < 3) V2toV3();
         }
 
         Update<DBSystem>("dbversion", CURRENT_DB_VERSION, "id=" + system.ID);
@@ -66,6 +67,14 @@ public class DataBase {
     private static void V1toV2() {
         ExecCommand("ALTER TABLE " + new DBMonsterPattern().TableName() + " ADD evolveIn integer DEFAULT -1");
         ExecCommand("ALTER TABLE " + new DBMonsterPattern().TableName() + " ADD evolveLvl integer DEFAULT -1");
+    }
+    private static void V2toV3() {
+        ExecCommand("ALTER TABLE " + new DBSystem().TableName() + " ADD playerName text DEFAULT 'Player'");
+        ExecCommand("ALTER TABLE " + new DBSystem().TableName() + " ADD playerGold integer DEFAULT 0");
+        ExecCommand("ALTER TABLE " + new DBSystem().TableName() + " ADD playerMapID integer DEFAULT 0");
+        ExecCommand("ALTER TABLE " + new DBSystem().TableName() + " ADD playerCoordsX integer DEFAULT 0");
+        ExecCommand("ALTER TABLE " + new DBSystem().TableName() + " ADD playerCoordsY integer DEFAULT 0");
+        ExecCommand("ALTER TABLE " + new DBSystem().TableName() + " ADD playerOrientation integer DEFAULT 0");
     }
 
     // Destructors

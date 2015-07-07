@@ -251,7 +251,8 @@ public class MapKreator : EditorWindow {
                 if (selectedCoords != -Vector2.one) {
                     // check if there is a MO on the case
                     MapObject mo = current.mapObjects.Find(MO => MO.mapCoords == selectedCoords);
-                    if (mo == null && World.Current.startMapID == current.ID && World.Current.startPlayerCoords == selectedCoords)
+
+                    if (mo == null && DataBase.SelectUnique<DBSystem>().playerMapID == current.ID && DataBase.SelectUnique<DBSystem>().playerCoords == selectedCoords)
                         mo = Player.Current;
                     
                     GUILayout.BeginVertical();
@@ -275,8 +276,9 @@ public class MapKreator : EditorWindow {
                     }
                     GUI.enabled = mo == null;
                     if (GUILayout.Button("Player")) {
-                        World.Current.startMapID = current.ID;
-                        World.Current.startPlayerCoords = selectedCoords;
+                        DataBase.Update<DBSystem>("playerMapID", current.ID);
+                        DataBase.Update<DBSystem>("playerCoordsX", (int)selectedCoords.x);
+                        DataBase.Update<DBSystem>("playerCoordsY", (int)selectedCoords.y);
                     }
                     GUI.enabled = true;
                     GUILayout.EndVertical();
@@ -452,8 +454,8 @@ public class MapKreator : EditorWindow {
                     }
 
                 // Player start pos
-                if (World.Current.startMapID == current.ID && IsVisible(World.Current.startPlayerCoords)) {
-                    Rect playerRect = new Rect((World.Current.startPlayerCoords.x - (int)mapScrollPos.x) * resolution.x, (World.Current.startPlayerCoords.y - (int)mapScrollPos.y) * resolution.y, resolution.x, resolution.y);
+                if (DataBase.SelectUnique<DBSystem>().playerMapID == current.ID && IsVisible(DataBase.SelectUnique<DBSystem>().playerCoords)) {
+                    Rect playerRect = new Rect((DataBase.SelectUnique<DBSystem>().playerCoords.x - (int)mapScrollPos.x) * resolution.x, (DataBase.SelectUnique<DBSystem>().playerCoords.y - (int)mapScrollPos.y) * resolution.y, resolution.x, resolution.y);
 
                     // bg
                     EditorGUI.DrawRect(playerRect, new Color(0.2f, 0.2f, 0.2f, 0.7f));

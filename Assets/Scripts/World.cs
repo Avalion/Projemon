@@ -24,12 +24,6 @@ public class World : MonoBehaviour {
 
     public ImageRessources InterfaceResources = new ImageRessources();
 
-
-
-    // Init Var
-    [HideInInspector] public int startMapID;
-    [HideInInspector] public Vector2 startPlayerCoords;
-
     // Define current Map
     [HideInInspector] public Map currentMap;
     // Define background Music
@@ -80,7 +74,7 @@ public class World : MonoBehaviour {
     /* Initialize
      */
     public void Awake() {
-        GameData.Load("");
+        GameData.Load("Saves/Save0.sql");
     }
 
     public void Start() {
@@ -89,9 +83,10 @@ public class World : MonoBehaviour {
         currentBGM = gameObject.AddComponent<AudioSource>();
         currentBGS = gameObject.AddComponent<AudioSource>();
 
-        LoadMap(startMapID, startPlayerCoords);
-
-        Player.Current.mapCoords = startPlayerCoords;
+        LoadMap(GameData.dbSystem.playerMapID, GameData.dbSystem.playerCoords);
+        Player.Current.orientation = GameData.dbSystem.playerOrientation;
+        Player.Current.name = GameData.dbSystem.playerName;
+        Player.Current.goldCount = GameData.dbSystem.playerGold;
 
         // TEMPORARY
         Player.Current.sprite = InterfaceUtility.GetTexture(Config.GetResourcePath(MapObject.IMAGE_FOLDER) + "perso_00.png");
@@ -204,6 +199,8 @@ public class World : MonoBehaviour {
 
         currentMap = new Map(mapId);
         currentMap.Load();
+
+        Player.Current.mapCoords = _arrival;
 
         m_scrolling = Vector2.zero;
         while (m_coordsOffset.x > 0 && _arrival.x <= m_coordsOffset.x + 2) m_coordsOffset.x += -1;

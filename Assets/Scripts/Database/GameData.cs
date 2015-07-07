@@ -3,7 +3,9 @@ using System.Collections.Generic;
 
 public class GameData {
     private static string currentFilePath = null;
-    
+
+    public static DBSystem dbSystem;
+
     public static List<DBAttack> dbAttacks;
     public static List<DBState> dbStates;
     public static List<DBVariable> dbVariables;
@@ -19,10 +21,10 @@ public class GameData {
         DataBase.Connect(Application.dataPath + "/" + filePath);
         currentFilePath = filePath;
 
-        DataBase.Delete<DBAttack>();
-        foreach (DBAttack attack in dbAttacks) {
-            DataBase.Insert<DBAttack>(attack);
-        }
+        // Attacks don't have to be modified
+
+        
+        // State & Variables
         DataBase.Delete<DBState>();
         foreach (DBState state in dbStates) {
             DataBase.Insert<DBState>(state);
@@ -32,14 +34,25 @@ public class GameData {
             DataBase.Insert<DBVariable>(variable);
         }
         
-        // MonsterPattern is handled in MonsterCollection.Save
+        // MonsterPattern only differs on encountered
         foreach (int patternId in MonsterCollection.encounteredMonsters)
             DataBase.Update<DBMonsterPattern>("encountered", true, "id=" + patternId);
 
+        // Monsters captured
         DataBase.Delete<DBMonster>();
         foreach (Monster monster in MonsterCollection.capturedMonsters) {
             DataBase.Insert<DBMonster>(DBMonster.ConvertFrom(monster));
         }
+
+        // TODO : Save MapObjects when the have local states !
+
+        // Player infos
+        DataBase.Update<DBSystem>("playerName", Player.Current.name);
+        DataBase.Update<DBSystem>("playerMapID", World.Current.currentMap.ID);
+        DataBase.Update<DBSystem>("playerCoordsX", (int)Player.Current.mapCoords.x);
+        DataBase.Update<DBSystem>("playerCoordsY", (int)Player.Current.mapCoords.y);
+        DataBase.Update<DBSystem>("playerGold", Player.Current.goldCount);
+
 
         DataBase.Close();
     }
@@ -52,6 +65,7 @@ public class GameData {
         DataBase.Connect(Application.dataPath + "/" + filePath);
         currentFilePath = filePath;
 
+        dbSystem = DataBase.SelectUnique<DBSystem>();
         dbAttacks = DataBase.Select<DBAttack>();
         dbStates = DataBase.Select<DBState>();
         dbVariables = DataBase.Select<DBVariable>();
@@ -87,6 +101,7 @@ public class GameData {
         if (dbVariables != null) dbVariables.Clear();
         if (dbMonsterPatterns != null) dbMonsterPatterns.Clear();
 
+        dbSystem = null;
         dbAttacks = null;
         dbStates = null;
         dbVariables = null;

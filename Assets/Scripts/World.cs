@@ -66,9 +66,12 @@ public class World : MonoBehaviour {
 
 
     // DisplayOptions
-    [HideInInspector] public Vector2 m_coordsOffset = Vector2.zero;
-    [HideInInspector] public Vector2 m_scrolling = Vector2.zero;
+    [HideInInspector] public Vector2 coordsOffset = Vector2.zero;
+    [HideInInspector] public Vector2 scrolling = Vector2.zero;
     
+
+    // Loading Screen
+    [HideInInspector] public bool loading = false;
 
 
     /* Initialize
@@ -105,6 +108,12 @@ public class World : MonoBehaviour {
     public void OnGUI() {
         if (!ShowMap)
             return;
+
+        if (loading) {
+
+            return;
+        }
+
 
         // Display Map
         currentMap.Display();
@@ -163,15 +172,15 @@ public class World : MonoBehaviour {
     public void LateUpdate() {
         #region Map
         Vector2 destination = Player.Current.mapCoords + Player.Current.currentMovement;
-        if (m_coordsOffset.x + m_scrolling.x > 0 && destination.x <= m_coordsOffset.x + m_scrolling.x + 2) m_scrolling.x += -1;
-        if (m_coordsOffset.y + m_scrolling.y > 0 && destination.y <= m_coordsOffset.y + m_scrolling.y + 2) m_scrolling.y += -1;
-        if (m_coordsOffset.x + m_scrolling.x < currentMap.Size.x - Map.MAP_SCREEN_X && destination.x >= m_coordsOffset.x + m_scrolling.x + Map.MAP_SCREEN_X - 3) m_scrolling.x += 1;
-        if (m_coordsOffset.y + m_scrolling.y < currentMap.Size.y - Map.MAP_SCREEN_Y && destination.y >= m_coordsOffset.y + m_scrolling.y + Map.MAP_SCREEN_Y - 3) m_scrolling.y += 1;
+        if (coordsOffset.x + scrolling.x > 0 && destination.x <= coordsOffset.x + scrolling.x + 2) scrolling.x += -1;
+        if (coordsOffset.y + scrolling.y > 0 && destination.y <= coordsOffset.y + scrolling.y + 2) scrolling.y += -1;
+        if (coordsOffset.x + scrolling.x < currentMap.Size.x - Map.MAP_SCREEN_X && destination.x >= coordsOffset.x + scrolling.x + Map.MAP_SCREEN_X - 3) scrolling.x += 1;
+        if (coordsOffset.y + scrolling.y < currentMap.Size.y - Map.MAP_SCREEN_Y && destination.y >= coordsOffset.y + scrolling.y + Map.MAP_SCREEN_Y - 3) scrolling.y += 1;
 
-        if (m_scrolling != Vector2.zero && !Player.Current.isMoving) {
-            m_coordsOffset += m_scrolling;
-            m_scrolling = Vector2.zero;
-            currentMap.UpdateVisibleList(m_coordsOffset);
+        if (scrolling != Vector2.zero && !Player.Current.isMoving) {
+            coordsOffset += scrolling;
+            scrolling = Vector2.zero;
+            currentMap.UpdateVisibleList(coordsOffset);
         }
         #endregion
     }
@@ -202,11 +211,11 @@ public class World : MonoBehaviour {
 
         Player.Current.mapCoords = _arrival;
 
-        m_scrolling = Vector2.zero;
-        while (m_coordsOffset.x > 0 && _arrival.x <= m_coordsOffset.x + 2) m_coordsOffset.x += -1;
-        while (m_coordsOffset.y > 0 && _arrival.y <= m_coordsOffset.y + 2) m_coordsOffset.y += -1;
-        while (m_coordsOffset.x < currentMap.Size.x - Map.MAP_SCREEN_X && _arrival.x >= m_coordsOffset.x + Map.MAP_SCREEN_X - 3) m_coordsOffset.x += 1;
-        while (m_coordsOffset.y < currentMap.Size.y - Map.MAP_SCREEN_Y && _arrival.y >= m_coordsOffset.y + Map.MAP_SCREEN_Y - 3) m_coordsOffset.y += 1;
+        scrolling = Vector2.zero;
+        while (coordsOffset.x > 0 && _arrival.x <= coordsOffset.x + 2) coordsOffset.x += -1;
+        while (coordsOffset.y > 0 && _arrival.y <= coordsOffset.y + 2) coordsOffset.y += -1;
+        while (coordsOffset.x < currentMap.Size.x - Map.MAP_SCREEN_X && _arrival.x >= coordsOffset.x + Map.MAP_SCREEN_X - 3) coordsOffset.x += 1;
+        while (coordsOffset.y < currentMap.Size.y - Map.MAP_SCREEN_Y && _arrival.y >= coordsOffset.y + Map.MAP_SCREEN_Y - 3) coordsOffset.y += 1;
     }
 
     

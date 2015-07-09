@@ -109,12 +109,12 @@ public class Map {
 
 
     public void Display() {
-        Vector2 delta = (Player.Current.lerp * World.Current.m_scrolling);
+        Vector2 delta = (Player.Current.lerp * World.Current.scrolling);
         delta = new Vector2(delta.x * Resolution.x, delta.y * Resolution.y);
 
         foreach (Tile tile in VisibleTiles) {
             if (tile.Image != null)
-                GUI.DrawTexture(new Rect(Resolution.x * (tile.mapCoords.x - World.Current.m_coordsOffset.x) - delta.x, Resolution.y * (tile.mapCoords.y - World.Current.m_coordsOffset.y) - delta.y, Resolution.x, Resolution.y), tile.Image);
+                GUI.DrawTexture(new Rect(Resolution.x * (tile.mapCoords.x - World.Current.coordsOffset.x) - delta.x, Resolution.y * (tile.mapCoords.y - World.Current.coordsOffset.y) - delta.y, Resolution.x, Resolution.y), tile.Image);
         }
     }
 

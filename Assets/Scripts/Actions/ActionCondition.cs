@@ -38,10 +38,10 @@ public class ActionIf : MapObjectAction {
     }
 }
 public class ConditionElse : MapObjectAction {
-    public ActionIf parent;
+    public int parentId;
     
     public ConditionElse() { }
-    public ConditionElse(ActionIf _parent) { parent = _parent; }
+    public ConditionElse(ActionIf _parent) { parentId = _parent.actionId; }
 
     public override void Execute() {
         Terminate();
@@ -51,15 +51,20 @@ public class ConditionElse : MapObjectAction {
         return "} Else {";
     }
     public override string Serialize() {
-        return GetType().ToString() + "|";
+        return GetType().ToString() + "|" + parentId;
     }
-    public override void Deserialize(string s) {}
+    public override void Deserialize(string s) {
+        string[] values = s.Split('|');
+        if (values.Length != 2)
+            throw new System.Exception("SerializationError : elements count doesn't match... " + s);
+        parentId = int.Parse(values[1]);
+    }
 }
 public class ConditionEnd : MapObjectAction {
-    public ActionIf parent;
+    public int parentId;
 
     public ConditionEnd() { }
-    public ConditionEnd(ActionIf _parent) { parent = _parent; }
+    public ConditionEnd(ActionIf _parent) { parentId = _parent.actionId; }
 
     public override void Execute() {
         Terminate();
@@ -69,9 +74,14 @@ public class ConditionEnd : MapObjectAction {
         return "}";
     }
     public override string Serialize() {
-        return GetType().ToString() + "|";
+        return GetType().ToString() + "|" + parentId;
     }
-    public override void Deserialize(string s) {}
+    public override void Deserialize(string s) {
+        string[] values = s.Split('|');
+        if (values.Length != 2)
+            throw new System.Exception("SerializationError : elements count doesn't match... " + s);
+        parentId = int.Parse(values[1]);
+    }
 }
 
 

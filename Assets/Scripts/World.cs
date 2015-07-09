@@ -233,18 +233,18 @@ public class World : MonoBehaviour {
                 ActionIf current = (ActionIf)moa[index];
                 current.Execute();
                 if (!current.isActive) {
-                    index = moa.FindIndex(A => A.GetType() == typeof(ConditionElse) && ((ConditionElse)A).parent == moa[index]) - 1;
+                    index = moa.FindIndex(A => A.GetType() == typeof(ConditionElse) && ((ConditionElse)A).parentId == moa[index].actionId) - 1;
                     continue;
                 }
             }
             if (moa[index].GetType() == typeof(ConditionElse)) {
                 ConditionElse current = (ConditionElse)moa[index];
-                if (current.parent.isActive) {
-                    index = moa.FindIndex(A => A.GetType() == typeof(ConditionEnd) && ((ConditionEnd)A).parent == current.parent);
+                if (((ActionIf)moa.Find(A => A.actionId == current.parentId)).isActive) {
+                    index = moa.FindIndex(A => A.GetType() == typeof(ConditionEnd) && ((ConditionEnd)A).parentId == current.parentId);
                     continue;
                 }
             }
-            if (moa[index].GetType() == typeof(ConditionEnd)) {
+            if (moa[index].GetType() == typeof(ConditionEnd))
                 continue;
             #endregion
 
@@ -266,11 +266,32 @@ public class World : MonoBehaviour {
         StartCoroutine(ExecuteActionAsync(mo, _lock));
     }
     private IEnumerator ExecuteActionAsync(MapObject mo, bool _lock) {
-        foreach (MapObjectAction action in mo.actions) {
-            action.Execute();
-            while (!action.Done())
+        for (int index = 0; index < mo.actions.Count; index++) {
+            #region ActionCondition
+            if (mo.actions[index].GetType() == typeof(ActionIf)) {
+                ActionIf current = (ActionIf)mo.actions[index];
+                current.Execute();
+                if (!current.isActive) {
+                    index = mo.actions.FindIndex(A => A.GetType() == typeof(ConditionElse) && ((ConditionElse)A).parentId == mo.actions[index].actionId) - 1;
+                    continue;
+                }
+            }
+            if (mo.actions[index].GetType() == typeof(ConditionElse)) {
+                ConditionElse current = (ConditionElse)mo.actions[index];
+                if (((ActionIf)mo.actions.Find(A => A.actionId == current.parentId)).isActive) {
+                    index = mo.actions.FindIndex(A => A.GetType() == typeof(ConditionEnd) && ((ConditionEnd)A).parentId == current.parentId);
+                    continue;
+                }
+            }
+            if (mo.actions[index].GetType() == typeof(ConditionEnd))
+                continue;
+            #endregion
+
+            mo.actions[index].Execute();
+            while (!mo.actions[index].Done())
                 yield return new WaitForEndOfFrame();
         }
+
         if (_lock)
             Player.Unlock();
         foreach (MapObjectAction action in mo.actions)
@@ -287,11 +308,32 @@ public class World : MonoBehaviour {
         StartCoroutine(ExecuteActionAsync(mo, _lock, _action));
     }
     private IEnumerator ExecuteActionAsync(MapObject mo, bool _lock, ExecOnEnd _action) {
-        foreach (MapObjectAction action in mo.actions) {
-            action.Execute();
-            while (!action.Done())
+        for (int index = 0; index < mo.actions.Count; index++) {
+            #region ActionCondition
+            if (mo.actions[index].GetType() == typeof(ActionIf)) {
+                ActionIf current = (ActionIf)mo.actions[index];
+                current.Execute();
+                if (!current.isActive) {
+                    index = mo.actions.FindIndex(A => A.GetType() == typeof(ConditionElse) && ((ConditionElse)A).parentId == mo.actions[index].actionId) - 1;
+                    continue;
+                }
+            }
+            if (mo.actions[index].GetType() == typeof(ConditionElse)) {
+                ConditionElse current = (ConditionElse)mo.actions[index];
+                if (((ActionIf)mo.actions.Find(A => A.actionId == current.parentId)).isActive) {
+                    index = mo.actions.FindIndex(A => A.GetType() == typeof(ConditionEnd) && ((ConditionEnd)A).parentId == current.parentId);
+                    continue;
+                }
+            }
+            if (mo.actions[index].GetType() == typeof(ConditionEnd))
+                continue;
+            #endregion
+
+            mo.actions[index].Execute();
+            while (!mo.actions[index].Done())
                 yield return new WaitForEndOfFrame();
         }
+
         if (_lock)
             Player.Unlock();
         foreach (MapObjectAction action in mo.actions)

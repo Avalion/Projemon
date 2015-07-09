@@ -43,8 +43,10 @@ public class MapObjectKreator : EditorWindow {
 
     private static void InitStyles() {
         UnityButton = new GUIStyle(GUI.skin.button);
+        UnityButton.alignment = TextAnchor.MiddleLeft;
         UnityActiveButton = new GUIStyle(GUI.skin.button);
         UnityActiveButton.normal.background = UnityActiveButton.active.background;
+        UnityActiveButton.alignment = TextAnchor.MiddleLeft;
     }
     private static void InitLists() {
         sprites = new List<string>() { "" };
@@ -196,29 +198,27 @@ public class MapObjectKreator : EditorWindow {
                 GUILayout.Space(10);
 
             if (isCondition) {
-                if (GUILayout.Button(a.InLine(), GUILayout.MaxWidth(Screen.width / 3))) {
-                    if (a.GetType() == typeof(ConditionElse)) selectedElement = target.actions.IndexOf(((ConditionElse)a).parent);
-                    else if (a.GetType() == typeof(ConditionEnd)) selectedElement = target.actions.IndexOf(((ConditionEnd)a).parent);
+                if (GUILayout.Button(a.InLine(), UnityButton, GUILayout.MaxWidth(Screen.width / 3))) {
+                    if (a.GetType() == typeof(ConditionElse)) selectedElement = target.actions.FindIndex(A => A.actionId == ((ConditionElse)a).parentId);
+                    else if (a.GetType() == typeof(ConditionEnd)) selectedElement = target.actions.FindIndex(A => A.actionId == ((ConditionEnd)a).parentId);
                 }
 
                 if (a.GetType() == typeof(ConditionEnd))
                     indent--;
             } else {
-                if (GUILayout.Button((a.waitForEnd ? "* " : "") + a.InLine(), i == selectedElement ? UnityActiveButton : UnityButton, GUILayout.MaxWidth(Screen.width / 3))) {
+                if (GUILayout.Button((a.waitForEnd && a.GetType() != typeof(ActionIf) ? "* " : "") + a.InLine(), i == selectedElement ? UnityActiveButton : UnityButton, GUILayout.MaxWidth(Screen.width / 3)))
                     selectedElement = i;
 
-                if (a.GetType() == typeof(ActionIf)) {
+                if (a.GetType() == typeof(ActionIf))
                     indent++;
             }
 
-            if (!isCondition && GUILayout.Button("X", GUILayout.Width(30)) && EditorUtility.DisplayDialog("Delete", "Delete this action ? (if will delete all internal actions until its end", "Ok", "Cancel") {
+            if (!isCondition && GUILayout.Button("X", GUILayout.Width(30)) && EditorUtility.DisplayDialog("Delete", "Delete this action ? (if will delete all internal actions until its end", "Ok", "Cancel")) {
                 if (a.GetType() == typeof(ActionIf)) {
-                    while (target.actions[i].GetType() == typeof(ConditionEnd) && ((ConditionEnd)target.actions[i]).parent == a) {
-                        target.actions.RemoveAt(i);
-                    }
-                } else
+                    target.actions.RemoveRange(i, target.actions.FindIndex(A => A.GetType() == typeof(ConditionEnd) && ((ConditionEnd)A).parentId == a.actionId) - i + 1);
+                } else 
                     target.actions.Remove(a);
-                }
+
                 if (selectedElement == i)
                     selectedElement = -1;
                 if (selectedElement > i)
@@ -227,7 +227,6 @@ public class MapObjectKreator : EditorWindow {
                 return;
             }
             GUILayout.EndHorizontal();
-
         }
 
         int value = EditorGUILayout.Popup(0, actionTypes);

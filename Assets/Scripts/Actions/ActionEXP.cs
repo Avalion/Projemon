@@ -38,7 +38,7 @@ public class ActionEXP : MapObjectAction {
         if (values.Length != 3)
             throw new System.Exception("SerializationError : elements count doesn't match... " + s);
 
-        targetMonster = int.Parse(values[2]);
-        expValue = int.Parse(values[3]);
+        targetMonster = int.Parse(values[1]);
+        expValue = int.Parse(values[2]);
     }
 }

@@ -64,7 +64,7 @@ public class DataBaseEditorUtility {
         int n = 0;
         while (true) {
             string name = pattern + (n > 0 ? " " + n : "");
-            if (DataBase.Select<DBMapObject>("name=" + name).Count == 0)
+            if (DataBase.Select<DBMapObject>("name='" + name + "'").Count == 0)
                 return name;
             n++;
         }

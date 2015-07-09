@@ -19,7 +19,7 @@ public class ActionAleaMessage : MapObjectAction {
     public ActionAleaMessage() {}
 
     public override void Execute() {
-        World.Current.ExecuteActions(new ActionMessage[] { new ActionMessage(face, m_messagesList[Random.Range(0, m_messagesList.Length - 1)], faceOnRight) }, delegate() { Terminate(); });
+        World.Current.ExecuteActions(new List<ActionMessage>() { new ActionMessage(face, m_messagesList[Random.Range(0, m_messagesList.Length - 1)], faceOnRight) }, delegate() { Terminate(); });
     }
     public override string InLine() {
         return "Alea Message.";

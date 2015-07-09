@@ -223,13 +223,33 @@ public class World : MonoBehaviour {
      */
     public delegate void ExecOnEnd();
 
-    public void ExecuteActions(MapObjectAction[] moa, ExecOnEnd _action) {
+    public void ExecuteActions(List<MapObjectAction> moa, ExecOnEnd _action) {
         StartCoroutine(ExecuteActionAsync(moa, _action));
     }
-    private IEnumerator ExecuteActionAsync(MapObjectAction[] moa, ExecOnEnd _action) {
-        foreach (MapObjectAction action in moa) {
-            action.Execute();
-            while (!action.Done())
+    private IEnumerator ExecuteActionAsync(List<MapObjectAction> moa, ExecOnEnd _action) {
+        for (int index = 0; index < moa.Count; index ++) {
+            #region ActionCondition
+            if (moa[index].GetType() == typeof(ActionIf)) {
+                ActionIf current = (ActionIf)moa[index];
+                current.Execute();
+                if (!current.isActive) {
+                    index = moa.FindIndex(A => A.GetType() == typeof(ConditionElse) && ((ConditionElse)A).parent == moa[index]) - 1;
+                    continue;
+                }
+            }
+            if (moa[index].GetType() == typeof(ConditionElse)) {
+                ConditionElse current = (ConditionElse)moa[index];
+                if (current.parent.isActive) {
+                    index = moa.FindIndex(A => A.GetType() == typeof(ConditionEnd) && ((ConditionEnd)A).parent == current.parent);
+                    continue;
+                }
+            }
+            if (moa[index].GetType() == typeof(ConditionEnd)) {
+                continue;
+            #endregion
+
+            moa[index].Execute();
+            while (!moa[index].Done())
                 yield return new WaitForEndOfFrame();
         }
         foreach (MapObjectAction action in moa)

@@ -21,6 +21,10 @@ public class MapObjectKreator : EditorWindow {
     private static GUIStyle UnityButton;
     private static GUIStyle UnityActiveButton;
 
+    private int indent = 0;
+
+
+
 
     public static void Open(MapObject mo) {
         if (mo == null)
@@ -50,6 +54,7 @@ public class MapObjectKreator : EditorWindow {
 
         actionTypes = new string[] {
             "Select an Action to Add", 
+            typeof(ActionIf).ToString(), 
             typeof(ActionAddItem).ToString(), 
             typeof(ActionAddMonster).ToString(), 
             typeof(ActionAleaMessage).ToString(), 
@@ -72,6 +77,8 @@ public class MapObjectKreator : EditorWindow {
     }
 
     public void OnGUI() {
+        indent = 0;
+
         if (target == null) {
             Close();
             return;
@@ -158,8 +165,8 @@ public class MapObjectKreator : EditorWindow {
         for (int i = 0; i < target.actions.Count; ++i) {
             MapObjectAction a = target.actions[i];
             GUILayout.BeginHorizontal();
-            
-            GUI.enabled = (i != 0);
+
+            GUI.enabled = (i != 0) && a.GetType() != typeof(ActionIf) && a.GetType() != typeof(ConditionElse) && a.GetType() != typeof(ConditionEnd);
             if (GUILayout.Button("↑", GUILayout.Width(20))) {
                 target.actions.Insert(i - 1, a);
                 target.actions.RemoveAt(i + 1);
@@ -170,7 +177,7 @@ public class MapObjectKreator : EditorWindow {
                 GUIUtility.ExitGUI();
                 return;
             }
-            GUI.enabled = (i != target.actions.Count - 1);
+            GUI.enabled = (i != target.actions.Count - 1) && a.GetType() != typeof(ActionIf) && a.GetType() != typeof(ConditionElse) && a.GetType() != typeof(ConditionEnd);
             if (GUILayout.Button("↓", GUILayout.Width(20))) {
                 target.actions.Insert(i + 2, a);
                 target.actions.RemoveAt(i);
@@ -183,13 +190,39 @@ public class MapObjectKreator : EditorWindow {
             }
             GUI.enabled = true;
 
-            if (GUILayout.Button((a.waitForEnd ? "* " : "") + a.InLine(), i == selectedElement ? UnityActiveButton : UnityButton, GUILayout.MaxWidth(Screen.width / 3))) {
-                selectedElement = i;
+            bool isCondition = a.GetType() == typeof(ConditionElse) || a.GetType() == typeof(ConditionEnd);
+
+            for (int k = 0; k < indent - (isCondition ? 1 : 0); ++k)
+                GUILayout.Space(10);
+
+            if (isCondition) {
+                if (GUILayout.Button(a.InLine(), GUILayout.MaxWidth(Screen.width / 3))) {
+                    if (a.GetType() == typeof(ConditionElse)) selectedElement = target.actions.IndexOf(((ConditionElse)a).parent);
+                    else if (a.GetType() == typeof(ConditionEnd)) selectedElement = target.actions.IndexOf(((ConditionEnd)a).parent);
+                }
+
+                if (a.GetType() == typeof(ConditionEnd))
+                    indent--;
+            } else {
+                if (GUILayout.Button((a.waitForEnd ? "* " : "") + a.InLine(), i == selectedElement ? UnityActiveButton : UnityButton, GUILayout.MaxWidth(Screen.width / 3))) {
+                    selectedElement = i;
+
+                if (a.GetType() == typeof(ActionIf)) {
+                    indent++;
             }
-            if (GUILayout.Button("X", GUILayout.Width(30))) {
-                target.actions.Remove(a);
+
+            if (!isCondition && GUILayout.Button("X", GUILayout.Width(30)) && EditorUtility.DisplayDialog("Delete", "Delete this action ? (if will delete all internal actions until its end", "Ok", "Cancel") {
+                if (a.GetType() == typeof(ActionIf)) {
+                    while (target.actions[i].GetType() == typeof(ConditionEnd) && ((ConditionEnd)target.actions[i]).parent == a) {
+                        target.actions.RemoveAt(i);
+                    }
+                } else
+                    target.actions.Remove(a);
+                }
                 if (selectedElement == i)
                     selectedElement = -1;
+                if (selectedElement > i)
+                    selectedElement--;
                 GUIUtility.ExitGUI();
                 return;
             }
@@ -199,8 +232,15 @@ public class MapObjectKreator : EditorWindow {
 
         int value = EditorGUILayout.Popup(0, actionTypes);
         if (value != 0) {
-            target.actions.Add(System.Activator.CreateInstance(Types.GetType(actionTypes[value], "Assembly-CSharp")) as MapObjectAction);
+            MapObjectAction moa = System.Activator.CreateInstance(Types.GetType(actionTypes[value], "Assembly-CSharp")) as MapObjectAction;
+            target.actions.Add(moa);
             selectedElement = target.actions.Count - 1;
+
+            if (Types.GetType(actionTypes[value], "Assembly-CSharp") == typeof(ActionIf)) {
+                target.actions.Add(new ConditionElse((ActionIf)moa));
+                target.actions.Add(new ConditionEnd((ActionIf)moa));
+            }
+                
 
             if (Types.GetType(actionTypes[value], "Assembly-CSharp") == typeof(ActionMove))
                 (target.actions[selectedElement] as ActionMove).targetId = target.mapObjectId;
@@ -236,6 +276,8 @@ public class MapObjectKreator : EditorWindow {
         _action.waitForEnd = EditorGUILayout.ToggleLeft("Wait For End", _action.waitForEnd);
 
         switch (_action.GetType().ToString()) {
+            case "ActionIf":
+                DisplayEditor((ActionIf)_action); break;
             case "ActionAddItem":
                 DisplayEditor((ActionAddItem)_action); break;
             case "ActionAddMonster":
@@ -278,6 +320,12 @@ public class MapObjectKreator : EditorWindow {
         }
     }
 
+
+    private void DisplayEditor(ActionIf a) {
+        a.conditionType = (ActionIf.ConditionType)EditorGUILayout.EnumPopup("Type", a.conditionType);
+
+
+    } 
     private void DisplayEditor(ActionAddItem a) { 
         GUILayout.Label("TODO : Display a popup with all items");
     }

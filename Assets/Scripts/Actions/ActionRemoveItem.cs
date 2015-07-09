@@ -26,7 +26,7 @@ public class ActionRemoveItem : MapObjectAction {
     }
     public override string Serialize() {
         // TODO : Serialize Items class
-        return GetType().ToString();
+        return GetType().ToString() + "|";
     }
     public override void Deserialize(string s) {
         string[] values = s.Split('|');

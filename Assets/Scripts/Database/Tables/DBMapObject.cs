@@ -77,9 +77,9 @@ public class DBMapObject : SQLTable {
 
     public static DBMapObject ConvertFrom(Map _map, MapObject _source) {
         DBMapObject m = new DBMapObject();
+        m.ID = _source.mapObjectId;
         m.mapId = _map.ID;
         m.mapCoords = _source.mapCoords;
-        m.ID = _source.mapObjectId;
         
         m.name = _source.name;
 

@@ -61,7 +61,7 @@ public class ActionMessage : MapObjectAction {
 
     public static string Decode(string _message) {
         // TODO : replace KeyWords or KeyCharacters by their values (variable, ou variable analysé (nom de MapObject ou de MonsterPattern ou de Monster)
-
+        
         return _message;
     }
 }

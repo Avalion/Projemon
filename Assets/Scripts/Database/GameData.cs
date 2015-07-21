@@ -25,13 +25,11 @@ public class GameData {
 
         
         // State & Variables
-        DataBase.Delete<DBState>();
         foreach (DBState state in dbStates) {
-            DataBase.Insert<DBState>(state);
+            DataBase.Replace<DBState>(state);
         }
-        DataBase.Delete<DBVariable>();
         foreach (DBVariable variable in dbVariables) {
-            DataBase.Insert<DBVariable>(variable);
+            DataBase.Replace<DBVariable>(variable);
         }
         
         // MonsterPattern only differs on encountered

@@ -166,8 +166,14 @@ public class DataBase {
     public static void Insert<T>(T data) where T : SQLTable, new() {
         ExecCommand(data.InsertInto());
     }
+    public static void InsertWithID<T>(T data) where T : SQLTable, new() {
+        ExecCommand(data.InsertIntoWithID());
+    }
     public static void Replace<T>(T newdata) where T : SQLTable, new() {
         ExecCommand(newdata.Replace());
+    }
+    public static void Reset<T>() where T : SQLTable, new() {
+        ExecCommand("UPDATE SQLITE_SEQUENCE SET SEQ=0 WHERE NAME='" + new T().TableName() + "'");
     }
 
     public static void Update<T>(string column, object value, string where = "") where T : SQLTable, new() {

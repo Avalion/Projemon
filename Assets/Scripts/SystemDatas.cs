@@ -82,18 +82,23 @@ public class SystemDatas {
         foreach (string file in Directory.GetFiles(Config.GetConfigPath(Map.IMAGE_FOLDER))) {
             File.Delete(file);
         }
+
+        // Reset Map linked objects
+        DataBase.Delete<DBMapObject>();
+        DataBase.Delete<DBMapObjectAction>();
+
+        DataBase.Reset<DBMapObject>();
+        DataBase.Reset<DBMapObjectAction>();
+
         foreach (Map m in _elements) {
             m.Export();
 
             // mapObjects
             foreach (MapObject mo in m.mapObjects) {
-                DataBase.Replace<DBMapObject>(DBMapObject.ConvertFrom(m, mo));
-
-                // Renew MOActions
-                DataBase.Delete<DBMapObjectAction>("mapObjectID = " + mo.mapObjectId);
+                DataBase.InsertWithID<DBMapObject>(DBMapObject.ConvertFrom(m, mo));
 
                 foreach (MapObjectAction action in mo.actions)
-                    DataBase.Insert<DBMapObjectAction>(DBMapObjectAction.ConvertFrom(mo, action));
+                    DataBase.InsertWithID<DBMapObjectAction>(DBMapObjectAction.ConvertFrom(mo, action));
             }
         }
     }

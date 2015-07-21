@@ -232,6 +232,8 @@ public class MapObjectKreator : EditorWindow {
         int value = EditorGUILayout.Popup(0, actionTypes);
         if (value != 0) {
             MapObjectAction moa = System.Activator.CreateInstance(Types.GetType(actionTypes[value], "Assembly-CSharp")) as MapObjectAction;
+            DataBase.Insert<DBMapObjectAction>(DBMapObjectAction.ConvertFrom(target, moa));
+            moa.actionId = DataBase.GetLastInsertId();
             target.actions.Add(moa);
             selectedElement = target.actions.Count - 1;
 
@@ -323,7 +325,21 @@ public class MapObjectKreator : EditorWindow {
     private void DisplayEditor(ActionIf a) {
         a.conditionType = (ActionIf.ConditionType)EditorGUILayout.EnumPopup("Type", a.conditionType);
 
-
+        switch (a.conditionType) {
+            case ActionIf.ConditionType.State:
+                a.source = UtilityEditor.StateField("State", a.source);
+                a.value = EditorGUILayout.Toggle("Value", a.value == 1) ? 1 : 0;
+                break;
+            case ActionIf.ConditionType.Variable:
+                a.source = UtilityEditor.VariableField("Variable", a.source);
+                a.value = EditorGUILayout.IntField("Value", a.value);
+                break;
+            case ActionIf.ConditionType.MapCoordsX:
+            case ActionIf.ConditionType.MapCoordsY:
+                a.source = UtilityEditor.MapObjectField("MapObject", a.source, true);
+                a.value = EditorGUILayout.IntField("Value", a.value);
+                break;
+        }
     } 
     private void DisplayEditor(ActionAddItem a) { 
         GUILayout.Label("TODO : Display a popup with all items");

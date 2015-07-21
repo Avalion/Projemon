@@ -110,16 +110,17 @@ public class ActionSetVariable : MapObjectAction {
     }
 
     public override string Serialize() {
-        // TODO : Add MapObjectID when MapObject are into DB
-        return GetType().ToString() + "|" + varId + "|" + value + "|" + value2;
+        return GetType().ToString() + "|" + varId + "|" + value + "|" + value2 + "|" + (int)mode + "|" + (int)setMode;
     }
     public override void Deserialize(string s) {
         string[] values = s.Split('|');
-        if (values.Length != 4)
+        if (values.Length != 6)
             throw new System.Exception("SerializationError : elements count doesn't match... " + s);
 
-        int.TryParse(values[1], out varId);
-        int.TryParse(values[2], out value);
-        int.TryParse(values[3], out value2);
+        varId = int.Parse(values[1]);
+        value = int.Parse(values[2]); 
+        value2 = int.Parse(values[3]);
+        mode = (Mode)int.Parse(values[4]);
+        setMode = (SetMode)int.Parse(values[5]);
     }
 }

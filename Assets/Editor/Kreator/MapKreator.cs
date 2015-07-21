@@ -309,14 +309,8 @@ public class MapKreator : EditorWindow {
     }
 
     // Close
-    public bool saved = false;
+    private bool saved = false;
     public void Save() {
-        foreach (Map map in toDestroy)
-            foreach (MapObject mo in map.mapObjects)
-                DataBase.SelectById<DBMapObject>(mo.mapObjectId).Delete();
-
-        toDestroy.Clear();
-
         SystemDatas.SetMaps(elements);
     }
     public void Dispose() {
@@ -325,7 +319,7 @@ public class MapKreator : EditorWindow {
         Close();
     }
     public void OnDestroy() {
-        if (!saved && !EditorUtility.DisplayDialog("Modifications ?", "Les modifications appliquées dans cet outil n'ont pas été sauvegardées. Pour ne pas avoir ce message, veuillez utilisez le bouton \"OK\" en bas de l'interface.", "Ne pas sauvegarder", "Sauvegarder"))
+        if (!saved)
             Save();
     }
 

@@ -42,6 +42,7 @@ public class DBMapObjectAction : SQLTable {
 
     public static DBMapObjectAction ConvertFrom(MapObject _object, MapObjectAction _source) {
         DBMapObjectAction m = new DBMapObjectAction();
+        m.ID = _source.actionId;
         m.mapObjectId = _object.mapObjectId;
         m.executeOrder = _object.actions.IndexOf(_source);
         m.serialized = _source.Serialize();

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 public class ActionIf : MapObjectAction {
-    public enum ConditionType { None, MapCoordsX, MapCoordsY }
+    public enum ConditionType { None, State, Variable, MapCoordsX, MapCoordsY }
     public ConditionType conditionType = ConditionType.None;
     
     public int source;
@@ -15,8 +15,16 @@ public class ActionIf : MapObjectAction {
         isActive = false;
 
         switch (conditionType) {
-            
-            default: isActive = false; break;
+            case ConditionType.State:
+                if (GameData.GetState(source)) isActive = true;
+                break;
+            case ConditionType.Variable:
+                if (GameData.GetVariable(source) == value) isActive = true;
+                break;
+            default:
+                UnityEngine.Debug.Log("Not Handled For Now");
+                isActive = false; 
+                break;
         }
 
         Terminate();
@@ -24,17 +32,18 @@ public class ActionIf : MapObjectAction {
 
 
     public override string InLine() {
-        return "If (" + conditionType + " = " + value + ") {";
+        return "If ([" + conditionType + "]" + source + " == " + value + ") {";
     }
     public override string Serialize() {
-        return GetType().ToString() + "|" + (int)conditionType + "|" + value;
+        return GetType().ToString() + "|" + (int)conditionType + "|" + source + "|" + value;
     }
     public override void Deserialize(string s) {
         string[] values = s.Split('|');
-        if (values.Length != 3)
+        if (values.Length != 4)
             throw new System.Exception("SerializationError : elements count doesn't match... " + s);
         conditionType = (ConditionType)int.Parse(values[1]);
-        value = int.Parse(values[2]);
+        source = int.Parse(values[2]);
+        value = int.Parse(values[3]);
     }
 }
 public class ConditionElse : MapObjectAction {

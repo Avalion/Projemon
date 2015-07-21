@@ -5,12 +5,12 @@ using System.Collections.Generic;
 public class VariableKreator : EditorWindow {
     public const int NB_COLUMNS = 2;
 
-    public List<DBState> states = new List<DBState>();
+    public static List<DBState> states = new List<DBState>();
     public Vector2 scrollpos_state;
-    public List<DBVariable> variables = new List<DBVariable>();
+    public static List<DBVariable> variables = new List<DBVariable>();
     public Vector2 scrollpos_var;
     
-    [MenuItem("Kreator/VariableKreator")]
+    [MenuItem("Creation/VariableKreator")]
     public static void Init() {
         VariableKreator window = EditorWindow.GetWindow<VariableKreator>();
         window.minSize = new Vector2(500, 400);
@@ -20,7 +20,7 @@ public class VariableKreator : EditorWindow {
         InterfaceUtility.ClearAllCache();
     }
 
-    [MenuItem("Kreator/VariableKreator", true)]
+    [MenuItem("Creation/VariableKreator", true)]
     public static bool InitOK() { return !Application.isPlaying; }
 
     public void OnEnable() {
@@ -54,6 +54,10 @@ public class VariableKreator : EditorWindow {
             GUILayout.EndHorizontal();
         }
 
+        if (GUILayout.Button("Ajoutez un interrupteur")) {
+            AddNewState();
+        }
+
         GUILayout.EndScrollView();
         GUILayout.EndVertical();
 
@@ -69,7 +73,7 @@ public class VariableKreator : EditorWindow {
                 variable.name = str;
                 DataBaseEditorUtility.SetVariable(variable.ID, str);
             }
-            intval = EditorGUILayout.IntField(variable.value);
+            intval = EditorGUILayout.IntField(variable.value, GUILayout.Width(50));
             if (intval != variable.value) {
                 variable.value = intval;
                 DataBaseEditorUtility.SetVariable(variable.ID, intval);
@@ -77,10 +81,29 @@ public class VariableKreator : EditorWindow {
             GUILayout.EndHorizontal();
         }
 
+        if (GUILayout.Button("Ajoutez une variable")) {
+            AddNewVariable();
+        }
+
         GUILayout.EndScrollView();
         GUILayout.EndVertical();
 
         GUILayout.EndHorizontal();
+    }
+
+    public static int AddNewVariable() {
+        DBVariable variable = new DBVariable() { name = "Variable", value = 0 };
+        DataBase.Insert<DBVariable>(variable);
+        variable.ID = DataBase.GetLastInsertId();
+        variables.Add(variable);
+        return variable.ID;
+    }
+    public static int AddNewState() {
+        DBState state = new DBState() { name = "State", value = false };
+        DataBase.Insert<DBState>(state);
+        state.ID = DataBase.GetLastInsertId();
+        states.Add(state);
+        return state.ID;
     }
 
     public void Refresh() {

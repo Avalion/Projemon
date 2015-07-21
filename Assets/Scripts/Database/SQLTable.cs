@@ -10,6 +10,7 @@ public abstract class SQLTable {
     public abstract string ToRow();
     public abstract void Delete();
 
+    public string InsertIntoWithID() { return "INSERT INTO " + TableName() + " (id, " + Fields() + ") VALUES (" + ID + ", " + ToRow() + ")"; }
     public string InsertInto() { return "INSERT INTO " + TableName() + " (" + Fields() + ") VALUES (" + ToRow() + ")"; }
     public string Replace() { return "INSERT OR REPLACE INTO " + TableName() + " (id, " + Fields() + ") VALUES (" + ID + ", " + ToRow() + ")"; }
     public string Create() { return "CREATE TABLE IF NOT EXISTS '" + TableName() + "' (id integer NOT NULL PRIMARY KEY AUTOINCREMENT, " + TypedFields() + ")"; }

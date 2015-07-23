@@ -102,10 +102,21 @@ public class UtilityEditor {
             names.Add(InterfaceUtility.IntString(state.ID + 1, 3) + ": " + state.name);
         }
 
-        if (label == "")
-            return EditorGUILayout.IntPopup(_stateId, names.ToArray(), ids.ToArray(), _options);
+        ids.Add(-100);
+        names.Add("New state");
+
+        int result;
+
+        if (label == null || label == "")
+            result = EditorGUILayout.IntPopup(_stateId, names.ToArray(), ids.ToArray(), _options);
         else
-            return EditorGUILayout.IntPopup(label, _stateId, names.ToArray(), ids.ToArray(), _options);
+            result = EditorGUILayout.IntPopup(label, _stateId, names.ToArray(), ids.ToArray(), _options);
+
+        if (result == -100) {
+            result = VariableKreator.AddNewState();
+        }
+
+        return result;
     }
     public static int VariableField(string label, int _varId, params GUILayoutOption[] _options) {
         List<int> ids = new List<int>();
@@ -116,10 +127,21 @@ public class UtilityEditor {
             names.Add(InterfaceUtility.IntString(var.ID + 1, 3) + ": " + var.name);
         }
 
-        if (label == null)
-            return EditorGUILayout.IntPopup(label, _varId, names.ToArray(), ids.ToArray(), _options);
+        ids.Add(-100);
+        names.Add("New variable");
+
+        int result;
+
+        if (label == null || label == "")
+            result = EditorGUILayout.IntPopup(_varId, names.ToArray(), ids.ToArray(), _options);
         else
-            return EditorGUILayout.IntPopup(label, _varId, names.ToArray(), ids.ToArray(), _options);
+            result = EditorGUILayout.IntPopup(label, _varId, names.ToArray(), ids.ToArray(), _options);
+
+        if (result == -100) {
+            result = VariableKreator.AddNewVariable();
+        }
+
+        return result;
     }
 
 

@@ -296,7 +296,9 @@ public class MonsterKreator : EditorWindow {
         GUILayout.BeginHorizontal();
         GUILayout.FlexibleSpace();
         if (GUILayout.Button("OK")) {
-            if (elements.Find(P => P.name == null || P.name == "") != null) {
+            if (elements.Count == 0) {
+                Debug.LogError("You can't save if there is no elements !");
+            } else if (elements.Find(P => P.name == null || P.name == "") != null) {
                 Debug.LogError("You can't save if some elements have no name !");
             } else {
                 foreach (DBMonsterPattern pattern in elements)

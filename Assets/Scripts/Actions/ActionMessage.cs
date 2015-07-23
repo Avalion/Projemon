@@ -60,7 +60,25 @@ public class ActionMessage : MapObjectAction {
     }
 
     public static string Decode(string _message) {
-        // TODO : replace KeyWords or KeyCharacters by their values (variable, ou variable analysé (nom de MapObject ou de MonsterPattern ou de Monster)
+        foreach (Match match in Regex.Matches(_message, "V{(.+?)}")) {
+            int value = GameData.GetVariable(int.Parse(match.Groups[1].Value));
+            _message = _message.Replace(match.Value, value.ToString());
+        }
+
+        foreach (Match match in Regex.Matches(_message, "VasMO{(.+?)}")) {
+            int value = GameData.GetVariable(int.Parse(match.Groups[1].Value));
+            _message = _message.Replace(match.Value, World.Current.GetMapObjectById(value).name);
+        }
+        foreach (Match match in Regex.Matches(_message, "VasMon{(.+?)}")) {
+            int value = GameData.GetVariable(int.Parse(match.Groups[1].Value));
+            _message = _message.Replace(match.Value, Player.Current.monsters.Count > value ? Player.Current.monsters[value].monsterName : "");
+        }
+        foreach (Match match in Regex.Matches(_message, "VasMonP{(.+?)}")) {
+            int value = GameData.GetVariable(int.Parse(match.Groups[1].Value));
+            _message = _message.Replace(match.Value, Player.Current.monsters.Count > value ? Player.Current.monsters[value].monsterPattern.name : "");
+        }
+        
+        _message = _message.Replace("{Player}", Player.Current.name);
         
         return _message;
     }

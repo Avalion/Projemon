@@ -56,7 +56,6 @@ public class SystemDatas {
         return patterns;
     }
     
-
     public static List<BattleAnimation> GetBattleAnimations() {
         List<BattleAnimation> animations = new List<BattleAnimation>();
         foreach (string s in GetDirectoryFiles(Config.GetConfigPath(BattleAnimation.IMAGE_FOLDER)))
@@ -64,6 +63,11 @@ public class SystemDatas {
         return animations;
     }
     public static void SetBattleAnimations(List<BattleAnimation> _elements) {
+        if (_elements.Count == 0) {
+            Debug.LogError("You can't save if there is no elements !");
+            return;
+        }
+
         foreach (string file in Directory.GetFiles(Config.GetConfigPath(BattleAnimation.IMAGE_FOLDER))) {
             File.Delete(file);
         }
@@ -78,6 +82,11 @@ public class SystemDatas {
         return maps;
     }
     public static void SetMaps(List<Map> _elements) {
+        if (_elements.Count == 0) {
+            Debug.LogError("You can't save if there is no elements !");
+            return;
+        }
+        
         // maps;
         foreach (string file in Directory.GetFiles(Config.GetConfigPath(Map.IMAGE_FOLDER))) {
             File.Delete(file);
